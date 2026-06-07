@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Host Master</string>
+    <string name="server_offline">SERVER OFFLINE</string>
+    <string name="copied">COPIED ✓</string>
+    <string name="no_source">Select a folder or file first</string>
+    <string name="select_folder">Select Folder</string>
+    <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
+</resources>

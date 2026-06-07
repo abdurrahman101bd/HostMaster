@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/bg">
+
+    <LinearLayout android:id="@+id/header"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingStart="16dp" android:paddingEnd="16dp"
+        android:background="@color/surface">
+
+        <LinearLayout android:id="@+id/btn_globe"
+            android:layout_width="36dp" android:layout_height="36dp"
+            android:background="@drawable/bg_icon_btn" android:gravity="center">
+            <ImageView android:id="@+id/protocols_icons"
+                android:layout_width="20dp" android:layout_height="20dp"
+                android:src="@drawable/ic_http" />
+        </LinearLayout>
+
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="HOST MASTER"
+            android:textColor="@color/accent" android:textSize="15sp"
+            android:textStyle="bold" android:letterSpacing="0.15" android:gravity="center"/>
+
+        <LinearLayout android:id="@+id/btn_settings"
+            android:layout_width="36dp" android:layout_height="36dp"
+            android:background="@drawable/bg_icon_btn" android:gravity="center">
+            <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                android:src="@drawable/ic_settings"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@color/border"/>
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
+        android:fillViewport="false" android:scrollbars="none">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:paddingBottom="24dp">
+
+            <!-- Network Chart -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:paddingStart="18dp" android:paddingEnd="18dp"
+                android:paddingTop="12dp" android:paddingBottom="6dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="4dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="NETWORK TRAFFIC"
+                        android:textColor="@color/text_muted" android:textSize="9sp" android:letterSpacing="0.15"/>
+                    <TextView android:id="@+id/tv_chart_val" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:text="0 KB/s"
+                        android:textColor="@color/text_muted" android:textSize="9sp" android:letterSpacing="0.1"/>
+                </LinearLayout>
+                <com.ar.hostmaster.ChartView android:id="@+id/chart_view"
+                    android:layout_width="match_parent" android:layout_height="72dp"/>
+            </LinearLayout>
+
+            <!-- Power Button -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:gravity="center"
+                android:paddingTop="10dp" android:paddingBottom="14dp">
+                <com.ar.hostmaster.PowerButtonView android:id="@+id/power_btn"
+                    android:layout_width="170dp" android:layout_height="170dp"/>
+            </LinearLayout>
+
+            <!-- Stats Row -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:paddingStart="18dp"
+                android:paddingEnd="18dp" android:paddingBottom="14dp">
+
+                <LinearLayout android:id="@+id/stat_port"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_stat_card" android:padding="11dp"
+                    android:gravity="center" android:layout_marginEnd="5dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="PORT" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.2" android:layout_marginBottom="3dp"/>
+                    <TextView android:id="@+id/tv_port" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:text="8080"
+                        android:textColor="@color/accent" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/stat_clients"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_stat_card" android:padding="11dp"
+                    android:gravity="center" android:layout_marginStart="5dp" android:layout_marginEnd="5dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="CLIENTS" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.2" android:layout_marginBottom="3dp"/>
+                    <TextView android:id="@+id/tv_clients" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:text="0"
+                        android:textColor="@color/accent" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/stat_uptime"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_stat_card" android:padding="11dp"
+                    android:gravity="center" android:layout_marginStart="5dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="UPTIME" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.2" android:layout_marginBottom="3dp"/>
+                    <TextView android:id="@+id/tv_uptime" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:text="00:00"
+                        android:textColor="@color/accent" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Control Buttons Row -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:paddingStart="18dp"
+                android:paddingEnd="18dp" android:paddingBottom="14dp">
+
+                <LinearLayout android:id="@+id/ctrl_config"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_ctrl_btn" android:gravity="center"
+                    android:paddingTop="12dp" android:paddingBottom="12dp"
+                    android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                        android:src="@drawable/ic_gears" android:tint="@color/accent"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="CONFIG" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.15" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/ctrl_proto"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_ctrl_btn" android:gravity="center"
+                    android:paddingTop="12dp" android:paddingBottom="12dp"
+                    android:layout_marginStart="4dp" android:layout_marginEnd="4dp"
+                    android:clickable="true" android:focusable="true">
+                    <ImageView android:id="@+id/ctrl_proto_icon" android:layout_width="22dp" android:layout_height="22dp"
+                        android:src="@drawable/ic_http" android:tint="@color/accent"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView android:id="@+id/tv_proto_label"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="HTTP" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.15" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/ctrl_logs"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_ctrl_btn" android:gravity="center"
+                    android:paddingTop="12dp" android:paddingBottom="12dp"
+                    android:layout_marginStart="4dp" android:layout_marginEnd="4dp"
+                    android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                        android:src="@drawable/ic_logs" android:tint="@color/accent"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="LOGS" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.15" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/ctrl_stats"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_ctrl_btn" android:gravity="center"
+                    android:paddingTop="12dp" android:paddingBottom="12dp"
+                    android:layout_marginStart="4dp"
+                    android:clickable="true" android:focusable="true">
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                        android:src="@drawable/ic_status" android:tint="@color/accent"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="STATS" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.15" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- QR Section -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_card"
+                android:layout_marginStart="18dp" android:layout_marginEnd="18dp"
+                android:layout_marginBottom="14dp" android:padding="18dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="QUICK ACCESS"
+                        android:textColor="@color/text_muted" android:textSize="9sp" android:letterSpacing="0.2"/>
+                    <TextView android:id="@+id/qr_badge"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="LAN" android:textColor="@color/accent"
+                        android:textSize="8sp" android:letterSpacing="0.15"
+                        android:paddingStart="9dp" android:paddingEnd="9dp"
+                        android:paddingTop="3dp" android:paddingBottom="3dp"
+                        android:background="@drawable/bg_tag"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+
+                    <!-- QR image - clickable for fullscreen -->
+                    <ImageView android:id="@+id/iv_qr"
+                        android:layout_width="130dp" android:layout_height="130dp"
+                        android:background="@drawable/bg_qr_wrap" android:padding="8dp"
+                        android:scaleType="fitCenter" android:layout_marginEnd="18dp"
+                        android:clickable="true" android:focusable="true"/>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:id="@+id/tv_qr_title"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="SCAN ME" android:textColor="@color/text_primary"
+                            android:textSize="15sp" android:textStyle="bold" android:layout_marginBottom="6dp"/>
+                        <TextView android:id="@+id/tv_qr_desc"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Point your camera to access the server from any device on your local network."
+                            android:textColor="@color/text_muted" android:textSize="12sp"
+                            android:lineSpacingMultiplier="1.5"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- URL Box -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:background="@drawable/bg_url_box"
+                android:layout_marginStart="18dp" android:layout_marginEnd="18dp"
+                android:layout_marginBottom="20dp" android:padding="13dp">
+
+                <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                    android:src="@drawable/ic_link_2" android:tint="@color/accent"
+                    android:layout_marginEnd="10dp"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="SERVER ADDRESS" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.2" android:layout_marginBottom="2dp"/>
+                    <TextView android:id="@+id/tv_url"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="http://—.—.—.—:8080" android:textColor="@color/accent"
+                        android:textSize="12sp" android:textStyle="bold"
+                        android:singleLine="true" android:ellipsize="end"/>
+                </LinearLayout>
+
+                <!-- ic_copy icon instead of COPY button -->
+                <LinearLayout android:id="@+id/btn_copy"
+                    android:layout_width="36dp" android:layout_height="36dp"
+                    android:gravity="center" android:clickable="true" android:focusable="true"
+                    android:background="@drawable/bg_icon_btn">
+                    <ImageView android:layout_width="18dp" android:layout_height="18dp"
+                        android:src="@drawable/ic_copy" android:tint="@color/accent"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <!-- Toolbar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="12dp"
+        android:background="@color/surface">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/tv_picker_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="SELECT FILES"
+            android:textColor="@color/accent"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <ImageView
+            android:id="@+id/btn_home"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_folder"
+            android:alpha="0.6" />
+
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+    <!-- Path breadcrumb -->
+    <TextView
+        android:id="@+id/tv_current_path"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:textSize="11sp"
+        android:textColor="@color/text_muted"
+        android:background="@color/surface"
+        android:singleLine="true"
+        android:ellipsize="start" />
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+    <!-- File list -->
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="No items here"
+        android:textColor="@color/text_muted"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_files"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="6dp"
+        android:clipToPadding="false" />
+
+    <!-- Basket panel — FILES mode only -->
+    <LinearLayout
+        android:id="@+id/basket_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/surface"
+        android:visibility="gone">
+
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SELECTED"
+                android:textSize="11sp"
+                android:textColor="@color/text_muted"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
+
+            <TextView
+                android:id="@+id/tv_basket_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 selected"
+                android:textSize="11sp"
+                android:textColor="@color/accent" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_basket"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:clipToPadding="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="SELECT FILES"
+                android:textColor="#FFFFFF"
+                android:letterSpacing="0.08"
+                android:background="@drawable/bg_copy_btn"
+                android:stateListAnimator="@null" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Folder confirm — FOLDER mode only -->
+    <LinearLayout
+        android:id="@+id/folder_confirm_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:background="@color/surface"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_confirm_folder"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="SELECT THIS FOLDER"
+            android:textColor="#FFFFFF"
+            android:letterSpacing="0.08"
+            android:background="@drawable/bg_copy_btn"
+            android:stateListAnimator="@null" />
+
+    </LinearLayout>
+
+</LinearLayout>

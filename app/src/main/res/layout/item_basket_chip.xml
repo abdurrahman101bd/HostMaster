@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="36dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginEnd="6dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="4dp"
+    android:background="@drawable/bg_chip">
+
+    <TextView
+        android:id="@+id/tv_chip_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="140dp"
+        android:singleLine="true"
+        android:ellipsize="middle"
+        android:textSize="12sp"
+        android:textColor="@color/accent" />
+
+    <TextView
+        android:id="@+id/btn_chip_remove"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:gravity="center"
+        android:text="✕"
+        android:textSize="12sp"
+        android:textColor="@color/text_muted"
+        android:layout_marginStart="4dp" />
+
+</LinearLayout>

@@ -1,0 +1,449 @@
+package com.ar.hostmaster;
+
+import android.Manifest;
+import android.app.Dialog;
+import android.content.*;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.*;
+import android.provider.Settings;
+import android.view.*;
+import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    private PowerButtonView powerBtn;
+    private ChartView chartView;
+    private TextView tvUrl, tvPort, tvClients, tvUptime, tvChartVal;
+    private TextView tvProtoLabel;  
+    private ImageView protocolsIcon;  
+    private ImageView ctrlProtoIcon; 
+    private TextView tvQrTitle, tvQrDesc;
+    private ImageView ivQr;
+    private AppState state;
+
+    private boolean serverRunning = false;
+    private long startTime = 0;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
+    private static final int REQ_CONFIG      = 101;
+    private static final int REQ_MANAGE_STOR = 202;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        state = AppState.get(this);
+        ThemeHelper.apply(state.getTheme());
+        setContentView(R.layout.activity_main);
+
+        bindViews();
+        setupClicks();
+        requestPerms();
+        restoreOrAutostart();
+    }
+
+    private void bindViews() {
+        powerBtn    = findViewById(R.id.power_btn);
+        chartView   = findViewById(R.id.chart_view);
+        tvUrl       = findViewById(R.id.tv_url);
+        tvPort      = findViewById(R.id.tv_port);
+        tvClients   = findViewById(R.id.tv_clients);
+        tvUptime    = findViewById(R.id.tv_uptime);
+        tvChartVal  = findViewById(R.id.tv_chart_val);
+        ivQr        = findViewById(R.id.iv_qr);
+        protocolsIcon = findViewById(R.id.protocols_icons);  
+        ctrlProtoIcon = findViewById(R.id.ctrl_proto_icon);  
+        tvProtoLabel = findViewById(R.id.tv_proto_label);    
+        tvQrTitle   = findViewById(R.id.tv_qr_title);
+        tvQrDesc    = findViewById(R.id.tv_qr_desc);
+    }
+
+    private void setupClicks() {
+        powerBtn.setOnClickListener(v -> toggleServer());
+
+        findViewById(R.id.btn_copy).setOnClickListener(v -> {
+            String url = tvUrl.getText().toString();
+            if (!url.contains("—")) {
+                ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                cm.setPrimaryClip(ClipData.newPlainText("url", url));
+                Toast.makeText(this, getString(R.string.copied), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        tvUrl.setOnClickListener(v -> {
+            String url = tvUrl.getText().toString();
+            if (!url.contains("—")) {
+                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); }
+                catch (Exception ignored) {}
+            }
+        });
+
+        ivQr.setOnClickListener(v -> {
+            if (ivQr.getDrawable() != null) showQrFullscreen();
+        });
+
+        findViewById(R.id.btn_settings).setOnClickListener(v ->
+                startActivity(new Intent(this, SettingsActivity.class)));
+
+        View.OnClickListener protoClick = v -> {
+            if (serverRunning) {
+                Toast.makeText(this, "Stop server to change protocol", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            startActivity(new Intent(this, ProtocolActivity.class));
+        };
+        
+        findViewById(R.id.btn_globe).setOnClickListener(protoClick);
+        findViewById(R.id.ctrl_proto).setOnClickListener(protoClick);
+
+        findViewById(R.id.ctrl_config).setOnClickListener(v ->
+                startActivityForResult(new Intent(this, ConfigureActivity.class), REQ_CONFIG));
+
+        findViewById(R.id.ctrl_logs).setOnClickListener(v ->
+                startActivity(new Intent(this, LogsActivity.class)));
+
+        findViewById(R.id.ctrl_stats).setOnClickListener(v ->
+                startActivity(new Intent(this, StatsActivity.class)));
+    }
+
+    // ── Server toggle ─────────────────────────────────────────────────────────
+
+    private void toggleServer() {
+        if (!serverRunning) startServer();
+        else stopServer();
+    }
+
+    private void startServer() {
+        if (state.getFolderPath().isEmpty()) {
+            Toast.makeText(this, getString(R.string.no_source), Toast.LENGTH_SHORT).show();
+            powerBtn.setState(false);
+            return;
+        }
+        Intent i = new Intent(this, ServerService.class);
+        i.setAction(ServerService.ACTION_START);
+        ContextCompat.startForegroundService(this, i);
+        serverRunning = true;
+        startTime = System.currentTimeMillis();
+        state.setRunning(true);
+
+        updateServerUrlAndPort(); 
+        generateQr(getCurrentDisplayUrl()); // URL for QR
+        startTicker();
+        powerBtn.setState(true);
+    }
+
+    private void stopServer() {
+        Intent i = new Intent(this, ServerService.class);
+        i.setAction(ServerService.ACTION_STOP);
+        startService(i);
+        serverRunning = false;
+        startTime = 0;
+        state.setRunning(false);
+        state.setLocalUrl("");
+        stopTicker();
+        
+        updateUrlAndPortForIdle(); 
+        
+        tvClients.setText("0");
+        tvUptime.setText("00:00");
+        tvChartVal.setText("0 KB/s");
+        ivQr.setImageBitmap(null);
+        powerBtn.setState(false);
+    }
+
+    // ── Restore / Autostart ───────────────────────────────────────────────────
+
+    private void restoreOrAutostart() {
+        String proto = state.getProtocol();
+        String savedUrl = state.getLocalUrl();
+        
+        updateProtoUI(proto);
+        updatePortDisplay(); 
+        
+        if (state.isRunning() && !savedUrl.isEmpty()) {
+            serverRunning = true;
+            tvUrl.setText(savedUrl);
+            generateQr(savedUrl);
+            startTime = System.currentTimeMillis();
+            startTicker();
+            powerBtn.setState(true);
+
+        } else if (state.isAutostart() && !state.getFolderPath().isEmpty()) {
+            handler.postDelayed(this::startServer, 600);
+
+        } else {
+            updateUrlAndPortForIdle();
+            powerBtn.setState(false);
+        }
+    }
+
+    private void updateServerUrlAndPort() {
+        String proto  = state.getProtocol();
+        String ip     = NetworkUtil.getLocalIp(this);
+        int    port   = state.getPort(proto);
+        String displayUrl = getDisplayUrl(proto, ip, port);
+        String qrUrl = getQrUrl(proto, ip, port);
+        
+        state.setLocalUrl(displayUrl);
+        tvUrl.setText(displayUrl);
+        tvPort.setText(String.valueOf(port));
+        generateQr(qrUrl);
+    }
+    
+    private void updateUrlAndPortForIdle() {
+        String proto = state.getProtocol();
+        int port = state.getPort(proto);
+        String displayUrl = getIdleDisplayUrl(proto, port);
+        
+        tvUrl.setText(displayUrl);
+        tvPort.setText(String.valueOf(port));
+    }
+    
+    private void updatePortDisplay() {
+        String proto = state.getProtocol();
+        int port = state.getPort(proto);
+        tvPort.setText(String.valueOf(port));
+    }
+    
+    private String getSchemeForProtocol(String proto) {
+        switch (proto) {
+            case "FTP": return "ftp";
+            case "SSH": return "ssh";
+            default: return "http";
+        }
+    }
+    
+    private String getDisplayUrl(String proto, String ip, int port) {
+        switch (proto) {
+            case "SSH":
+                return "ssh android@" + ip + " -p " + port;
+            case "FTP":
+                return "ftp://" + ip + ":" + port;
+            default:
+                return "http://" + ip + ":" + port;
+        }
+    }
+    
+    private String getQrUrl(String proto, String ip, int port) {
+        switch (proto) {
+            case "SSH":
+                return "ssh android@" + ip + " -p " + port;
+            case "FTP":
+                return "ftp://" + ip + ":" + port;
+            default:
+                return "http://" + ip + ":" + port;
+        }
+    }
+    
+    private String getIdleDisplayUrl(String proto, int port) {
+        switch (proto) {
+            case "SSH":
+                return "ssh android@—.—.—.— -p " + port;
+            case "FTP":
+                return "ftp://—.—.—.—:" + port;
+            default:
+                return "http://—.—.—.—:" + port;
+        }
+    }
+    
+    private String getCurrentDisplayUrl() {
+        String proto = state.getProtocol();
+        if (serverRunning) {
+            String ip = NetworkUtil.getLocalIp(this);
+            int port = state.getPort(proto);
+            return getDisplayUrl(proto, ip, port);
+        } else {
+            int port = state.getPort(proto);
+            return getIdleDisplayUrl(proto, port);
+        }
+    }
+
+    // ── Protocol UI ───────────────────────────────────────────────────────────
+
+    private void updateProtoUI(String proto) {
+        String label;
+        int iconRes;
+
+        switch (proto) {
+            case "FTP":
+                label = "FTP";
+                iconRes = R.drawable.ic_ftp;
+                if (tvQrTitle != null) tvQrTitle.setText("FTP ACCESS");
+                if (tvQrDesc != null) tvQrDesc.setText("Connect using any FTP client (e.g., Solid Explorer)");
+                break;
+            case "SSH":
+                label = "SSH";
+                iconRes = R.drawable.ic_ssh;
+                if (tvQrTitle != null) tvQrTitle.setText("SSH TERMINAL");
+                if (tvQrDesc != null) tvQrDesc.setText("Connect via terminal: ssh android@ip -p port (Default user: android)");
+                break;
+            default:
+                label = "HTTP";
+                iconRes = R.drawable.ic_http;
+                if (tvQrTitle != null) tvQrTitle.setText("SCAN ME");
+                if (tvQrDesc != null) tvQrDesc.setText("Scan QR to access from any device on your network");
+                break;
+        }
+
+        if (protocolsIcon != null) {
+            protocolsIcon.setImageResource(iconRes);
+        }
+        
+        if (ctrlProtoIcon != null) {
+            ctrlProtoIcon.setImageResource(iconRes);
+        }
+        
+        if (tvProtoLabel != null) {
+            tvProtoLabel.setText(label);
+        }
+
+        if (!serverRunning) {
+            updateUrlAndPortForIdle();
+        } else {
+            updatePortDisplay();
+        }
+    }
+
+    // ── QR ────────────────────────────────────────────────────────────────────
+
+    private void generateQr(String url) {
+        if (url == null || url.isEmpty()) return;
+        new Thread(() -> {
+            int sz  = (int)(130 * getResources().getDisplayMetrics().density);
+            Bitmap bmp = QrUtil.generate(url, sz);
+            runOnUiThread(() -> ivQr.setImageBitmap(bmp));
+        }).start();
+    }
+
+    private void showQrFullscreen() {
+        Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        FrameLayout frame = new FrameLayout(this);
+        frame.setBackgroundColor(Color.parseColor("#E0060A10"));
+        ImageView iv = new ImageView(this);
+        iv.setImageDrawable(ivQr.getDrawable());
+        iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        iv.setPadding(40, 40, 40, 40);
+        frame.addView(iv, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
+        frame.setOnClickListener(v -> dialog.dismiss());
+        iv.setOnClickListener(v -> dialog.dismiss());
+        dialog.setContentView(frame);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(Color.parseColor("#E0060A10")));
+            dialog.getWindow().setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+        dialog.show();
+    }
+
+    // ── Ticker ────────────────────────────────────────────────────────────────
+
+    private final Runnable ticker = new Runnable() {
+        @Override public void run() {
+            if (!serverRunning) return;
+            long elapsed = (System.currentTimeMillis() - startTime) / 1000;
+            tvUptime.setText(String.format("%02d:%02d", elapsed / 60, elapsed % 60));
+            tvClients.setText(String.valueOf(LogManager.getActiveClients()));
+            long speed = LogManager.getAndResetSpeed();
+            tvChartVal.setText(NetworkUtil.formatSpeed(speed));
+            chartView.addPoint(speed);
+            handler.postDelayed(this, 1000);
+        }
+    };
+
+    private void startTicker() { handler.post(ticker); }
+    private void stopTicker()  { handler.removeCallbacks(ticker); }
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String proto = state.getProtocol();
+        updateProtoUI(proto); 
+        if (!serverRunning) {
+            updateUrlAndPortForIdle();
+        } else {
+            updatePortDisplay();
+        }
+    }
+
+    @Override protected void onDestroy() { stopTicker(); super.onDestroy(); }
+
+    @Override
+    protected void onActivityResult(int req, int res, Intent data) {
+        super.onActivityResult(req, res, data);
+
+        if (req == REQ_CONFIG && res == RESULT_OK && serverRunning) {
+            stopServer();
+            startServer();
+        }
+
+        if (req == REQ_MANAGE_STOR) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (!android.os.Environment.isExternalStorageManager()) {
+                    Toast.makeText(this,
+                            "Storage permission needed to show all file types",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+            if (state.isAutostart() && !state.getFolderPath().isEmpty() && !serverRunning) {
+                handler.postDelayed(this::startServer, 500);
+            }
+        }
+    }
+
+    // ── Permissions ───────────────────────────────────────────────────────────
+
+    private void requestPerms() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!android.os.Environment.isExternalStorageManager()) {
+                new android.app.AlertDialog.Builder(this)
+                    .setTitle("Storage Permission Required")
+                    .setMessage(
+                        "To show all file types (zip, apk, db, etc.), " +
+                        "this app needs 'All Files Access' permission.\n\n" +
+                        "Please enable it in the next screen.")
+                    .setPositiveButton("Open Settings", (d, w) -> {
+                        Intent intent = new Intent(
+                            Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                            Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent, REQ_MANAGE_STOR);
+                    })
+                    .setNegativeButton("Skip", (d, w) -> requestMediaPerms())
+                    .show();
+                return;
+            }
+        }
+        requestMediaPerms();
+    }
+
+    private void requestMediaPerms() {
+        List<String> perms = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES)  != PackageManager.PERMISSION_GRANTED)
+                perms.add(Manifest.permission.READ_MEDIA_IMAGES);
+            if (checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO)   != PackageManager.PERMISSION_GRANTED)
+                perms.add(Manifest.permission.READ_MEDIA_VIDEO);
+            if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO)   != PackageManager.PERMISSION_GRANTED)
+                perms.add(Manifest.permission.READ_MEDIA_AUDIO);
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+                perms.add(Manifest.permission.POST_NOTIFICATIONS);
+        } else {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                perms.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (!perms.isEmpty())
+            requestPermissions(perms.toArray(new String[0]), 200);
+    }
+}

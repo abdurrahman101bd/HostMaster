@@ -1,0 +1,7 @@
+.acside/
+.gradle/
+.idea/
+local.properties
+captures/
+*.iml
+**/build/

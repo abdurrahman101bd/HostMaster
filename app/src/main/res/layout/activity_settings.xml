@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/bg">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingStart="14dp" android:paddingEnd="14dp" android:background="@color/surface">
+        <LinearLayout android:id="@+id/btn_back" android:layout_width="36dp"
+            android:layout_height="36dp" android:background="@drawable/bg_back_btn"
+            android:gravity="center" android:layout_marginEnd="12dp">
+            <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_back"/>
+        </LinearLayout>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="SETTINGS"
+            android:textColor="@color/accent" android:textSize="13sp"
+            android:textStyle="bold" android:letterSpacing="0.1"/>
+    </LinearLayout>
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:scrollbars="none">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="16dp">
+
+            <!-- APPEARANCE -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="APPEARANCE" android:textColor="@color/text_muted"
+                android:textSize="9sp" android:letterSpacing="0.2" android:layout_marginBottom="6dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_card"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout android:id="@+id/row_theme"
+                    android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp"
+                    android:clickable="true" android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_color_palette" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Theme" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:id="@+id/tv_theme_sub" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="Light mode"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border"/>
+
+                <LinearLayout android:id="@+id/row_language"  android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_language" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Language" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="App display language"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="English ›" android:textColor="@color/text_muted" android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- SERVER -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="SERVER" android:textColor="@color/text_muted"
+                android:textSize="9sp" android:letterSpacing="0.2" android:layout_marginBottom="6dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_card"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout android:id="@+id/row_port"
+                    android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp"
+                    android:clickable="true" android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_ethernet" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Change Port" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:id="@+id/tv_port_sub" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="HTTP:8080 · FTP:21 · SSH:22"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_notification" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Notifications" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Alert on client connect/disconnect"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <Switch android:id="@+id/sw_notifications"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"
+                        android:checked="true"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_logs" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Keep Logs" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Save logs to storage"
+                            android:textColor="@color/text_muted" android:textSize="11sp"
+                            android:checked="true"/>
+                    </LinearLayout>
+                    <Switch android:id="@+id/sw_keep_logs"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+                <LinearLayout android:id="@+id/row_timeout" android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_stopwatch" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Connection Timeout" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Idle client timeout"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="30s ›" android:textColor="@color/text_muted" android:textSize="12sp"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+                <LinearLayout android:id="@+id/row_max_conn" android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_signal" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Max Connections" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Simultaneous client limit"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="10 ›" android:textColor="@color/text_muted" android:textSize="12sp"/>
+                </LinearLayout>
+				
+				<!-- Auto-start Server -->
+				<View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+				<LinearLayout android:id="@+id/row_autostart"
+					android:layout_width="match_parent" android:layout_height="56dp"
+					android:orientation="horizontal" android:gravity="center_vertical"
+					android:paddingStart="16dp" android:paddingEnd="16dp"
+					android:clickable="true" android:focusable="true">
+
+					<ImageView android:layout_width="28dp" android:layout_height="28dp"
+						android:src="@drawable/ic_power" android:scaleType="fitCenter"
+						android:layout_marginEnd="12dp"/>
+
+					<LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+						android:layout_weight="1" android:orientation="vertical">
+						<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="Auto-start Server" android:textColor="@color/text_primary" android:textSize="14sp"/>
+						<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="Start server automatically when app opens"
+							android:textColor="@color/text_muted" android:textSize="11sp"/>
+					</LinearLayout>
+
+					<Switch android:id="@+id/sw_autostart_settings"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"/>
+				</LinearLayout>
+            </LinearLayout>
+
+            <!-- PRIVACY & SECURITY -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="PRIVACY &amp; SECURITY" android:textColor="@color/text_muted"
+                android:textSize="9sp" android:letterSpacing="0.2" android:layout_marginBottom="6dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_card"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_shield_halved" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Local Only Mode" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Block external network access"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <Switch android:id="@+id/sw_local_only" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"
+                        android:checked="true"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+                <LinearLayout android:id="@+id/row_privacy" android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_privacy_policy" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Privacy Policy" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="How we handle your data"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- SUPPORT -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="SUPPORT" android:textColor="@color/text_muted"
+                android:textSize="9sp" android:letterSpacing="0.2" android:layout_marginBottom="6dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_card"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout android:id="@+id/row_help_faq" android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_question" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Help &amp; FAQ" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Common questions and guides"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
+
+                <LinearLayout android:id="@+id/row_report_bug" android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                        android:src="@drawable/ic_bug" android:scaleType="fitCenter"
+                        android:layout_marginEnd="12dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Report a Bug" android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Send feedback to developers"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- About card -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_card"
+                android:padding="20dp" android:gravity="center" android:layout_marginBottom="24dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="HOST MASTER" android:textColor="@color/accent"
+                    android:textSize="16sp" android:textStyle="bold" android:letterSpacing="0.1"
+                    android:layout_marginBottom="4dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Local Network File Server"
+                    android:textColor="@color/text_muted" android:textSize="12sp"
+                    android:layout_marginBottom="12dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="v1.0.0" android:textColor="@color/accent"
+                    android:textSize="10sp" android:letterSpacing="0.1"
+                    android:background="@drawable/bg_tag"
+                    android:paddingStart="12dp" android:paddingEnd="12dp"
+                    android:paddingTop="4dp" android:paddingBottom="4dp"
+                    android:layout_marginBottom="12dp"/>
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border" android:layout_marginBottom="12dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Built for Android · Min SDK 21\n© 2026 Host Master · All rights reserved"
+                    android:textColor="@color/text_muted" android:textSize="11sp"
+                    android:gravity="center" android:lineSpacingMultiplier="1.6"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
