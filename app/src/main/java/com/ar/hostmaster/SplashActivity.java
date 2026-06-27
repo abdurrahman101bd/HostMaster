@@ -8,7 +8,13 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String theme = AppState.get(this).getTheme();
+        // Apply night mode before setContentView
+        ThemeHelper.apply(theme);
         setContentView(R.layout.activity_splash);
+        // Apply status bar color after setContentView
+        ThemeHelper.applyWithStatusBar(this, theme);
+
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();

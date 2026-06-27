@@ -52,26 +52,6 @@
                         android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
                 </LinearLayout>
 
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/border"/>
-
-                <LinearLayout android:id="@+id/row_language"  android:layout_width="match_parent" android:layout_height="56dp"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:paddingStart="16dp" android:paddingEnd="16dp">
-                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                        android:src="@drawable/ic_language" android:scaleType="fitCenter"
-                        android:layout_marginEnd="12dp"/>
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Language" android:textColor="@color/text_primary" android:textSize="14sp"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="App display language"
-                            android:textColor="@color/text_muted" android:textSize="11sp"/>
-                    </LinearLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="English ›" android:textColor="@color/text_muted" android:textSize="12sp"/>
-                </LinearLayout>
             </LinearLayout>
 
             <!-- SERVER -->
@@ -90,7 +70,7 @@
                     android:clickable="true" android:focusable="true"
                     android:background="?attr/selectableItemBackground">
                     <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                        android:src="@drawable/ic_ethernet" android:scaleType="fitCenter"
+                        android:src="@drawable/ic_port" android:scaleType="fitCenter"
                         android:layout_marginEnd="12dp"/>
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical">
@@ -145,7 +125,8 @@
                     </LinearLayout>
                     <Switch android:id="@+id/sw_keep_logs"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"/>
+                        android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"
+                        android:checked="true"/>
                 </LinearLayout>
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
@@ -164,30 +145,11 @@
                             android:text="Idle client timeout"
                             android:textColor="@color/text_muted" android:textSize="11sp"/>
                     </LinearLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="30s ›" android:textColor="@color/text_muted" android:textSize="12sp"/>
+                    <TextView android:id="@+id/tv_timeout_sub"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="300 seconds ›" android:textColor="@color/text_muted" android:textSize="12sp"/>
                 </LinearLayout>
 
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
-
-                <LinearLayout android:id="@+id/row_max_conn" android:layout_width="match_parent" android:layout_height="56dp"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:paddingStart="16dp" android:paddingEnd="16dp">
-                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                        android:src="@drawable/ic_signal" android:scaleType="fitCenter"
-                        android:layout_marginEnd="12dp"/>
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Max Connections" android:textColor="@color/text_primary" android:textSize="14sp"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Simultaneous client limit"
-                            android:textColor="@color/text_muted" android:textSize="11sp"/>
-                    </LinearLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="10 ›" android:textColor="@color/text_muted" android:textSize="12sp"/>
-                </LinearLayout>
-				
 				<!-- Auto-start Server -->
 				<View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
 
@@ -335,7 +297,7 @@
                 <View android:layout_width="match_parent" android:layout_height="1dp"
                     android:background="@color/border" android:layout_marginBottom="12dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Built for Android · Min SDK 21\n© 2026 Host Master · All rights reserved"
+                    android:text="© 2026 Host Master · All rights reserved"
                     android:textColor="@color/text_muted" android:textSize="11sp"
                     android:gravity="center" android:lineSpacingMultiplier="1.6"/>
             </LinearLayout>

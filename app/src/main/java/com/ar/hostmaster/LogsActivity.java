@@ -20,11 +20,15 @@ public class LogsActivity extends AppCompatActivity {
     private final Handler h = new Handler(Looper.getMainLooper());
     private String searchText = "";
     private String filter = "ALL";
+    private AppState state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        state = AppState.get(this);
+        ThemeHelper.apply(state.getTheme());
         setContentView(R.layout.activity_logs);
+        ThemeHelper.applyWithStatusBar(this, state.getTheme());
 
         rv            = findViewById(R.id.rv_logs);
         viewEmpty     = findViewById(R.id.view_empty);

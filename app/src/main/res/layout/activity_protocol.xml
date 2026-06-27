@@ -1,206 +1,487 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:gravity="center" android:background="@color/bg">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
-        android:orientation="horizontal" android:gravity="center_vertical"
-        android:paddingStart="14dp" android:paddingEnd="14dp" android:background="@color/surface">
-        <LinearLayout android:id="@+id/btn_back" android:layout_width="36dp"
-            android:layout_height="36dp" android:background="@drawable/bg_back_btn"
-            android:gravity="center" android:layout_marginEnd="12dp">
-            <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_back"/>
+    <!-- Top Toolbar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:background="@color/surface">
+
+        <LinearLayout
+            android:id="@+id/btn_back"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_back_btn"
+            android:gravity="center"
+            android:layout_marginEnd="12dp">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_back"
+                android:tint="@color/accent"/>
         </LinearLayout>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="PROTOCOLS"
-            android:textColor="@color/accent" android:textSize="13sp"
-            android:textStyle="bold" android:letterSpacing="0.1"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PROTOCOLS"
+            android:textColor="@color/accent"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"/>
     </LinearLayout>
-    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border"/>
 
-    <RadioGroup android:id="@+id/rg_protocol"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:visibility="gone"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border"/>
 
-    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:scrollbars="none">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="16dp">
+    <RadioGroup
+        android:id="@+id/rg_protocol"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"/>
+
+    <!-- ScrollView with layout_weight to push button to bottom -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingBottom="8dp">
 
             <!-- HTTP Card -->
-            <LinearLayout android:id="@+id/card_http"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:background="@drawable/bg_proto_card_selected"
-                android:padding="16dp" android:layout_marginBottom="10dp"
-                android:clickable="true" android:focusable="true">
+            <LinearLayout
+                android:id="@+id/card_http"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_proto_card_selected"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true">
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_marginBottom="10dp">
-                    <LinearLayout android:layout_width="42dp" android:layout_height="42dp"
-                        android:background="@drawable/bg_proto_icon_http_grad" android:gravity="center"
-                        android:layout_marginEnd="12dp">
-                        <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                            android:src="@drawable/ic_http" android:tint="@android:color/white"/>
+
+                    <!-- Icon -->
+                    <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:src="@drawable/ic_http"
+                        android:tint="@color/accent"
+                        android:layout_marginEnd="12dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HTTP"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tv_http_port"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PORT 8080"
+                            android:textColor="@color/accent"
+                            android:textSize="11sp"
+                            android:letterSpacing="0.05"/>
                     </LinearLayout>
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="HTTP" android:textColor="@color/text_primary"
-                            android:textSize="16sp" android:textStyle="bold"/>
-                        <TextView android:id="@+id/tv_http_port" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="PORT 8080"
-                            android:textColor="@color/accent" android:textSize="11sp" android:letterSpacing="0.05"/>
-                    </LinearLayout>
-                    <View android:id="@+id/dot_http"
-                        android:layout_width="10dp" android:layout_height="10dp"
+
+                    <View
+                        android:id="@+id/dot_http"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:background="@drawable/bg_proto_dot_on"/>
                 </LinearLayout>
 
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="HyperText Transfer Protocol — serves files and web pages to browsers. Best for sharing HTML, images, videos, and general file downloads over your local network."
-                    android:textColor="@color/text_muted" android:textSize="12sp"
-                    android:lineSpacingMultiplier="1.5" android:layout_marginBottom="10dp"/>
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_marginBottom="10dp"/>
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="WEB BROWSER" android:textColor="@color/accent"
-                        android:textSize="9sp" android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag" android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="FILE SHARE" android:textColor="@color/accent"
-                        android:textSize="9sp" android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag" android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="NO ENCRYPTION" android:textColor="@color/text_muted"
-                        android:textSize="9sp" android:letterSpacing="0.1"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WEB BROWSER"
+                        android:textColor="@color/accent"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.1"
+                        android:background="@drawable/bg_tag"
+                        android:layout_marginEnd="6dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FILE SHARE"
+                        android:textColor="@color/accent"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.1"
+                        android:background="@drawable/bg_tag"
+                        android:layout_marginEnd="6dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NO ENCRYPTION"
+                        android:textColor="@color/text_muted"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.1"
                         android:background="@drawable/bg_tag_muted"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"/>
                 </LinearLayout>
             </LinearLayout>
 
             <!-- FTP Card -->
-            <LinearLayout android:id="@+id/card_ftp"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:background="@drawable/bg_card"
-                android:padding="16dp" android:layout_marginBottom="10dp"
-                android:clickable="true" android:focusable="true">
+            <LinearLayout
+                android:id="@+id/card_ftp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true">
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_marginBottom="10dp">
-                    <LinearLayout android:layout_width="42dp" android:layout_height="42dp"
-                        android:background="@drawable/bg_proto_icon_ftp_grad" android:gravity="center"
-                        android:layout_marginEnd="12dp">
-                        <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                            android:src="@drawable/ic_ftp" android:tint="@android:color/white"/>
+
+                    <!-- Icon -->
+                    <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:src="@drawable/ic_ftp"
+                        android:tint="@color/accent"
+                        android:layout_marginEnd="12dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="FTP"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tv_ftp_port"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PORT 21"
+                            android:textColor="@color/accent"
+                            android:textSize="11sp"
+                            android:letterSpacing="0.05"/>
                     </LinearLayout>
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="FTP" android:textColor="@color/text_primary"
-                            android:textSize="16sp" android:textStyle="bold"/>
-                        <TextView android:id="@+id/tv_ftp_port"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="PORT 21" android:textColor="@color/accent"
-                            android:textSize="11sp" android:letterSpacing="0.05"/>
-                    </LinearLayout>
-                    <View android:id="@+id/dot_ftp"
-                        android:layout_width="10dp" android:layout_height="10dp"
+
+                    <View
+                        android:id="@+id/dot_ftp"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:background="@drawable/bg_proto_dot_off"/>
                 </LinearLayout>
 
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="File Transfer Protocol — designed for transferring files. Supports upload and download in both directions. Use with FTP clients like Solid Explorer or Total Commander."
-                    android:textColor="@color/text_muted" android:textSize="12sp"
-                    android:lineSpacingMultiplier="1.5" android:layout_marginBottom="10dp"/>
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_marginBottom="10dp"/>
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="UPLOAD + DOWNLOAD" android:textColor="@color/accent"
-                        android:textSize="9sp" android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag" android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="FTP CLIENT" android:textColor="@color/accent"
-                        android:textSize="9sp" android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag" android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="FAST TRANSFER" android:textColor="@color/accent"
-                        android:textSize="9sp" android:letterSpacing="0.1"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="UPLOAD + DOWNLOAD"
+                        android:textColor="@color/accent"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.1"
                         android:background="@drawable/bg_tag"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>    
+                        android:layout_marginEnd="6dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FTP CLIENT"
+                        android:textColor="@color/accent"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.1"
+                        android:background="@drawable/bg_tag"
+                        android:layout_marginEnd="6dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FAST TRANSFER"
+                        android:textColor="@color/accent"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.1"
+                        android:background="@drawable/bg_tag"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"/>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- SSH Card -->
-            <LinearLayout android:id="@+id/card_ssh"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:background="@drawable/bg_card"
-                android:padding="16dp" android:layout_marginBottom="14dp"
-                android:clickable="true" android:focusable="true">
+             <!-- SFTP Card - Disabled (Coming Soon) -->
+            <LinearLayout
+                android:id="@+id/card_sftp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_disabled"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:alpha="0.6">
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_marginBottom="10dp">
-                    <LinearLayout android:layout_width="42dp" android:layout_height="42dp"
-                        android:background="@drawable/bg_proto_icon_ssh_grad" android:gravity="center"
-                        android:layout_marginEnd="12dp">
-                        <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                            android:src="@drawable/ic_ssh" android:tint="@android:color/white"/>
+
+                    <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:src="@drawable/ic_ftps"
+                        android:tint="@color/text_muted"
+                        android:layout_marginEnd="12dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SFTP"
+                            android:textColor="@color/text_muted"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tv_sftp_port"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PORT 22"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp"
+                            android:letterSpacing="0.05"/>
                     </LinearLayout>
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="SSH" android:textColor="@color/text_primary"
-                            android:textSize="16sp" android:textStyle="bold"/>
-                        <TextView android:id="@+id/tv_ssh_port"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="PORT 22" android:textColor="@color/accent"
-                            android:textSize="11sp" android:letterSpacing="0.05"/>
-                    </LinearLayout>
-                    <View android:id="@+id/dot_ssh"
-                        android:layout_width="10dp" android:layout_height="10dp"
+
+                    <View
+                        android:id="@+id/dot_sftp"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:background="@drawable/bg_proto_dot_off"/>
                 </LinearLayout>
 
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="Secure Shell with encrypted file transfer. Full encrypted connection for maximum security. Access files with SSH clients. Ideal for sharing sensitive data."
-                    android:textColor="@color/text_muted" android:textSize="12sp"
-                    android:lineSpacingMultiplier="1.5" android:layout_marginBottom="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SSH File Transfer Protocol — secure file transfer over SSH. Provides encrypted file access with full security. Coming in future update."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_marginBottom="10dp"/>
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="ENCRYPTED" android:textColor="@color/col_green"
-                        android:textSize="9sp" android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag_green" android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="TERMINAL ACCESS" android:textColor="@color/col_green"
-                        android:textSize="9sp" android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag_green" android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>    
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="MOST SECURE" android:textColor="@color/col_green"
-                        android:textSize="9sp" android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag_green"
-                        android:paddingStart="8dp" android:paddingEnd="8dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="COMING SOON"
+                        android:textColor="@color/text_muted"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.1"
+                        android:background="@drawable/bg_tag_muted"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"/>
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- SSH Card - Disabled (Coming Soon) -->
+            <LinearLayout
+                android:id="@+id/card_ssh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_disabled"
+                android:padding="16dp"
+                android:layout_marginBottom="0dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:alpha="0.6">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <!-- Icon with muted color -->
+                    <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:src="@drawable/ic_ssh"
+                        android:tint="@color/text_muted"
+                        android:layout_marginEnd="12dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SSH"
+                            android:textColor="@color/text_muted"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tv_ssh_port"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PORT 22"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp"
+                            android:letterSpacing="0.05"/>
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/dot_ssh"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/bg_proto_dot_off"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Secure Shell with encrypted file transfer. Full encrypted connection for maximum security. Access files with SSH clients. Ideal for sharing sensitive data."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_marginBottom="10dp"/>
+
+                <!-- Disabled badge -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DISABLED"
+                        android:textColor="@color/text_muted"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.1"
+                        android:background="@drawable/bg_tag_muted"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
+
+    <!-- Bottom Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border"/>
+
+    <!-- Save Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        android:padding="12dp">
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="SAVE SETTINGS"
+            android:textColor="#FFFFFF"
+            android:letterSpacing="0.1"
+            android:textSize="13sp"
+            android:background="@drawable/bg_copy_btn"
+            android:stateListAnimator="@null"/>
+    </LinearLayout>
+
 </LinearLayout>

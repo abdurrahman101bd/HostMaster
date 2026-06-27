@@ -1,82 +1,68 @@
 package com.ar.hostmaster;
 
-import android.graphics.Color;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.*;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private static final String GITHUB_URL = "https://github.com/abdurrahman101bd/host_master/issues";
+
     private AppState state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
         state = AppState.get(this);
+        ThemeHelper.apply(state.getTheme());
+        setContentView(R.layout.activity_settings);
+        ThemeHelper.applyWithStatusBar(this, state.getTheme());
 
         updateThemeSub();
         updatePortSub();
+        updateTimeoutSub();
 
-        // Row clicks
-        findViewById(R.id.row_theme).setOnClickListener(v -> showThemeDialog());
-        findViewById(R.id.row_port).setOnClickListener(v -> showPortDialog());
-        findViewById(R.id.row_language).setOnClickListener(v -> 
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show());
-        findViewById(R.id.row_timeout).setOnClickListener(v -> 
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show());
-        findViewById(R.id.row_max_conn).setOnClickListener(v -> 
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show());
-        findViewById(R.id.row_privacy).setOnClickListener(v -> 
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show());
-        findViewById(R.id.row_help_faq).setOnClickListener(v -> 
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show());   
-        findViewById(R.id.row_report_bug).setOnClickListener(v -> 
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show());
-     
+        // ── Switches — always ON (logic coming later) ─────────────────────────
         Switch swNotif     = findViewById(R.id.sw_notifications);
         Switch swLocalOnly = findViewById(R.id.sw_local_only);
         Switch swKeepLogs  = findViewById(R.id.sw_keep_logs);
-		// Auto-start switch
-		Switch swAutostart = findViewById(R.id.sw_autostart_settings);
-		swAutostart.setChecked(state.isAutostart());
-		swAutostart.setOnCheckedChangeListener((b, isChecked) -> {
-			state.setAutostart(isChecked);
-			if (isChecked) {
-				Toast.makeText(this, "Auto start enabled", Toast.LENGTH_SHORT).show();
-			}
-		});
+        swNotif.setChecked(true);
+        swLocalOnly.setChecked(true);
+        swKeepLogs.setChecked(true);
+        swNotif.setEnabled(false);
+        swLocalOnly.setEnabled(false);
+        swKeepLogs.setEnabled(false);
 
-        // Set switch states
-        swNotif.setChecked(state.sp_bool("notif", true));
-        swLocalOnly.setChecked(state.sp_bool("local_only", true));
-        swKeepLogs.setChecked(state.sp_bool("keep_logs", false));
+        // Autostart
+        Switch swAutostart = findViewById(R.id.sw_autostart_settings);
+        swAutostart.setChecked(state.isAutostart());
+        swAutostart.setOnCheckedChangeListener((b, on) -> state.setAutostart(on));
 
-        // Switch listeners
-        swNotif.setOnCheckedChangeListener((b, isChecked) -> {
-            state.sp_set("notif", isChecked);
-            if (isChecked) {
-                Toast.makeText(this, "Notifications enabled", Toast.LENGTH_SHORT).show();
-            }
-        });
-        
-        swLocalOnly.setOnCheckedChangeListener((b, isChecked) -> {
-            state.sp_set("local_only", isChecked);
-            if (isChecked) {
-                Toast.makeText(this, "Local only mode enabled", Toast.LENGTH_SHORT).show();
-            }
-        });
-        
-        swKeepLogs.setOnCheckedChangeListener((b, isChecked) -> {
-            state.sp_set("keep_logs", isChecked);
-            if (isChecked) {
-                Toast.makeText(this, "Logs will be saved", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        // ── Row clicks ────────────────────────────────────────────────────────
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
+        findViewById(R.id.row_theme).setOnClickListener(v -> showThemeDialog());
+        findViewById(R.id.row_port).setOnClickListener(v -> showPortDialog());
+        findViewById(R.id.row_timeout).setOnClickListener(v -> showTimeoutDialog());
+        findViewById(R.id.row_privacy).setOnClickListener(v ->
+                startActivity(new Intent(this, PrivacyActivity.class)));
+        findViewById(R.id.row_help_faq).setOnClickListener(v ->
+                startActivity(new Intent(this, HelpActivity.class)));
+        findViewById(R.id.row_report_bug).setOnClickListener(v -> {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB_URL)));
+            } catch (Exception e) {
+                Toast.makeText(this, "Could not open browser", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    // ── Sub-text updaters ─────────────────────────────────────────────────────
 
     private void updateThemeSub() {
         TextView sub = findViewById(R.id.tv_theme_sub);
@@ -92,23 +78,29 @@ public class SettingsActivity extends AppCompatActivity {
         TextView sub = findViewById(R.id.tv_port_sub);
         if (sub == null) return;
         sub.setText("HTTP:" + state.getPort("HTTP")
-                + " · FTP:" + state.getPort("FTP")
-                + " · SSH:" + state.getPort("SSH"));
+                + "  FTP:" + state.getPort("FTP")
+                + "  SFTP:" + state.getPort("SFTP")
+                + "  SSH:" + state.getPort("SSH"));
     }
 
-    // ── Custom Theme Dialog with Icons ───────────────────────────────────────
+    private void updateTimeoutSub() {
+        TextView sub = findViewById(R.id.tv_timeout_sub);
+        if (sub == null) return;
+        int t = state.sp_int("timeout_sec", 300);
+        sub.setText(t + " seconds");
+    }
+
+    private void applyLanguage(String langKey) {
+        android.content.res.Configuration config =
+                new android.content.res.Configuration(getResources().getConfiguration());
+        config.setLocale(new Locale("en".equals(langKey) ? "en" : "bn"));
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        recreate();
+    }
+    
+    // ── Theme Dialog ──────────────────────────────────────────────────────────
+
     private void showThemeDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-
-        // Custom title
-        TextView title = new TextView(this);
-        title.setText("SELECT THEME");
-        title.setTextColor(getResources().getColor(R.color.accent, getTheme()));
-        title.setTextSize(12f);
-        title.setLetterSpacing(0.15f);
-        title.setPadding(dp(20), dp(18), dp(20), dp(8));
-        title.setTypeface(null, android.graphics.Typeface.BOLD);
-
         String[] themes = {"Light Mode", "Dark Mode", "Follow System"};
         int[] icons = {R.drawable.ic_sun, R.drawable.ic_moon, R.drawable.ic_mobile};
         String cur = state.getTheme();
@@ -122,22 +114,17 @@ public class SettingsActivity extends AppCompatActivity {
             final int idx = i;
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
             row.setPadding(dp(8), dp(14), dp(8), dp(14));
             row.setClickable(true);
             row.setFocusable(true);
+            if (i == curIdx) row.setBackgroundResource(R.drawable.bg_proto_card_selected);
 
-            if (i == curIdx) {
-                row.setBackgroundResource(R.drawable.bg_proto_card_selected);
-            }
-
-            // Icon ImageView - বড়サイズ
             ImageView icon = new ImageView(this);
             icon.setImageResource(icons[i]);
             icon.setColorFilter(getResources().getColor(R.color.accent, getTheme()));
             icon.setPadding(0, 0, dp(14), 0);
-            LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(dp(32), dp(32));
-            icon.setLayoutParams(iconParams);
+            icon.setLayoutParams(new LinearLayout.LayoutParams(dp(32), dp(32)));
 
             TextView label = new TextView(this);
             label.setText(themes[i]);
@@ -146,17 +133,15 @@ public class SettingsActivity extends AppCompatActivity {
             label.setLayoutParams(new LinearLayout.LayoutParams(0,
                     LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
+            row.addView(icon);
+            row.addView(label);
+
             if (i == curIdx) {
                 TextView tick = new TextView(this);
                 tick.setText("✓");
                 tick.setTextColor(getResources().getColor(R.color.accent, getTheme()));
                 tick.setTextSize(16f);
-                row.addView(icon);
-                row.addView(label);
                 row.addView(tick);
-            } else {
-                row.addView(icon);
-                row.addView(label);
             }
 
             container.addView(row);
@@ -179,41 +164,27 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
 
-        android.app.AlertDialog dialog = builder
-                .setCustomTitle(title)
-                .setView(container)
-                .create();
-        if (dialog.getWindow() != null)
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.bg_card);
-        dialog.show();
+        showPickerDialog("SELECT THEME", container);
     }
 
-    // ── Custom Port Dialog ───────────────────────────────────────────────────
+    // ── Port Dialog ───────────────────────────────────────────────────────────
+
     private void showPortDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        String[] protos = {"HTTP", "FTP", "SFTP", "SSH"};
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundResource(R.drawable.bg_card);
         root.setPadding(dp(20), dp(16), dp(20), dp(16));
 
-        // Title
-        TextView title = new TextView(this);
-        title.setText("CHANGE PORTS");
-        title.setTextColor(getResources().getColor(R.color.accent, getTheme()));
-        title.setTextSize(12f);
-        title.setLetterSpacing(0.15f);
-        title.setTypeface(null, android.graphics.Typeface.BOLD);
-        title.setPadding(0, 0, 0, dp(16));
+        TextView title = makeDialogTitle("CHANGE PORTS");
         root.addView(title);
 
-        String[] protos = {"HTTP", "FTP", "SSH"};
-        EditText[] fields = new EditText[3];
-
+        EditText[] fields = new EditText[protos.length];
         for (int i = 0; i < protos.length; i++) {
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
             row.setPadding(0, dp(6), 0, dp(6));
 
             TextView lbl = new TextView(this);
@@ -228,7 +199,7 @@ public class SettingsActivity extends AppCompatActivity {
             fields[i].setText(String.valueOf(state.getPort(protos[i])));
             fields[i].setTextColor(getResources().getColor(R.color.text_primary, getTheme()));
             fields[i].setTextSize(14f);
-            fields[i].setBackgroundResource(R.drawable.bg_stat_card);
+            fields[i].setBackgroundResource(R.drawable.bg_input);
             fields[i].setPadding(dp(10), dp(8), dp(10), dp(8));
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,
                     LinearLayout.LayoutParams.WRAP_CONTENT, 1);
@@ -250,52 +221,171 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        // Buttons row
-        View divider = new View(this);
-        divider.setBackgroundColor(getResources().getColor(R.color.border, getTheme()));
-        LinearLayout.LayoutParams dlp2 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 1);
-        dlp2.setMargins(0, dp(16), 0, dp(12));
-        divider.setLayoutParams(dlp2);
-        root.addView(divider);
+        addDialogDivider(root);
 
-        LinearLayout btnRow = new LinearLayout(this);
-        btnRow.setOrientation(LinearLayout.HORIZONTAL);
-        btnRow.setGravity(android.view.Gravity.END);
+        final EditText[] ff = fields;
+        final String[] pp = protos;
+        android.app.AlertDialog[] ref = {null};
 
-        final EditText[] finalFields = fields;
-        final String[]   finalProtos = protos;
-
-        android.app.AlertDialog[] dialogRef = new android.app.AlertDialog[1];
-
-        TextView btnCancel = makeDlgBtn("CANCEL", getResources().getColor(R.color.text_muted, getTheme()));
-        btnCancel.setOnClickListener(v -> dialogRef[0].dismiss());
-        LinearLayout.LayoutParams btnLp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        btnLp.setMarginEnd(dp(16));
-        btnCancel.setLayoutParams(btnLp);
-
-        TextView btnSave = makeDlgBtn("SAVE", getResources().getColor(R.color.accent, getTheme()));
-        btnSave.setOnClickListener(v -> {
-            for (int i = 0; i < finalProtos.length; i++) {
-                try {
-                    int port = Integer.parseInt(finalFields[i].getText().toString().trim());
-                    if (port >= 1 && port <= 65535) state.setPort(finalProtos[i], port);
-                } catch (NumberFormatException ignored) {}
+        LinearLayout btnRow = makeBtnRow(
+            "CANCEL", v -> ref[0].dismiss(),
+            "SAVE",   v -> {
+                for (int i = 0; i < pp.length; i++) {
+                    try {
+                        int port = Integer.parseInt(ff[i].getText().toString().trim());
+                        if (port >= 1 && port <= 65535) state.setPort(pp[i], port);
+                    } catch (NumberFormatException ignored) {}
+                }
+                updatePortSub();
+                Toast.makeText(this, "Ports saved", Toast.LENGTH_SHORT).show();
+                ref[0].dismiss();
             }
-            updatePortSub();
-            Toast.makeText(this, "Ports saved", Toast.LENGTH_SHORT).show();
-            dialogRef[0].dismiss();
-        });
-
-        btnRow.addView(btnCancel);
-        btnRow.addView(btnSave);
+        );
         root.addView(btnRow);
 
-        dialogRef[0] = builder.setView(root).create();
-        if (dialogRef[0].getWindow() != null)
-            dialogRef[0].getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialogRef[0].show();
+        ref[0] = new android.app.AlertDialog.Builder(this)
+                .setView(root).create();
+        if (ref[0].getWindow() != null)
+            ref[0].getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        ref[0].show();
+    }
+
+    // ── Timeout Dialog ────────────────────────────────────────────────────────
+    // Simple preset picker: 60s / 5min / 15min / 30min / Never
+
+    private void showTimeoutDialog() {
+        String[] labels = {"1 minute", "5 minutes", "15 minutes", "30 minutes", "Never"};
+        int[]    values = {60, 300, 900, 1800, 0};
+        int curVal = state.sp_int("timeout_sec", 300);
+        int curIdx = 1;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == curVal) { curIdx = i; break; }
+        }
+
+        android.app.AlertDialog[] ref = {null};
+        LinearLayout container = buildPickerContainer(labels, null, curIdx, idx -> {
+            state.sp_int_set("timeout_sec", values[idx]);
+            updateTimeoutSub();
+            if (ref[0] != null) ref[0].dismiss();
+        });
+
+        ref[0] = showPickerDialog("CONNECTION TIMEOUT", container);
+    }
+
+    // ── Generic picker dialog builder ─────────────────────────────────────────
+
+    interface OnPick { void pick(int idx); }
+
+    private LinearLayout buildPickerContainer(String[] names, int[] iconRes, int curIdx, OnPick onPick) {
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(dp(12), 0, dp(12), dp(12));
+
+        for (int i = 0; i < names.length; i++) {
+            final int idx = i;
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setPadding(dp(12), dp(14), dp(12), dp(14));
+            row.setClickable(true);
+            row.setFocusable(true);
+            if (i == curIdx) row.setBackgroundResource(R.drawable.bg_proto_card_selected);
+
+            if (iconRes != null) {
+                ImageView iv = new ImageView(this);
+                iv.setImageResource(iconRes[i]);
+                iv.setColorFilter(getResources().getColor(R.color.accent, getTheme()));
+                iv.setLayoutParams(new LinearLayout.LayoutParams(dp(28), dp(28)));
+                iv.setPadding(0, 0, dp(12), 0);
+                row.addView(iv);
+            }
+
+            TextView label = new TextView(this);
+            label.setText(names[i]);
+            label.setTextColor(getResources().getColor(R.color.text_primary, getTheme()));
+            label.setTextSize(14f);
+            label.setLayoutParams(new LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+            row.addView(label);
+
+            if (i == curIdx) {
+                TextView tick = new TextView(this);
+                tick.setText("✓");
+                tick.setTextColor(getResources().getColor(R.color.accent, getTheme()));
+                tick.setTextSize(16f);
+                row.addView(tick);
+            }
+
+            container.addView(row);
+            if (i < names.length - 1) {
+                View div = new View(this);
+                div.setBackgroundColor(getResources().getColor(R.color.border, getTheme()));
+                div.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, 1));
+                container.addView(div);
+            }
+
+            row.setOnClickListener(v -> onPick.pick(idx));
+        }
+        return container;
+    }
+
+    private android.app.AlertDialog showPickerDialog(String titleText, LinearLayout container) {
+        TextView title = makeDialogTitle(titleText);
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setCustomTitle(title)
+                .setView(container)
+                .create();
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.bg_card);
+        dialog.show();
+        return dialog;
+    }
+
+    // ── UI helpers ────────────────────────────────────────────────────────────
+
+    private TextView makeDialogTitle(String text) {
+        TextView tv = new TextView(this);
+        tv.setText(text);
+        tv.setTextColor(getResources().getColor(R.color.accent, getTheme()));
+        tv.setTextSize(12f);
+        tv.setLetterSpacing(0.15f);
+        tv.setPadding(dp(20), dp(18), dp(20), dp(8));
+        tv.setTypeface(null, Typeface.BOLD);
+        return tv;
+    }
+
+    private void addDialogDivider(LinearLayout root) {
+        View div = new View(this);
+        div.setBackgroundColor(getResources().getColor(R.color.border, getTheme()));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 1);
+        lp.setMargins(0, dp(16), 0, dp(12));
+        div.setLayoutParams(lp);
+        root.addView(div);
+    }
+
+    private LinearLayout makeBtnRow(String cancelText, View.OnClickListener cancelClick,
+                                     String okText,     View.OnClickListener okClick) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.END);
+
+        TextView btnCancel = makeDlgBtn(cancelText,
+                getResources().getColor(R.color.text_muted, getTheme()));
+        btnCancel.setOnClickListener(cancelClick);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMarginEnd(dp(16));
+        btnCancel.setLayoutParams(lp);
+
+        TextView btnOk = makeDlgBtn(okText,
+                getResources().getColor(R.color.accent, getTheme()));
+        btnOk.setOnClickListener(okClick);
+
+        row.addView(btnCancel);
+        row.addView(btnOk);
+        return row;
     }
 
     private TextView makeDlgBtn(String text, int color) {
@@ -304,7 +394,7 @@ public class SettingsActivity extends AppCompatActivity {
         tv.setTextColor(color);
         tv.setTextSize(12f);
         tv.setLetterSpacing(0.1f);
-        tv.setTypeface(null, android.graphics.Typeface.BOLD);
+        tv.setTypeface(null, Typeface.BOLD);
         tv.setPadding(dp(12), dp(8), dp(12), dp(8));
         tv.setClickable(true);
         tv.setFocusable(true);

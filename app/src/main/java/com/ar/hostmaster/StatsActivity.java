@@ -13,9 +13,10 @@ public class StatsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
-        
         appState = AppState.get(this);
+        ThemeHelper.apply(appState.getTheme());
+        setContentView(R.layout.activity_stats);
+        ThemeHelper.applyWithStatusBar(this, appState.getTheme());
         
         // Initialize views
         tvTotalReq = findViewById(R.id.tv_total_req);

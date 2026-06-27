@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <!-- Toolbar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:background="@color/surface">
+
+        <LinearLayout
+            android:id="@+id/btn_back"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_back_btn"
+            android:gravity="center"
+            android:layout_marginEnd="12dp">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_back"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SFTP CONFIGURE"
+                android:textColor="@color/accent"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Secure File Transfer Protocol"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_proto_card_selected"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_ftps"
+                android:tint="@color/accent"
+                android:layout_marginEnd="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SFTP"
+                android:textColor="@color/accent"
+                android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@color/border"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- ── INFO CARD ─────────────────────────────────────────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_preview_box"
+                android:padding="14dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tv_info_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/accent"
+                    android:textSize="11sp"
+                    android:lineSpacingMultiplier="1.4"/>
+            </LinearLayout>
+
+            <!-- ── ROOT FOLDER ───────────────────────────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ROOT FOLDER"
+                android:textColor="@color/text_muted"
+                android:textSize="9sp"
+                android:letterSpacing="0.2"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:id="@+id/row_select_folder"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_folder"
+                        android:tint="@color/accent"
+                        android:layout_marginEnd="14dp"/>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Select Root Folder"
+                            android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="SFTP clients will browse from this folder"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Selected folder display -->
+            <LinearLayout
+                android:id="@+id/path_display"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_preview_box"
+                android:padding="12dp"
+                android:layout_marginBottom="14dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_folder"
+                    android:tint="@color/accent"/>
+
+                <TextView
+                    android:id="@+id/tv_selected_path"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    android:singleLine="true"
+                    android:ellipsize="start"/>
+
+                <TextView
+                    android:id="@+id/btn_clear_selection"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:gravity="center"
+                    android:text="✕"
+                    android:textColor="@color/text_muted"
+                    android:textSize="14sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+
+            <!-- ── SERVER SETTINGS ───────────────────────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SERVER SETTINGS"
+                android:textColor="@color/text_muted"
+                android:textSize="9sp"
+                android:letterSpacing="0.2"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:layout_marginBottom="10dp">
+
+                <!-- Port -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_port"
+                        android:tint="@color/accent"
+                        android:layout_marginEnd="14dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Port"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"/>
+
+                    <EditText
+                        android:id="@+id/et_port"
+                        android:layout_width="80dp"
+                        android:layout_height="36dp"
+                        android:inputType="number"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_input"
+                        android:gravity="center"
+                        android:padding="6dp"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border"/>
+
+                <!-- Read Only -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_eye"
+                        android:tint="@color/accent"
+                        android:layout_marginEnd="14dp"/>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Read Only"
+                            android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Clients can only download, not upload or delete"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <Switch android:id="@+id/sw_read_only"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ── ACCESS CONTROL ────────────────────────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACCESS CONTROL"
+                android:textColor="@color/text_muted"
+                android:textSize="9sp"
+                android:letterSpacing="0.2"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:layout_marginBottom="10dp">
+
+                <!-- Anonymous -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_anonymous"
+                        android:tint="@color/accent"
+                        android:layout_marginEnd="14dp"/>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Allow Anonymous Login"
+                            android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Anyone can connect without credentials"
+                            android:textColor="@color/text_muted" android:textSize="11sp"/>
+                    </LinearLayout>
+                    <Switch android:id="@+id/sw_anonymous"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border"/>
+
+                <!-- Auth fields — always visible, greyed when anonymous on -->
+                <LinearLayout
+                    android:id="@+id/auth_fields"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="LOGIN CREDENTIALS"
+                        android:textColor="@color/text_muted"
+                        android:textSize="9sp"
+                        android:letterSpacing="0.2"
+                        android:layout_marginBottom="10dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="USERNAME" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.2" android:layout_marginBottom="4dp"/>
+                    <EditText android:id="@+id/et_username"
+                        android:layout_width="match_parent" android:layout_height="44dp"
+                        android:hint="Enter username…" android:inputType="text"
+                        android:textSize="13sp" android:textColor="@color/text_primary"
+                        android:background="@drawable/bg_input" android:padding="10dp"
+                        android:layout_marginBottom="10dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="PASSWORD" android:textColor="@color/text_muted"
+                        android:textSize="8sp" android:letterSpacing="0.2" android:layout_marginBottom="4dp"/>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="44dp"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:background="@drawable/bg_input">
+                        <EditText android:id="@+id/et_password"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:hint="Enter password…"
+                            android:inputType="textPassword" android:textSize="13sp"
+                            android:textColor="@color/text_primary" android:background="@null"
+                            android:paddingStart="10dp"/>
+                        <ImageView
+                            android:id="@+id/btn_toggle_pass_vis"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_visibility_off"
+                            android:tint="@color/accent"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ── COMING SOON — SSH Terminal ────────────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TERMINAL ACCESS"
+                android:textColor="@color/text_muted"
+                android:textSize="9sp"
+                android:letterSpacing="0.2"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="10dp"
+                android:alpha="0.5">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_back"
+                    android:tint="@color/text_muted"
+                    android:layout_marginEnd="14dp"/>
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="SSH Terminal (via Termux)"
+                        android:textColor="@color/text_primary" android:textSize="14sp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Coming soon — full terminal access over SSH"
+                        android:textColor="@color/text_muted" android:textSize="11sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SOON"
+                    android:textColor="@color/text_muted"
+                    android:textSize="9sp"
+                    android:background="@drawable/bg_preview_box"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:letterSpacing="0.1"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Save button fixed at bottom -->
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@color/border"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        android:padding="12dp">
+
+        <Button android:id="@+id/btn_save"
+            android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="SAVE SFTP SETTINGS" android:textColor="#FFFFFF"
+            android:letterSpacing="0.1" android:textSize="13sp"
+            android:background="@drawable/bg_copy_btn"
+            android:stateListAnimator="@null"/>
+    </LinearLayout>
+
+</LinearLayout>

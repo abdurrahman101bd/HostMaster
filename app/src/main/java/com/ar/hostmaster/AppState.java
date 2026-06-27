@@ -129,6 +129,18 @@ public class AppState {
             .apply();
     }
 
-    public boolean sp_bool(String key, boolean def) { return sp.getBoolean(key, def); }
-    public void    sp_set(String key, boolean val)  { sp.edit().putBoolean(key, val).apply(); }
+    // ── Clear all ─────────────────────────────────────────────────────────────
+    public void clearAll() { sp.edit().clear().apply(); }
+
+    public boolean sp_bool(String key, boolean def)    { return sp.getBoolean(key, def); }
+    public void    sp_set(String key, boolean val)     { sp.edit().putBoolean(key, val).apply(); }
+
+    public String  sp_str(String key, String def)      { return sp.getString(key, def); }
+    public void    sp_str_set(String key, String val)  { sp.edit().putString(key, val).apply(); }
+
+    public int     sp_int(String key, int def)         { return sp.getInt(key, def); }
+    public void    sp_int_set(String key, int val)     { sp.edit().putInt(key, val).apply(); }
+
+    public long sp_long(String key, long def)     { return sp.getLong(key, def); }
+    public void sp_long_set(String key, long val) { sp.edit().putLong(key, val).apply(); }
 }

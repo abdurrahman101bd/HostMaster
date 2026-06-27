@@ -31,9 +31,33 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean serverRunning = false;
     private long startTime = 0;
+
+    // Receives broadcast when notification STOP is tapped
+    private final BroadcastReceiver stopReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(android.content.Context ctx, Intent intent) {
+            if (ServerService.ACTION_STOPPED.equals(intent.getAction())) {
+                // Server was stopped externally (notification) — sync UI
+                if (serverRunning) {
+                    serverRunning = false;
+                    startTime = 0;
+                    stopTicker();
+                    updateUrlAndPortForIdle();
+                    tvClients.setText("0");
+                    tvUptime.setText("00:00");
+                    tvChartVal.setText("0 KB/s");
+                    ivQr.setImageBitmap(null);
+                    powerBtn.setState(false);
+                }
+            }
+        }
+    };
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private static final int REQ_CONFIG      = 101;
+    private static final int REQ_FTP_CONFIG  = 102;
+    private static final int REQ_SSH_CONFIG  = 103;
+    private static final int REQ_SFTP_CONFIG = 104;
     private static final int REQ_MANAGE_STOR = 202;
 
     @Override
@@ -42,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         state = AppState.get(this);
         ThemeHelper.apply(state.getTheme());
         setContentView(R.layout.activity_main);
+        ThemeHelper.applyWithStatusBar(this, state.getTheme());
 
         bindViews();
         setupClicks();
@@ -103,8 +128,31 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_globe).setOnClickListener(protoClick);
         findViewById(R.id.ctrl_proto).setOnClickListener(protoClick);
 
-        findViewById(R.id.ctrl_config).setOnClickListener(v ->
-                startActivityForResult(new Intent(this, ConfigureActivity.class), REQ_CONFIG));
+        findViewById(R.id.ctrl_config).setOnClickListener(v -> {
+            if (serverRunning) {
+                Toast.makeText(this, "Stop server to change settings", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String proto = state.getProtocol();
+            switch (proto) {
+                case "FTP":
+                    startActivityForResult(
+                            new Intent(this, FtpConfigureActivity.class), REQ_FTP_CONFIG);
+                    break;
+                case "SSH":
+                    startActivityForResult(
+                            new Intent(this, SshConfigureActivity.class), REQ_SSH_CONFIG);
+                    break;
+                case "SFTP":
+                    startActivityForResult(
+                            new Intent(this, SftpConfigureActivity.class), REQ_SFTP_CONFIG);
+                    break;
+                default: // HTTP
+                    startActivityForResult(
+                            new Intent(this, ConfigureActivity.class), REQ_CONFIG);
+                    break;
+            }
+        });
 
         findViewById(R.id.ctrl_logs).setOnClickListener(v ->
                 startActivity(new Intent(this, LogsActivity.class)));
@@ -131,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         ContextCompat.startForegroundService(this, i);
         serverRunning = true;
         startTime = System.currentTimeMillis();
+        state.sp_long_set("server_start_time", startTime);
         state.setRunning(true);
 
         updateServerUrlAndPort(); 
@@ -145,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         startService(i);
         serverRunning = false;
         startTime = 0;
+        state.sp_long_set("server_start_time", 0);
         state.setRunning(false);
         state.setLocalUrl("");
         stopTicker();
@@ -171,7 +221,9 @@ public class MainActivity extends AppCompatActivity {
             serverRunning = true;
             tvUrl.setText(savedUrl);
             generateQr(savedUrl);
-            startTime = System.currentTimeMillis();
+            // Restore original start time so uptime is accurate across app restarts
+            long saved = state.sp_long("server_start_time", 0);
+            startTime = (saved > 0) ? saved : System.currentTimeMillis();
             startTicker();
             powerBtn.setState(true);
 
@@ -216,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
         switch (proto) {
             case "FTP": return "ftp";
             case "SSH": return "ssh";
+            case "SFTP": return "sftp";
             default: return "http";
         }
     }
@@ -224,6 +277,8 @@ public class MainActivity extends AppCompatActivity {
         switch (proto) {
             case "SSH":
                 return "ssh android@" + ip + " -p " + port;
+            case "SFTP":
+                return "sftp android@" + ip + " -p " + port;
             case "FTP":
                 return "ftp://" + ip + ":" + port;
             default:
@@ -235,6 +290,8 @@ public class MainActivity extends AppCompatActivity {
         switch (proto) {
             case "SSH":
                 return "ssh android@" + ip + " -p " + port;
+            case "SFTP":
+                return "sftp android@" + ip + " -p " + port;
             case "FTP":
                 return "ftp://" + ip + ":" + port;
             default:
@@ -246,6 +303,8 @@ public class MainActivity extends AppCompatActivity {
         switch (proto) {
             case "SSH":
                 return "ssh android@—.—.—.— -p " + port;
+            case "SFTP":
+                return "sftp android@—.—.—.— -p " + port;
             case "FTP":
                 return "ftp://—.—.—.—:" + port;
             default:
@@ -283,6 +342,12 @@ public class MainActivity extends AppCompatActivity {
                 iconRes = R.drawable.ic_ssh;
                 if (tvQrTitle != null) tvQrTitle.setText("SSH TERMINAL");
                 if (tvQrDesc != null) tvQrDesc.setText("Connect via terminal: ssh android@ip -p port (Default user: android)");
+                break;
+            case "SFTP":
+                label = "SFTP";
+                iconRes = R.drawable.ic_ftps;
+                if (tvQrTitle != null) tvQrTitle.setText("SFTP ACCESS");
+                if (tvQrDesc != null) tvQrDesc.setText("Connect via terminal: sftp android@ip -p port (Default user: android)");
                 break;
             default:
                 label = "HTTP";
@@ -370,12 +435,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         String proto = state.getProtocol();
-        updateProtoUI(proto); 
-        if (!serverRunning) {
+        updateProtoUI(proto);
+
+        // Register broadcast receiver for external server stop (notification)
+        IntentFilter filter = new IntentFilter(ServerService.ACTION_STOPPED);
+        registerReceiver(stopReceiver, filter);
+
+        // Sync state in case server was stopped while app was in background
+        boolean actuallyRunning = state.isRunning();
+        if (serverRunning && !actuallyRunning) {
+            // Was running in UI but service already stopped
+            serverRunning = false;
+            startTime = 0;
+            stopTicker();
+            updateUrlAndPortForIdle();
+            tvClients.setText("0");
+            tvUptime.setText("00:00");
+            tvChartVal.setText("0 KB/s");
+            ivQr.setImageBitmap(null);
+            powerBtn.setState(false);
+        } else if (!serverRunning) {
             updateUrlAndPortForIdle();
         } else {
             updatePortDisplay();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try { unregisterReceiver(stopReceiver); } catch (Exception ignored) {}
     }
 
     @Override protected void onDestroy() { stopTicker(); super.onDestroy(); }
@@ -383,6 +472,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int req, int res, Intent data) {
         super.onActivityResult(req, res, data);
+
+        if ((req == REQ_FTP_CONFIG || req == REQ_SSH_CONFIG || req == REQ_SFTP_CONFIG) && res == RESULT_OK && serverRunning) {
+            stopServer(); startServer();
+        }
 
         if (req == REQ_CONFIG && res == RESULT_OK && serverRunning) {
             stopServer();

@@ -33,6 +33,7 @@ public class WebHostActivity extends AppCompatActivity {
         state = AppState.get(this);
         ThemeHelper.apply(state.getTheme());
         setContentView(R.layout.activity_web_host);
+        ThemeHelper.applyWithStatusBar(this, state.getTheme());
 
         rvFolders = findViewById(R.id.rv_web_folders);
         tvEmpty   = findViewById(R.id.tv_web_empty);

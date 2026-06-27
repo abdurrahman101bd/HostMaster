@@ -57,7 +57,8 @@ public class ConfigureActivity extends AppCompatActivity {
         state = AppState.get(this);
         ThemeHelper.apply(state.getTheme());
         setContentView(R.layout.activity_configure);
-
+        ThemeHelper.applyWithStatusBar(this, state.getTheme());
+        
         // Tabs
         tabSource    = findViewById(R.id.tab_source);
         tabWebsite   = findViewById(R.id.tab_website);
@@ -96,7 +97,7 @@ public class ConfigureActivity extends AppCompatActivity {
         swPassword.setChecked(state.isPasswordEnabled());
         etUsername.setText(state.getUsername());
         etPassword.setText(state.getPassword());
-        authFields.setVisibility(state.isPasswordEnabled() ? View.VISIBLE : View.GONE);
+        applyPasswordState(state.isPasswordEnabled());
 
         // Restore active tab based on saved mode
         isWebMode = state.isWebMode();
@@ -144,9 +145,9 @@ public class ConfigureActivity extends AppCompatActivity {
         btnRemoveWebFolder.setOnClickListener(v -> removeWebFolder(true));
         btnClearWeb.setOnClickListener(v -> removeWebFolder(true));
 
-        // Password switch
+        // Password switch - now uses applyPasswordState (never hides, just disables)
         swPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            authFields.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            applyPasswordState(isChecked);
         });
 
         // Password visibility toggle with icon change
@@ -181,6 +182,19 @@ public class ConfigureActivity extends AppCompatActivity {
     }
 
     // ── Helper Methods ─────────────────────────────────────────────────────────
+
+    private void applyPasswordState(boolean passwordEnabled) {
+        float alpha = passwordEnabled ? 1f : 0.4f;
+        authFields.setAlpha(alpha);
+        
+        // Disable/enable child views instead of hiding the whole layout
+        etUsername.setEnabled(passwordEnabled);
+        etPassword.setEnabled(passwordEnabled);
+        btnTogglePassVis.setEnabled(passwordEnabled);
+        
+        // Keep visibility always VISIBLE
+        authFields.setVisibility(View.VISIBLE);
+    }
 
     private void updatePasswordVisibilityIcon() {
         if (passVisible) {
@@ -227,9 +241,9 @@ public class ConfigureActivity extends AppCompatActivity {
 
     private void refreshSourcePreview() {
         sourceItemsContainer.removeAllViews();
-        String mode  = state.getSourceMode();
+        String mode = state.getSourceMode();
         boolean hasFolder = "folder".equals(mode) && !state.getFolderPath().isEmpty();
-        boolean hasFiles  = "files".equals(mode)  && !state.getSelectedFiles().isEmpty();
+        boolean hasFiles = "files".equals(mode) && !state.getSelectedFiles().isEmpty();
 
         if (!hasFolder && !hasFiles) {
             tvSourceEmptyHint.setVisibility(View.VISIBLE);
@@ -243,24 +257,33 @@ public class ConfigureActivity extends AppCompatActivity {
         btnClearAllSource.setVisibility(View.VISIBLE);
 
         if (hasFolder) {
-            addSourceChip(state.getFolderPath(), "📁", true);
+            addSourceChip(state.getFolderPath(), true);
         } else {
             for (String p : state.getSelectedFiles()) {
-                addSourceChip(p, "📄", false);
+                addSourceChip(p, false);
             }
         }
     }
 
-    private void addSourceChip(String path, String icon, boolean isFolder) {
+    private void addSourceChip(String path, boolean isFolder) {
         View chip = getLayoutInflater().inflate(R.layout.item_source_chip, sourceItemsContainer, false);
-        TextView tvIcon = chip.findViewById(R.id.tv_chip_icon);
+        ImageView ivIcon = chip.findViewById(R.id.iv_chip_icon);
         TextView tvName = chip.findViewById(R.id.tv_chip_name);
         TextView tvMeta = chip.findViewById(R.id.tv_chip_meta);
-        TextView btnX   = chip.findViewById(R.id.btn_chip_remove);
+        TextView btnX = chip.findViewById(R.id.btn_chip_remove);
 
-        tvIcon.setText(icon);
         tvName.setText(new File(path).getName());
         tvMeta.setText(path);
+
+        if (isFolder) {
+            ivIcon.setImageResource(R.drawable.ic_folder);
+            ivIcon.setColorFilter(getResources().getColor(R.color.accent), PorterDuff.Mode.SRC_IN);
+        } else {
+            int iconRes = FilePickerActivity.FileEntryAdapter.getIconResForFile(path);
+            int tintColor = FilePickerActivity.FileEntryAdapter.getTintColorForFile(path);
+            ivIcon.setImageResource(iconRes);
+            ivIcon.setColorFilter(tintColor, PorterDuff.Mode.SRC_IN);
+        }
 
         btnX.setOnClickListener(v -> {
             if (isFolder) {
@@ -348,43 +371,40 @@ public class ConfigureActivity extends AppCompatActivity {
         // Build file tree (max 20 items to avoid overflow)
         buildFileTree(webDir, webFileTree, 0, 0);
     }
+    
+    private int buildFileTree(File dir, LinearLayout container, int depth, int count) {
+        container.removeAllViews();
+        File[] all = dir.listFiles();
+        if (all == null) return count;
 
-private int buildFileTree(File dir, LinearLayout container, int depth, int count) {
-    container.removeAllViews();
-    File[] all = dir.listFiles();
-    if (all == null) return count;
-    
-    Arrays.sort(all, (a, b) -> {
-        if (a.isDirectory() != b.isDirectory())
-            return a.isDirectory() ? -1 : 1;
-        return a.getName().compareToIgnoreCase(b.getName());
-    });
-    
-    for (File f : all) {
-        if (count >= 20) {
-            addTreeMoreHint(container, "…more files");
-            break;
-        }
-        View row = getLayoutInflater().inflate(R.layout.item_tree_entry, container, false);
+        Arrays.sort(all, (a, b) -> {
+            if (a.isDirectory() != b.isDirectory())
+                return a.isDirectory() ? -1 : 1;
+            return a.getName().compareToIgnoreCase(b.getName());
+        });
         
-        ImageView ivTreeIcon = row.findViewById(R.id.iv_tree_icon); 
-        TextView tvTreeName = row.findViewById(R.id.tv_tree_name);
-        row.setPadding(depth * 16, 0, 0, 0);
-        
-        if (f.isDirectory()) {
-            ivTreeIcon.setImageResource(R.drawable.ic_folder);
-            ivTreeIcon.setColorFilter(getResources().getColor(R.color.accent), PorterDuff.Mode.SRC_IN);
-        } else {
-            int iconRes = FilePickerActivity.FileEntryAdapter.getIconResForFile(f.getName());
-            ivTreeIcon.setImageResource(iconRes);
-            ivTreeIcon.setColorFilter(null);
+        for (File f : all) {
+            View row = getLayoutInflater().inflate(R.layout.item_tree_entry, container, false);
+
+            ImageView ivTreeIcon = row.findViewById(R.id.iv_tree_icon); 
+            TextView tvTreeName = row.findViewById(R.id.tv_tree_name);
+            row.setPadding(depth * 16, 0, 0, 0);
+
+            if (f.isDirectory()) {
+                ivTreeIcon.setImageResource(R.drawable.ic_folder);
+                ivTreeIcon.setColorFilter(getResources().getColor(R.color.accent), PorterDuff.Mode.SRC_IN);
+            } else {
+                int iconRes = FilePickerActivity.FileEntryAdapter.getIconResForFile(f.getName());
+                int tintColor = FilePickerActivity.FileEntryAdapter.getTintColorForFile(f.getName());
+                ivTreeIcon.setImageResource(iconRes);
+                ivTreeIcon.setColorFilter(tintColor, PorterDuff.Mode.SRC_IN);
+            }
+            tvTreeName.setText(f.getName());
+            container.addView(row);
+            count++;
         }
-        tvTreeName.setText(f.getName());
-        container.addView(row);
-        count++;
+        return count;
     }
-    return count;
-}
 
     private void addTreeMoreHint(LinearLayout container, String msg) {
         TextView tv = new TextView(this);

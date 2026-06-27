@@ -72,7 +72,27 @@
             android:exported="false"
             android:screenOrientation="portrait" />
            
+        <activity android:name=".FtpConfigureActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".SftpConfigureActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".SshConfigureActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity android:name=".WebHostActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".PrivacyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".HelpActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
