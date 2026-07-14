@@ -146,8 +146,12 @@ public class FileServer extends NanoHTTPD {
             return serveRange(f, mime, range);
         }
 
-        boolean inline = isVideo(nl) || isAudio(nl) || isImage(nl)
-                || isWebAsset(nl) || nl.endsWith(".pdf") || nl.endsWith(".txt");
+        // In web mode: ALL files must be inline so browser can load CSS/JS/fonts/images
+        // Without this, sub-folder assets (style.css, script.js) fail to apply
+        boolean inline = webMode || isVideo(nl) || isAudio(nl) || isImage(nl)
+                || isWebAsset(nl) || nl.endsWith(".pdf") || nl.endsWith(".txt")
+                || nl.endsWith(".ttf") || nl.endsWith(".woff") || nl.endsWith(".woff2")
+                || nl.endsWith(".otf") || nl.endsWith(".eot");
 
         return serveFile(f, mime, inline);
     }
@@ -309,13 +313,16 @@ public class FileServer extends NanoHTTPD {
     // ── Indicator pill ────────────────────────────────────────────────────────
 
     private String indicator(String nl) {
-        if (isVideo(nl))    return "<span class='ind play'>▶ PLAY</span>";
-        if (isAudio(nl))    return "<span class='ind play'>♪ PLAY</span>";
-        if (isImage(nl))    return "<span class='ind view'>🖼 VIEW</span>";
-        if (nl.endsWith(".pdf")) return "<span class='ind view'>📄 VIEW</span>";
+        if (isVideo(nl))    return "<span class='ind play'>▶ Play</span>";
+        if (isAudio(nl))    return "<span class='ind play'>♫ Play</span>";
+        if (isImage(nl))    return "<span class='ind view'>⊙ View</span>";
+        if (nl.endsWith(".pdf")) return "<span class='ind view'>⊡ View</span>";
         if (nl.endsWith(".html") || nl.endsWith(".htm"))
-                            return "<span class='ind run'>⚡ RUN</span>";
-        return              "<span class='ind dl'>⬇ DL</span>";
+                            return "<span class='ind run'>⚡ Run</span>";
+        if (nl.endsWith(".css"))  return "<span class='ind css'>CSS</span>";
+        if (nl.endsWith(".js"))   return "<span class='ind js'>JS</span>";
+        if (nl.endsWith(".json")) return "<span class='ind json'>JSON</span>";
+        return              "<span class='ind dl'>↓ DL</span>";
     }
 
     // ── HTML helpers ──────────────────────────────────────────────────────────
@@ -397,6 +404,12 @@ public class FileServer extends NanoHTTPD {
             + ".ind.run{color:#6d28d9;background:#ede9fe}"
             + "body.dark .ind.run{color:#c4b5fd;background:#2d1f5e}"
             + ".ind.dl{color:var(--muted);background:var(--border)}"
+            + ".ind.css{color:#1572B6;background:#E3F2FD}"
+            + "body.dark .ind.css{color:#64B5F6;background:#0D2137}"
+            + ".ind.js{color:#856404;background:#FFF3CD}"
+            + "body.dark .ind.js{color:#FFD54F;background:#2D1F00}"
+            + ".ind.json{color:#009688;background:#E0F2F1}"
+            + "body.dark .ind.json{color:#80CBC4;background:#00251A}"
 
             + "@media(max-width:480px){.path{max-width:80px}.nm{font-size:13px}}"
             + "</style>";
@@ -439,6 +452,12 @@ public class FileServer extends NanoHTTPD {
         if (nl.endsWith(".pdf"))  return "application/pdf";
         if (nl.endsWith(".txt") || nl.endsWith(".md") || nl.endsWith(".log"))
             return "text/plain; charset=utf-8";
+        // Font files — critical for web hosting
+        if (nl.endsWith(".ttf"))   return "font/ttf";
+        if (nl.endsWith(".otf"))   return "font/otf";
+        if (nl.endsWith(".woff"))  return "font/woff";
+        if (nl.endsWith(".woff2")) return "font/woff2";
+        if (nl.endsWith(".eot"))   return "application/vnd.ms-fontobject";
         return getMimeTypeForFile(name);
     }
 

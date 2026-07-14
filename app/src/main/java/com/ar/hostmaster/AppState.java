@@ -84,6 +84,22 @@ public class AppState {
         return new ArrayList<>(Arrays.asList(raw.split("\\|")));
     }
 
+    // ── Pinned web folders ───────────────────────────────────────────────────
+    public List<String> getWebPinnedFolders() {
+        String raw = sp.getString("web_pinned", "");
+        if (raw.isEmpty()) return new ArrayList<>();
+        return new ArrayList<>(Arrays.asList(raw.split("\\|")));
+    }
+
+    public void setWebPinnedFolders(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            sp.edit().remove("web_pinned").apply();
+        } else {
+            sp.edit().putString("web_pinned",
+                    android.text.TextUtils.join("|", list)).apply();
+        }
+    }
+
     public void setWebFolderList(List<String> list) {
         if (list == null || list.isEmpty()) {
             sp.edit().remove("web_folder_list").apply();
@@ -134,6 +150,9 @@ public class AppState {
 
     public boolean sp_bool(String key, boolean def)    { return sp.getBoolean(key, def); }
     public void    sp_set(String key, boolean val)     { sp.edit().putBoolean(key, val).apply(); }
+    
+    public long sp_long(String key, long def)     { return sp.getLong(key, def); }
+    public void sp_long_set(String key, long val) { sp.edit().putLong(key, val).apply(); }
 
     public String  sp_str(String key, String def)      { return sp.getString(key, def); }
     public void    sp_str_set(String key, String val)  { sp.edit().putString(key, val).apply(); }
@@ -141,6 +160,7 @@ public class AppState {
     public int     sp_int(String key, int def)         { return sp.getInt(key, def); }
     public void    sp_int_set(String key, int val)     { sp.edit().putInt(key, val).apply(); }
 
-    public long sp_long(String key, long def)     { return sp.getLong(key, def); }
-    public void sp_long_set(String key, long val) { sp.edit().putLong(key, val).apply(); }
+    // ── SFTP port default ─────────────────────────────────────────────────────
+    // Override getPort to add SFTP default (2222)
+    // Already handled in main getPort via generic key; no change needed
 }

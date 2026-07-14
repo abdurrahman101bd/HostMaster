@@ -1,171 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:background="@color/bg">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/bg">
 
     <!-- Header -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
-        android:orientation="horizontal" android:gravity="center_vertical"
-        android:paddingStart="14dp" android:paddingEnd="14dp" android:background="@color/surface">
-        
-        <LinearLayout android:id="@+id/btn_back" android:layout_width="36dp"
-            android:layout_height="36dp" android:background="@drawable/bg_back_btn"
-            android:gravity="center" android:layout_marginEnd="12dp">
-            <ImageView android:layout_width="18dp" android:layout_height="18dp" 
+    <LinearLayout android:layout_width="match_parent" 
+        android:layout_height="56dp"
+        android:orientation="horizontal" 
+        android:gravity="center_vertical"
+        android:paddingStart="14dp" 
+        android:paddingEnd="14dp" 
+        android:background="@color/surface">
+
+        <LinearLayout android:id="@+id/btn_back" 
+            android:layout_width="36dp"
+            android:layout_height="36dp" 
+            android:background="@drawable/bg_back_btn"
+            android:gravity="center" 
+            android:layout_marginEnd="12dp">
+            <ImageView android:layout_width="18dp" 
+                android:layout_height="18dp" 
                 android:src="@drawable/ic_back"/>
         </LinearLayout>
-        
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="STATISTICS"
-            android:textColor="@color/accent" android:textSize="13sp"
-            android:textStyle="bold" android:letterSpacing="0.1"/>
+
+        <TextView android:layout_width="0dp" 
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            android:text="STATISTICS"
+            android:textColor="@color/accent" 
+            android:textSize="13sp"
+            android:textStyle="bold" 
+            android:letterSpacing="0.1"/>
     </LinearLayout>
-    
-    <View android:layout_width="match_parent" android:layout_height="1dp" 
+
+    <View android:layout_width="match_parent" 
+        android:layout_height="1dp" 
         android:background="@color/border"/>
 
-    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:scrollbars="none" android:fillViewport="true">
-        
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="16dp">
+    <!-- ScrollView with weight -->
+    <ScrollView android:layout_width="match_parent" 
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none" 
+        android:fillViewport="true">
 
-            <!-- Stats Cards - Equal Height -->
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:layout_marginBottom="16dp">
+        <LinearLayout android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:orientation="vertical" 
+            android:padding="16dp">
+
+            <!-- Stats Cards -->
+            <LinearLayout android:layout_width="match_parent" 
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" 
+                android:layout_marginBottom="16dp">
 
                 <!-- Requests Card -->
-                <LinearLayout android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_weight="1" android:orientation="vertical"
-                    android:background="@drawable/bg_stat_card" android:padding="12dp"
-                    android:gravity="center" android:layout_marginEnd="8dp">
-                    
-                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                <LinearLayout android:layout_width="0dp" 
+                    android:layout_height="120dp"
+                    android:layout_weight="1" 
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_stat_card" 
+                    android:padding="12dp"
+                    android:gravity="center" 
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView android:layout_width="28dp" 
+                        android:layout_height="28dp"
                         android:src="@drawable/ic_download" 
                         android:layout_marginBottom="8dp"/>
-                    
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="REQUESTS" android:textColor="@color/text_muted"
-                        android:textSize="9sp" android:letterSpacing="0.15" 
+
+                    <TextView android:layout_width="wrap_content" 
+                        android:layout_height="wrap_content"
+                        android:text="REQUESTS" 
+                        android:textColor="@color/text_muted"
+                        android:textSize="9sp" 
+                        android:letterSpacing="0.15" 
                         android:layout_marginBottom="4dp"/>
-                    
-                    <TextView android:id="@+id/tv_total_req" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="0"
-                        android:textColor="@color/accent" android:textSize="28sp" 
+
+                    <TextView android:id="@+id/tv_total_req" 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" 
+                        android:text="0"
+                        android:textColor="@color/accent" 
+                        android:textSize="28sp" 
                         android:textStyle="bold"/>
                 </LinearLayout>
 
                 <!-- Data Served Card -->
-                <LinearLayout android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_weight="1" android:orientation="vertical"
-                    android:background="@drawable/bg_stat_card" android:padding="12dp"
-                    android:gravity="center" android:layout_marginStart="8dp">
-                    
-                    <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                <LinearLayout android:layout_width="0dp" 
+                    android:layout_height="120dp"
+                    android:layout_weight="1" 
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_stat_card" 
+                    android:padding="12dp"
+                    android:gravity="center" 
+                    android:layout_marginStart="8dp">
+
+                    <ImageView android:layout_width="28dp" 
+                        android:layout_height="28dp"
                         android:src="@drawable/ic_upload"
                         android:layout_marginBottom="8dp"/>
-                    
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="DATA SERVED" android:textColor="@color/text_muted"
-                        android:textSize="9sp" android:letterSpacing="0.15" 
+
+                    <TextView android:layout_width="wrap_content" 
+                        android:layout_height="wrap_content"
+                        android:text="DATA SERVED" 
+                        android:textColor="@color/text_muted"
+                        android:textSize="9sp" 
+                        android:letterSpacing="0.15" 
                         android:layout_marginBottom="4dp"/>
-                    
-                    <TextView android:id="@+id/tv_total_bytes" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="0 B"
-                        android:textColor="@color/col_green" android:textSize="18sp" 
-                        android:textStyle="bold" android:maxLines="1"/>
+
+                    <TextView android:id="@+id/tv_total_bytes" 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" 
+                        android:text="0 B"
+                        android:textColor="@color/col_green" 
+                        android:textSize="18sp" 
+                        android:textStyle="bold" 
+                        android:maxLines="1"/>
                 </LinearLayout>
             </LinearLayout>
 
             <!-- Info Card -->
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:background="@drawable/bg_card"
-                android:padding="16dp" android:layout_marginBottom="24dp">
+            <LinearLayout android:layout_width="match_parent" 
+                android:layout_height="wrap_content"
+                android:orientation="vertical" 
+                android:background="@drawable/bg_card"
+                android:padding="16dp" 
+                android:layout_marginBottom="24dp">
 
                 <!-- Protocol Row -->
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:paddingTop="10dp" android:paddingBottom="10dp">
-                    
-                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                <LinearLayout android:layout_width="match_parent" 
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" 
+                    android:gravity="center_vertical"
+                    android:paddingTop="10dp" 
+                    android:paddingBottom="10dp">
+
+                    <ImageView android:layout_width="20dp" 
+                        android:layout_height="20dp"
                         android:src="@drawable/ic_bring_your_own_ip"
                         android:layout_marginEnd="16dp"/>
-                    
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:text="Protocol"
-                        android:textColor="@color/text_muted" android:textSize="13sp"/>
-                    
-                    <TextView android:id="@+id/tv_protocol" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="HTTP"
-                        android:textColor="@color/accent" android:textSize="13sp" 
+
+                    <TextView android:layout_width="0dp" 
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" 
+                        android:text="Protocol"
+                        android:textColor="@color/text_muted" 
+                        android:textSize="13sp"/>
+
+                    <TextView android:id="@+id/tv_protocol" 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" 
+                        android:text="HTTP"
+                        android:textColor="@color/accent" 
+                        android:textSize="13sp" 
                         android:textStyle="bold"/>
                 </LinearLayout>
 
-                <View android:layout_width="match_parent" android:layout_height="1dp"
+                <View android:layout_width="match_parent" 
+                    android:layout_height="1dp"
                     android:background="@color/border"/>
 
                 <!-- Port Row -->
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:paddingTop="10dp" android:paddingBottom="10dp">
-                    
-                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                <LinearLayout android:layout_width="match_parent" 
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" 
+                    android:gravity="center_vertical"
+                    android:paddingTop="10dp" 
+                    android:paddingBottom="10dp">
+
+                    <ImageView android:layout_width="20dp" 
+                        android:layout_height="20dp"
                         android:src="@drawable/ic_port"
                         android:layout_marginEnd="16dp"/>
-                    
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:text="Port"
-                        android:textColor="@color/text_muted" android:textSize="13sp"/>
-                    
-                    <TextView android:id="@+id/tv_port" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="8080"
-                        android:textColor="@color/accent" android:textSize="13sp" 
+
+                    <TextView android:layout_width="0dp" 
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" 
+                        android:text="Port"
+                        android:textColor="@color/text_muted" 
+                        android:textSize="13sp"/>
+
+                    <TextView android:id="@+id/tv_port" 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" 
+                        android:text="8080"
+                        android:textColor="@color/accent" 
+                        android:textSize="13sp" 
                         android:textStyle="bold"/>
                 </LinearLayout>
 
-                <View android:layout_width="match_parent" android:layout_height="1dp"
+                <View android:layout_width="match_parent" 
+                    android:layout_height="1dp"
                     android:background="@color/border"/>
 
                 <!-- Source Row -->
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:paddingTop="10dp" android:paddingBottom="10dp">
-                    
-                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                <LinearLayout android:layout_width="match_parent" 
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" 
+                    android:gravity="center_vertical"
+                    android:paddingTop="10dp" 
+                    android:paddingBottom="10dp">
+
+                    <ImageView android:layout_width="20dp" 
+                        android:layout_height="20dp"
                         android:src="@drawable/ic_folder"
                         android:layout_marginEnd="16dp"/>
-                    
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:text="Source"
-                        android:textColor="@color/text_muted" android:textSize="13sp"/>
-                    
-                    <TextView android:id="@+id/tv_folder" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="—"
-                        android:textColor="@color/text_primary" android:textSize="12sp"
-                        android:maxLines="1" android:ellipsize="start"/>
-                </LinearLayout>
-            </LinearLayout>
 
-            <!-- Reset Button Section -->
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:layout_marginTop="8dp"
-                android:layout_marginBottom="24dp">
-                
-                <Button android:id="@+id/btn_reset"
-                    android:layout_width="match_parent" android:layout_height="52dp"
-                    android:text="RESET STATISTICS" 
-                    android:textColor="@color/col_red"
-                    android:textSize="13sp" android:letterSpacing="0.12"
-                    android:background="@drawable/bg_reset_btn"
-                    android:stateListAnimator="@null"/>
-                
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_gravity="center" android:layout_marginTop="14dp"
-                    android:text="This will reset all request and data counters"
-                    android:textColor="@color/text_muted" android:textSize="10sp"
-                    android:letterSpacing="0.08"/>
+                    <TextView android:layout_width="0dp" 
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" 
+                        android:text="Source"
+                        android:textColor="@color/text_muted" 
+                        android:textSize="13sp"/>
+
+                    <TextView android:id="@+id/tv_folder" 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" 
+                        android:text="—"
+                        android:textColor="@color/text_primary" 
+                        android:textSize="12sp"
+                        android:maxLines="1" 
+                        android:ellipsize="start"/>
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
+
+    <!-- Bottom Divider -->
+    <View android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border"/>
+
+    <!-- Reset Button -->
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        android:padding="12dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_reset"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="RESET STATISTICS"
+            android:textColor="#FFFFFF"
+            android:letterSpacing="0.1"
+            android:textSize="13sp"
+            app:backgroundTint="@color/col_red3"
+            app:cornerRadius="9dp"/>
+    </LinearLayout>
+
 </LinearLayout>

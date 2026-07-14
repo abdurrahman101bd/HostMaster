@@ -9,7 +9,10 @@
     <color name="accent">#00D4FF</color>
     <color name="accent2">#0066FF</color>
     <color name="col_red">#FF4444</color>
+    <color name="col_red2">#FF302E</color>
+    <color name="col_red3">#FF0603</color>
     <color name="col_green">#00FF9D</color>
+    <color name="col_yellow">#F7DF1E</color>
     <color name="text_primary">#E8F4FF</color>
     <color name="text_muted">#4A6080</color>
 </resources>

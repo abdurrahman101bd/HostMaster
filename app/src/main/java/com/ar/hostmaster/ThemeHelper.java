@@ -36,7 +36,7 @@ public class ThemeHelper {
         boolean isDark = isCurrentlyDark(activity, theme);
 
         Window window = activity.getWindow();
-        int bgColor = isDark ? Color.parseColor("#0D1120") : Color.parseColor("#FFFFFF");
+        int bgColor = isDark ? Color.parseColor("#0D1420") : Color.parseColor("#FFFFFF");
         window.setStatusBarColor(bgColor);
         window.setNavigationBarColor(bgColor);
 

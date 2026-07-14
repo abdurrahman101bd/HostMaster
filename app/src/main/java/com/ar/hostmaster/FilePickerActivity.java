@@ -596,7 +596,7 @@ public class FilePickerActivity extends AppCompatActivity {
 
 			// --- Microsoft Office & Documents ---
 			if (n.endsWith(".docx") || n.endsWith(".doc") || n.endsWith(".docm") || n.endsWith(".dotx")) 
-				return 0xFF42A5F5; // Word Blue (বা একটু উজ্জ্বল নীল)
+				return 0xFF42A5F5; // Word Blue 
 
 			if (n.endsWith(".xlsx") || n.endsWith(".xls") || n.endsWith(".xlsm") || n.endsWith(".xlsb") || 
 				n.endsWith(".xlr") || n.endsWith(".xltm") || n.endsWith(".xltx") || n.endsWith(".xlw")) 
