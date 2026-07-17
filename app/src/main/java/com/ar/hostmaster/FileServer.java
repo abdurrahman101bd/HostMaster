@@ -109,21 +109,33 @@ public class FileServer extends NanoHTTPD {
             }
 
             if (target.isDirectory()) {
-                // Web mode: auto-serve index.html if present
-                if (webMode) {
-                    File idx = new File(target, "index.html");
-                    if (!idx.exists()) idx = new File(target, "index.htm");
-                    if (idx.exists()) {
-                        LogManager.add("GET", uri, "200-web", ip);
-                        state.addRequest();
-                        return serveFileSmart(idx, session);
-                    }
-                }
-                // Folder mode: always show listing
-                LogManager.add("GET", uri, "200", ip);
-                state.addRequest();
-                return buildDirListing(target, uri, forcedTheme);
-            }
+				// Web mode: auto-serve index.html if present
+				if (webMode) {
+					File idx = new File(target, "index.html");
+					if (!idx.exists()) idx = new File(target, "index.htm");
+					if (idx.exists()) {
+						// Redirect to add trailing slash so relative CSS/JS/asset
+						// paths inside index.html resolve against THIS folder,
+						// not its parent. Without this, sub-folder assets 404.
+						if (!uri.endsWith("/")) {
+							String loc = uri + "/";
+							if (query != null && !query.isEmpty()) loc += "?" + query;
+							Response redirect = newFixedLengthResponse(
+								Response.Status.REDIRECT, MIME_PLAINTEXT, "");
+							redirect.addHeader("Location", loc);
+							LogManager.add("GET", uri, "301-redirect", ip);
+							return redirect;
+						}
+						LogManager.add("GET", uri, "200-web", ip);
+						state.addRequest();
+						return serveFileSmart(idx, session);
+					}
+				}
+				// Folder mode: always show listing
+				LogManager.add("GET", uri, "200", ip);
+				state.addRequest();
+				return buildDirListing(target, uri, forcedTheme);
+			}
 
             LogManager.add("GET", uri, "200", ip);
             state.addRequest();

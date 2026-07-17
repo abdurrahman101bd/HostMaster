@@ -16,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
         ThemeHelper.applyWithStatusBar(this, theme);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, PermissionGateActivity.class));
             finish();
         }, 1800);
     }

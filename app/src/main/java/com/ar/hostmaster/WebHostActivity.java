@@ -254,7 +254,7 @@ public class WebHostActivity extends AppCompatActivity {
             if (path != null && !path.isEmpty() && !folderList.contains(path)) {
                 folderList.add(0, path);
                 saveLists();
-                adapter.notifyItemInserted(0);
+                adapter.notifyDataSetChanged();   
                 rvFolders.scrollToPosition(0);
                 refreshEmpty();
             }
@@ -300,6 +300,16 @@ public class WebHostActivity extends AppCompatActivity {
             for (String p : data) {
                 if (pinnedPaths.contains(p)) pinned.add(p);
                 else                         unpinned.add(p);
+            }
+            String active = activeGetter.get();
+            if (active != null) {
+                if (pinnedPaths.contains(active)) {
+                     pinned.remove(active);
+                     pinned.add(0, active);
+                } else if (unpinned.contains(active)) {
+                    unpinned.remove(active);
+                    unpinned.add(0, active);
+                }
             }
             List<String> result = new ArrayList<>(pinned);
             result.addAll(unpinned);

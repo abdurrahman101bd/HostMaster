@@ -434,6 +434,12 @@ public class ConfigureActivity extends AppCompatActivity {
                 .setAction("UNDO", v -> undoAction.run())
                 .show();
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshWebPreview();
+    }
 
     // ── Activity results ──────────────────────────────────────────────────────
 
@@ -471,4 +477,6 @@ public class ConfigureActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }

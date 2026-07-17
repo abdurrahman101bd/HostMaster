@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         bindViews();
         setupClicks();
-        requestPerms();
         restoreOrAutostart();
     }
 
@@ -496,47 +495,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ── Permissions ───────────────────────────────────────────────────────────
-
-    private void requestPerms() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!android.os.Environment.isExternalStorageManager()) {
-                new android.app.AlertDialog.Builder(this)
-                    .setTitle("Storage Permission Required")
-                    .setMessage(
-                        "To show all file types (zip, apk, db, etc.), " +
-                        "this app needs 'All Files Access' permission.\n\n" +
-                        "Please enable it in the next screen.")
-                    .setPositiveButton("Open Settings", (d, w) -> {
-                        Intent intent = new Intent(
-                            Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                            Uri.parse("package:" + getPackageName()));
-                        startActivityForResult(intent, REQ_MANAGE_STOR);
-                    })
-                    .setNegativeButton("Skip", (d, w) -> requestMediaPerms())
-                    .show();
-                return;
-            }
-        }
-        requestMediaPerms();
-    }
-
-    private void requestMediaPerms() {
-        List<String> perms = new ArrayList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES)  != PackageManager.PERMISSION_GRANTED)
-                perms.add(Manifest.permission.READ_MEDIA_IMAGES);
-            if (checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO)   != PackageManager.PERMISSION_GRANTED)
-                perms.add(Manifest.permission.READ_MEDIA_VIDEO);
-            if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO)   != PackageManager.PERMISSION_GRANTED)
-                perms.add(Manifest.permission.READ_MEDIA_AUDIO);
-            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
-                perms.add(Manifest.permission.POST_NOTIFICATIONS);
-        } else {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                perms.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        if (!perms.isEmpty())
-            requestPermissions(perms.toArray(new String[0]), 200);
-    }
 }
