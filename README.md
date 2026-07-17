@@ -3,7 +3,7 @@
 # 📡 Host Master
 
 <p align="center">
-  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="96" alt="Host Master Icon"/>
+  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" alt="Host Master Icon"/>
 </p>
 
 <p align="center">
