@@ -9,12 +9,15 @@ import java.io.*;
 import java.util.*;
 
 public class ServerService extends Service {
-    public static final String ACTION_STOPPED = "com.ar.hostmaster.SERVER_STOPPED";
-    public static final String ACTION_START = "START";
-    public static final String ACTION_STOP  = "STOP";
-    private static final String CH_ID       = "hm_ch";
-    private static final int    NID         = 1;
-    private static final int    STOP_REQ    = 99;
+    public static final String ACTION_STOPPED    = "com.ar.hostmaster.SERVER_STOPPED";
+    public static final String ACTION_RESTARTED  = "com.ar.hostmaster.SERVER_RESTARTED";
+    public static final String ACTION_START      = "START";
+    public static final String ACTION_STOP       = "STOP";
+    public static final String ACTION_RESTART    = "RESTART";
+    private static final String CH_ID            = "hm_ch_v2"; // bumped so new importance/sound takes effect
+    private static final int    NID              = 1;
+    private static final int    STOP_REQ         = 99;
+    private static final int    RESTART_REQ      = 98;
 
     private FileServer server;
     private FtpServer   ftpServer;
@@ -36,7 +39,14 @@ public class ServerService extends Service {
         } else if (ACTION_STOP.equals(intent.getAction())) {
             stopAllServers();
             stopForeground(true);
+            broadcastStopped();   // NEW — tell MainActivity to sync its UI
             stopSelf();
+        } else if (ACTION_RESTART.equals(intent.getAction())) {
+            stopAllServers();
+            startServer();
+            AppState.get(this).sp_long_set("server_start_time", System.currentTimeMillis()); // NEW — keep uptime correct even if app is closed
+            startForeground(NID, buildNotif()); // refresh notif text/URL immediately
+            broadcastRestarted();  // NEW — tell MainActivity server restarted
         }
         return START_STICKY;
     }
@@ -165,9 +175,13 @@ public class ServerService extends Service {
         new Handler(Looper.getMainLooper()).post(() ->
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show());
     }
-    
+
     private void broadcastStopped() {
         sendBroadcast(new Intent(ACTION_STOPPED));
+    }
+
+    private void broadcastRestarted() {
+        sendBroadcast(new Intent(ACTION_RESTARTED));
     }
 
     public boolean isRunning() { return server != null || ftpServer != null; }
@@ -177,8 +191,13 @@ public class ServerService extends Service {
     private void createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel ch = new NotificationChannel(
-                    CH_ID, "Host Master Server", NotificationManager.IMPORTANCE_LOW);
+                    CH_ID, "Host Master Server", NotificationManager.IMPORTANCE_DEFAULT);
             ch.setDescription("HTTP file server status");
+            ch.setShowBadge(true);
+            ch.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI,
+                    new android.media.AudioAttributes.Builder()
+                            .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                            .build());
             getSystemService(NotificationManager.class).createNotificationChannel(ch);
         }
     }
@@ -192,6 +211,11 @@ public class ServerService extends Service {
         stopI.setAction(ACTION_STOP);
         PendingIntent stopPi = PendingIntent.getService(this, STOP_REQ, stopI, PendingIntent.FLAG_IMMUTABLE);
 
+        Intent restartI = new Intent(this, ServerService.class);
+        restartI.setAction(ACTION_RESTART);
+        PendingIntent restartPi = PendingIntent.getService(
+                this, RESTART_REQ, restartI, PendingIntent.FLAG_IMMUTABLE);
+
         AppState st  = AppState.get(this);
         String   url = st.getLocalUrl();
         String  text = url.isEmpty() ? "Server is running…" : "Running · " + url;
@@ -199,9 +223,10 @@ public class ServerService extends Service {
         return new NotificationCompat.Builder(this, CH_ID)
                 .setContentTitle("Host Master")
                 .setContentText(text)
-                .setSmallIcon(android.R.drawable.ic_menu_share)
+                .setSmallIcon(R.drawable.hostmaster_notification_icon)
                 .setContentIntent(openPi)
                 .setOngoing(true)
+                .addAction(android.R.drawable.ic_menu_rotate, "RESTART", restartPi)
                 .addAction(android.R.drawable.ic_media_pause, "STOP", stopPi)
                 .build();
     }

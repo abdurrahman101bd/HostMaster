@@ -32,11 +32,13 @@ public class MainActivity extends AppCompatActivity {
     private boolean serverRunning = false;
     private long startTime = 0;
 
-    // Receives broadcast when notification STOP is tapped
+    // Receives broadcast when notification STOP or RESTART is tapped
     private final BroadcastReceiver stopReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(android.content.Context ctx, Intent intent) {
-            if (ServerService.ACTION_STOPPED.equals(intent.getAction())) {
+            String action = intent.getAction();
+
+            if (ServerService.ACTION_STOPPED.equals(action)) {
                 // Server was stopped externally (notification) — sync UI
                 if (serverRunning) {
                     serverRunning = false;
@@ -49,6 +51,17 @@ public class MainActivity extends AppCompatActivity {
                     ivQr.setImageBitmap(null);
                     powerBtn.setState(false);
                 }
+            } else if (ServerService.ACTION_RESTARTED.equals(action)) {
+                // Server was restarted externally (notification) — sync UI + timer + QR
+                serverRunning = true;
+                startTime = System.currentTimeMillis();
+                state.sp_long_set("server_start_time", startTime);
+                updateServerUrlAndPort();
+                generateQr(getCurrentDisplayUrl());
+                stopTicker();
+                startTicker();
+                tvClients.setText("0");
+                powerBtn.setState(true);
             }
         }
     };
@@ -436,9 +449,15 @@ public class MainActivity extends AppCompatActivity {
         String proto = state.getProtocol();
         updateProtoUI(proto);
 
-        // Register broadcast receiver for external server stop (notification)
-        IntentFilter filter = new IntentFilter(ServerService.ACTION_STOPPED);
-        registerReceiver(stopReceiver, filter);
+        // Register broadcast receiver for external server stop/restart (notification)
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ServerService.ACTION_STOPPED);
+        filter.addAction(ServerService.ACTION_RESTARTED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(stopReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(stopReceiver, filter);
+        }
 
         // Sync state in case server was stopped while app was in background
         boolean actuallyRunning = state.isRunning();

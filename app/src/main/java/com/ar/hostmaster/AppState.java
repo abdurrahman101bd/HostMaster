@@ -29,7 +29,7 @@ public class AppState {
     public void    setLocalUrl(String v)    { sp.edit().putString("local_url", v).apply(); }
 
     public int getPort(String proto) {
-        int def = "HTTP".equals(proto) ? 8080 : "FTP".equals(proto) ? 21 : 22;
+        int def = "HTTP".equals(proto) ? 8080 : 2221; // FTP, SFTP, SSH all default to 2221
         return sp.getInt("port_" + proto, def);
     }
     public void setPort(String proto, int v) { sp.edit().putInt("port_" + proto, v).apply(); }
@@ -129,7 +129,7 @@ public class AppState {
     public void    setAutostart(boolean v)  { sp.edit().putBoolean("autostart", v).apply(); }
 
     // ── Theme ─────────────────────────────────────────────────────────────────
-    public String  getTheme()               { return sp.getString("theme", THEME_LIGHT); }
+    public String  getTheme()               { return sp.getString("theme", THEME_SYSTEM); }
     public void    setTheme(String v)       { sp.edit().putString("theme", v).apply(); }
 
     // ── Stats ─────────────────────────────────────────────────────────────────
