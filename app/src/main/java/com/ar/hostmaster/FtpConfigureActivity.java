@@ -51,20 +51,33 @@ public class FtpConfigureActivity extends AppCompatActivity {
         etPort           = findViewById(R.id.et_port);
         btnTogglePassVis = findViewById(R.id.btn_toggle_pass_vis);
 
-        // Restore saved values
+        // Restore saved values - check if username/password empty
         int port = state.getPort("FTP");
         etPort.setText(String.valueOf(port));
-        swAnonymous.setChecked(state.sp_bool("ftp_anonymous", false));
+        
+        String savedUsername = state.getUsername();
+        String savedPassword = state.getPassword();
+        boolean savedAnonymous = state.sp_bool("ftp_anonymous", false);
+        
+        // If username or password is empty, force anonymous ON
+        if (savedUsername.isEmpty() || savedPassword.isEmpty()) {
+            savedAnonymous = true;
+            swAnonymous.setChecked(true);
+            applyAnonymousState(true);
+            etUsername.setText("");
+            etPassword.setText("");
+        } else {
+            swAnonymous.setChecked(savedAnonymous);
+            etUsername.setText(savedUsername);
+            etPassword.setText(savedPassword);
+            applyAnonymousState(savedAnonymous);
+        }
+        
         swPassiveMode.setChecked(state.sp_bool("ftp_passive", true));
         swReadOnly.setChecked(state.sp_bool("ftp_read_only", false));
-        etUsername.setText(state.getUsername());
-        etPassword.setText(state.getPassword());
 
         // Info card text — dynamic IP:PORT, bold connect URL
         setInfoText(port);
-
-        // Apply initial anonymous/auth state
-        applyAnonymousState(swAnonymous.isChecked());
 
         String path = state.getFolderPath();
         if (!path.isEmpty()) showPath(path);
@@ -82,7 +95,7 @@ public class FtpConfigureActivity extends AppCompatActivity {
         // Clear selection - with Snackbar undo support
         findViewById(R.id.btn_clear_selection).setOnClickListener(v -> clearFolderSelection(true));
 
-        // Anonymous toggle — grey out auth fields when on
+        // Anonymous toggle
         swAnonymous.setOnCheckedChangeListener((b, on) -> applyAnonymousState(on));
 
         // Update info text live when port changes
@@ -109,23 +122,35 @@ public class FtpConfigureActivity extends AppCompatActivity {
                     : R.drawable.ic_visibility_off);
         });
 
-        // Save
+        // Save - auto toggle anonymous ON if username/password empty
         findViewById(R.id.btn_save).setOnClickListener(v -> {
+            String username = etUsername.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            boolean anonymous = swAnonymous.isChecked();
+            
+            // If username or password is empty, force anonymous ON
+            if (username.isEmpty() || password.isEmpty()) {
+                anonymous = true;
+                swAnonymous.setChecked(true);
+                applyAnonymousState(true);
+                state.setUsername("");
+                state.setPassword("");
+            } else {
+                state.setUsername(username);
+                state.setPassword(password);
+            }
+            
             try {
                 int p = Integer.parseInt(etPort.getText().toString().trim());
                 state.setPort("FTP", p);
             } catch (NumberFormatException ignored) {}
 
-            boolean anon = swAnonymous.isChecked();
-            state.sp_set("ftp_anonymous", anon);
+            state.sp_set("ftp_anonymous", anonymous);
             state.sp_set("ftp_passive",   swPassiveMode.isChecked());
             state.sp_set("ftp_read_only", swReadOnly.isChecked());
-
-            // Credentials always saved (used when anonymous is off)
-            state.setUsername(etUsername.getText().toString().trim());
-            state.setPassword(etPassword.getText().toString());
+            
             // passwordEnabled mirrors "not anonymous" for FTP auth check
-            state.setPasswordEnabled(!anon);
+            state.setPasswordEnabled(!anonymous);
 
             setResult(RESULT_OK);
             finish();
@@ -149,13 +174,23 @@ public class FtpConfigureActivity extends AppCompatActivity {
         tvInfo.setText(ss);
     }
 
-    /** When Anonymous login is ON, grey out and disable credential fields. */
+    /** When Anonymous login is ON, hide credential fields completely */
     private void applyAnonymousState(boolean anonymousOn) {
-        float alpha = anonymousOn ? 0.4f : 1f;
-        authFields.setAlpha(alpha);
-        etUsername.setEnabled(!anonymousOn);
-        etPassword.setEnabled(!anonymousOn);
-        btnTogglePassVis.setEnabled(!anonymousOn);
+        if (anonymousOn) {
+            // Anonymous ON - fields completely hidden (GONE)
+            authFields.setVisibility(View.GONE);
+            authFields.setAlpha(0.4f);
+            etUsername.setEnabled(false);
+            etPassword.setEnabled(false);
+            btnTogglePassVis.setEnabled(false);
+        } else {
+            // Anonymous OFF - fields visible and active
+            authFields.setVisibility(View.VISIBLE);
+            authFields.setAlpha(1f);
+            etUsername.setEnabled(true);
+            etPassword.setEnabled(true);
+            btnTogglePassVis.setEnabled(true);
+        }
     }
 
     private void showPath(String path) {

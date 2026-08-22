@@ -93,11 +93,22 @@ public class ConfigureActivity extends AppCompatActivity {
         etPassword  = findViewById(R.id.et_password);
         btnTogglePassVis = findViewById(R.id.btn_toggle_pass_vis);
 
-        // Restore saved state
-        swPassword.setChecked(state.isPasswordEnabled());
-        etUsername.setText(state.getUsername());
-        etPassword.setText(state.getPassword());
-        applyPasswordState(state.isPasswordEnabled());
+        // Restore saved state - check if username/password empty
+        String savedUsername = state.getUsername();
+        String savedPassword = state.getPassword();
+        boolean savedPasswordEnabled = state.isPasswordEnabled();
+        
+        // If username or password is empty, force password toggle OFF
+        if (savedUsername.isEmpty() || savedPassword.isEmpty()) {
+            savedPasswordEnabled = false;
+            swPassword.setChecked(false);
+            applyPasswordState(false);
+        } else {
+            swPassword.setChecked(savedPasswordEnabled);
+            etUsername.setText(savedUsername);
+            etPassword.setText(savedPassword);
+            applyPasswordState(savedPasswordEnabled);
+        }
 
         // Restore active tab based on saved mode
         isWebMode = state.isWebMode();
@@ -145,7 +156,7 @@ public class ConfigureActivity extends AppCompatActivity {
         btnRemoveWebFolder.setOnClickListener(v -> removeWebFolder(true));
         btnClearWeb.setOnClickListener(v -> removeWebFolder(true));
 
-        // Password switch - now uses applyPasswordState (never hides, just disables)
+        // Password switch
         swPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
             applyPasswordState(isChecked);
         });
@@ -163,11 +174,25 @@ public class ConfigureActivity extends AppCompatActivity {
             updatePasswordVisibilityIcon();
         });
 
-        // Save button
+        // Save button - auto toggle OFF if username/password empty
         findViewById(R.id.btn_save).setOnClickListener(v -> {
-            state.setPasswordEnabled(swPassword.isChecked());
-            state.setUsername(etUsername.getText().toString().trim());
-            state.setPassword(etPassword.getText().toString());
+            String username = etUsername.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            boolean passwordEnabled = swPassword.isChecked();
+            
+            // If username or password is empty, force password toggle OFF
+            if (username.isEmpty() || password.isEmpty()) {
+                passwordEnabled = false;
+                swPassword.setChecked(false);
+                applyPasswordState(false);
+                state.setUsername("");
+                state.setPassword("");
+            } else {
+                state.setUsername(username);
+                state.setPassword(password);
+            }
+            
+            state.setPasswordEnabled(passwordEnabled);
             
             // Persist active mode
             if (isWebMode && !state.getWebFolder().isEmpty()) {
@@ -184,16 +209,21 @@ public class ConfigureActivity extends AppCompatActivity {
     // ── Helper Methods ─────────────────────────────────────────────────────────
 
     private void applyPasswordState(boolean passwordEnabled) {
-        float alpha = passwordEnabled ? 1f : 0.4f;
-        authFields.setAlpha(alpha);
-        
-        // Disable/enable child views instead of hiding the whole layout
-        etUsername.setEnabled(passwordEnabled);
-        etPassword.setEnabled(passwordEnabled);
-        btnTogglePassVis.setEnabled(passwordEnabled);
-        
-        // Keep visibility always VISIBLE
-        authFields.setVisibility(View.VISIBLE);
+        if (passwordEnabled) {
+            // Password ON - fields visible and active
+            authFields.setVisibility(View.VISIBLE);
+            authFields.setAlpha(1f);
+            etUsername.setEnabled(true);
+            etPassword.setEnabled(true);
+            btnTogglePassVis.setEnabled(true);
+        } else {
+            // Password OFF - fields completely hidden (GONE)
+            authFields.setVisibility(View.GONE);
+            authFields.setAlpha(0.4f);
+            etUsername.setEnabled(false);
+            etPassword.setEnabled(false);
+            btnTogglePassVis.setEnabled(false);
+        }
     }
 
     private void updatePasswordVisibilityIcon() {
@@ -477,6 +507,4 @@ public class ConfigureActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }
