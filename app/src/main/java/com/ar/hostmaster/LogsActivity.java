@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
 import android.widget.*;
+import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.*;
 import java.util.List;
@@ -17,10 +18,13 @@ public class LogsActivity extends AppCompatActivity {
     private LinearLayout viewEmpty;
     private EditText etSearch;
     private TextView btnClearSearch;
+    private ScrollView scrollLogs;
     private final Handler h = new Handler(Looper.getMainLooper());
     private String searchText = "";
     private String filter = "ALL";
     private AppState state;
+    private boolean isFirstLoad = true;
+    private boolean autoScroll = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +38,38 @@ public class LogsActivity extends AppCompatActivity {
         viewEmpty     = findViewById(R.id.view_empty);
         etSearch      = findViewById(R.id.et_log_search);
         btnClearSearch = findViewById(R.id.btn_clear_search);
+        scrollLogs    = findViewById(R.id.scroll_logs);
 
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager lm = new LinearLayoutManager(this);
+        rv.setLayoutManager(lm);
         adapter = new LogAdapter();
         rv.setAdapter(adapter);
+
+        // Scroll listener - detect if user scrolled up
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    // User manually scrolled, disable auto scroll
+                    LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
+                    if (lm != null) {
+                        int lastVisible = lm.findLastCompletelyVisibleItemPosition();
+                        int total = adapter.getItemCount();
+                        if (lastVisible < total - 3) {
+                            autoScroll = false;
+                        } else {
+                            autoScroll = true;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Saved Logs button
+        findViewById(R.id.btn_saved_logs).setOnClickListener(v -> {
+            startActivity(new Intent(this, SavedLogsActivity.class));
+        });
 
         // Search
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -56,10 +88,9 @@ public class LogsActivity extends AppCompatActivity {
         setupFilter(R.id.btn_filter_success, "SUCCESS");
         setupFilter(R.id.btn_filter_error,   "ERROR");
 
-        findViewById(R.id.btn_clear_logs).setOnClickListener(v -> {
-            LogManager.clear();
-            refresh();
-        });
+        // Hide the clear button
+        findViewById(R.id.btn_clear_logs).setVisibility(View.GONE);
+
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         h.post(ticker);
@@ -71,7 +102,10 @@ public class LogsActivity extends AppCompatActivity {
     }
 
     private final Runnable ticker = new Runnable() {
-        @Override public void run() { refresh(); h.postDelayed(this, 1500); }
+        @Override public void run() { 
+            refresh(); 
+            h.postDelayed(this, 1500); 
+        }
     };
 
     private void refresh() {
@@ -92,13 +126,41 @@ public class LogsActivity extends AppCompatActivity {
         boolean isEmpty = filtered.isEmpty();
         viewEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
         rv.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        
+        // Auto scroll to bottom
+        if (!isEmpty && autoScroll) {
+            rv.post(() -> {
+                int count = adapter.getItemCount();
+                if (count > 0) {
+                    rv.smoothScrollToPosition(count - 1);
+                    isFirstLoad = false;
+                }
+            });
+        }
+        
+        // Always scroll on first load
+        if (!isEmpty && isFirstLoad) {
+            rv.post(() -> {
+                int count = adapter.getItemCount();
+                if (count > 0) {
+                    rv.scrollToPosition(count - 1);
+                    isFirstLoad = false;
+                }
+            });
+        }
     }
 
-    @Override protected void onDestroy() { h.removeCallbacks(ticker); super.onDestroy(); }
+    @Override protected void onDestroy() { 
+        h.removeCallbacks(ticker); 
+        super.onDestroy(); 
+    }
 
     static class LogAdapter extends RecyclerView.Adapter<LogAdapter.VH> {
         private List<LogManager.LogEntry> items = new java.util.ArrayList<>();
-        void setData(List<LogManager.LogEntry> d) { items = d; notifyDataSetChanged(); }
+        void setData(List<LogManager.LogEntry> d) { 
+            items = d; 
+            notifyDataSetChanged(); 
+        }
 
         @Override public VH onCreateViewHolder(ViewGroup p, int t) {
             return new VH(LayoutInflater.from(p.getContext()).inflate(R.layout.item_log, p, false));

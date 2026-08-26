@@ -3,6 +3,7 @@
     <color name="white">#ffffff</color>
     <color name="bg">#F0F4F8</color>
     <color name="surface">#FFFFFF</color>
+    <color name="surface_highlight">#1AFFFFFF</color>
     <color name="card">#FFFFFF</color>
     <color name="border">#CCDAEB</color>
     <color name="border_disabled">#D5DDE6</color>

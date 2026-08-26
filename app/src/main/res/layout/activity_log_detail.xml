@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/bg">
+
+    <!-- Header -->
+    <LinearLayout android:layout_width="match_parent" 
+        android:layout_height="56dp"
+        android:orientation="horizontal" 
+        android:gravity="center_vertical"
+        android:paddingStart="14dp" 
+        android:paddingEnd="14dp" 
+        android:background="@color/surface">
+        
+        <LinearLayout android:id="@+id/btn_back" 
+            android:layout_width="36dp"
+            android:layout_height="36dp" 
+            android:background="@drawable/bg_back_btn"
+            android:gravity="center" 
+            android:layout_marginEnd="12dp">
+            <ImageView android:layout_width="18dp" 
+                android:layout_height="18dp" 
+                android:src="@drawable/ic_back"/>
+        </LinearLayout>
+        
+        <TextView android:id="@+id/tv_date_title"
+            android:layout_width="0dp" 
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            android:text="LOG DETAIL"
+            android:textColor="@color/accent" 
+            android:textSize="13sp"
+            android:textStyle="bold" 
+            android:letterSpacing="0.1"/>
+    </LinearLayout>
+    
+    <View android:layout_width="match_parent" 
+        android:layout_height="1dp" 
+        android:background="@color/border"/>
+
+    <!-- Search row -->
+    <LinearLayout android:layout_width="match_parent" 
+        android:layout_height="48dp"
+        android:orientation="horizontal" 
+        android:gravity="center_vertical"
+        android:paddingStart="12dp" 
+        android:paddingEnd="12dp"
+        android:background="@color/bg">
+
+        <LinearLayout android:layout_width="match_parent" 
+            android:layout_height="36dp"
+            android:orientation="horizontal" 
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_stat_card"
+            android:paddingStart="10dp" 
+            android:paddingEnd="4dp">
+            
+            <ImageView android:layout_width="16dp" 
+                android:layout_height="16dp"
+                android:src="@drawable/ic_search"
+                android:tint="@color/text_muted"
+                android:layout_marginEnd="6dp"/>
+                
+            <EditText android:id="@+id/et_log_detail_search"
+                android:layout_width="0dp" 
+                android:layout_height="match_parent"
+                android:layout_weight="1" 
+                android:hint="Search in logs…"
+                android:inputType="text" 
+                android:textSize="13sp"
+                android:textColor="@color/text_primary"
+                android:background="@null" 
+                android:singleLine="true"/>
+                
+            <TextView android:id="@+id/btn_clear_detail_search"
+                android:layout_width="32dp" 
+                android:layout_height="32dp"
+                android:text="✕" 
+                android:textSize="13sp"
+                android:textColor="@color/text_muted" 
+                android:gravity="center"
+                android:clickable="true" 
+                android:focusable="true"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Stats row -->
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/surface"
+        android:padding="12dp">
+
+        <LinearLayout android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView android:id="@+id/tv_total_requests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/accent"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="REQUESTS"
+                android:textColor="@color/text_muted"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"/>
+        </LinearLayout>
+
+        <View android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:background="@color/border"/>
+
+        <LinearLayout android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView android:id="@+id/tv_success_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/col_green"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SUCCESS"
+                android:textColor="@color/text_muted"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"/>
+        </LinearLayout>
+
+        <View android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:background="@color/border"/>
+
+        <LinearLayout android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView android:id="@+id/tv_error_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/col_red"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ERRORS"
+                android:textColor="@color/text_muted"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" 
+        android:layout_height="1dp" 
+        android:background="@color/border"/>
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView 
+        android:id="@+id/rv_log_detail"
+        android:layout_width="match_parent" 
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>
