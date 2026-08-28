@@ -16,4 +16,5 @@
     <color name="col_yellow">#FFD700</color>
     <color name="text_primary">#0D1F33</color>
     <color name="text_muted">#7A90A8</color>
+    <color name="text_muted_hint">#60808080</color>
 </resources>

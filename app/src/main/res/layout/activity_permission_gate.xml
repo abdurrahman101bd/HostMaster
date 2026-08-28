@@ -6,101 +6,268 @@
     android:background="@color/bg"
     android:padding="24dp">
 
-    <TextView
+    <!-- Header with icon -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="32dp"
+        android:orientation="vertical"
         android:gravity="center"
-        android:text="Permissions Required"
-        android:textColor="@color/text_primary"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="8dp">
 
-    <!-- Row: Notification -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/bg_card"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:layout_marginBottom="10dp">
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_shield_halved"
+            android:tint="@color/accent"
+            android:layout_marginBottom="12dp"/>
+
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Notification"
+            android:gravity="center"
+            android:text="Permissions Required"
             android:textColor="@color/text_primary"
-            android:textSize="14sp"/>
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
         <TextView
-            android:id="@+id/btn_perm_notification"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Allow"
-            android:textColor="@color/accent"
-            android:textStyle="bold"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"/>
+            android:gravity="center"
+            android:text="Grant all permissions to use HostMaster"
+            android:textColor="@color/text_muted"
+            android:textSize="13sp"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
 
-    <!-- Row: Storage -->
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/bg_card"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:layout_marginBottom="10dp">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Storage Access"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"/>
-        <TextView
-            android:id="@+id/btn_perm_storage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Allow"
-            android:textColor="@color/accent"
-            android:textStyle="bold"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"/>
-    </LinearLayout>
+        android:layout_height="1dp"
+        android:background="@color/border"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"/>
 
-    <!-- Row: Battery -->
+    <!-- Permission Cards -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/bg_card"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
-        <TextView
-            android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Notification -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Run in Background"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"/>
-        <TextView
-            android:id="@+id/btn_perm_battery"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_notification"
+                    android:tint="@color/accent"
+                    android:layout_marginEnd="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notifications"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Show server status notifications"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btn_perm_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allow"
+                    android:textColor="@color/accent"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_notif_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tap 'Allow' to enable notifications"
+                android:textColor="@color/text_muted_hint"
+                android:textSize="10sp"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="40dp"/>
+        </LinearLayout>
+
+        <!-- Storage -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Allow"
-            android:textColor="@color/accent"
-            android:textStyle="bold"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"/>
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_storage"
+                    android:tint="@color/accent"
+                    android:layout_marginEnd="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Storage Access"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Access files and folders to host"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btn_perm_storage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allow"
+                    android:textColor="@color/accent"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_storage_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tap 'Allow' to grant storage permission"
+                android:textColor="@color/text_muted_hint"
+                android:textSize="10sp"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="40dp"/>
+        </LinearLayout>
+
+        <!-- Battery -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_battery"
+                    android:tint="@color/accent"
+                    android:layout_marginEnd="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Background Run"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Keep server running in background"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btn_perm_battery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allow"
+                    android:textColor="@color/accent"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_battery_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tap 'Allow' to open battery settings"
+                android:textColor="@color/text_muted_hint"
+                android:textSize="10sp"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="40dp"/>
+        </LinearLayout>
     </LinearLayout>
 
     <View
@@ -108,21 +275,38 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <TextView
-        android:id="@+id/btn_gate_start"
+    <!-- Start Button -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/bg_card"
-        android:backgroundTint="@color/accent"
-        android:gravity="center"
-        android:text="Start"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:enabled="false"
-        android:alpha="0.4"
-        android:clickable="true"
-        android:focusable="true"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/btn_gate_start"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_card"
+            android:backgroundTint="@color/accent"
+            android:gravity="center"
+            android:text="Start HostMaster"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:enabled="false"
+            android:alpha="0.4"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_start_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Grant all permissions to continue"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"/>
+    </LinearLayout>
 
 </LinearLayout>
