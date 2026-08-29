@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private PowerButtonView powerBtn;
     private ChartView chartView;
     private TextView tvUrl, tvPort, tvClients, tvUptime, tvChartVal;
-    private TextView tvProtoLabel;  
+    private TextView tvProtoLabel, tvProtoBottom, tvPortBottom, tvServerStatus;
     private ImageView protocolsIcon;  
     private ImageView ctrlProtoIcon; 
     private TextView tvQrTitle, tvQrDesc;
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     tvChartVal.setText("0 KB/s");
                     ivQr.setImageBitmap(null);
                     powerBtn.setState(false);
+                    updateServerStatus(false);
                 }
             } else if (ServerService.ACTION_RESTARTED.equals(action)) {
                 // Server was restarted externally (notification) — sync UI + timer + QR
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 startTicker();
                 tvClients.setText("0");
                 powerBtn.setState(true);
+                updateServerStatus(true);
             }
         }
     };
@@ -97,7 +99,10 @@ public class MainActivity extends AppCompatActivity {
         ivQr        = findViewById(R.id.iv_qr);
         protocolsIcon = findViewById(R.id.protocols_icons);  
         ctrlProtoIcon = findViewById(R.id.ctrl_proto_icon);  
-        tvProtoLabel = findViewById(R.id.tv_proto_label);    
+        tvProtoLabel = findViewById(R.id.tv_proto_label);
+        tvProtoBottom = findViewById(R.id.tv_proto_bottom);
+        tvPortBottom = findViewById(R.id.tv_port_bottom);
+        tvServerStatus = findViewById(R.id.tv_server_status);
         tvQrTitle   = findViewById(R.id.tv_qr_title);
         tvQrDesc    = findViewById(R.id.tv_qr_desc);
     }
@@ -105,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupClicks() {
         powerBtn.setOnClickListener(v -> toggleServer());
 
+        // Copy button
         findViewById(R.id.btn_copy).setOnClickListener(v -> {
             String url = tvUrl.getText().toString();
             if (!url.contains("—")) {
@@ -114,13 +120,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        tvUrl.setOnClickListener(v -> {
-            String url = tvUrl.getText().toString();
-            if (!url.contains("—")) {
-                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); }
-                catch (Exception ignored) {}
-            }
-        });
+        // URL click to open
+        tvUrl.setOnClickListener(v -> openUrl());
+
+        // Open button
+        findViewById(R.id.btn_open_url).setOnClickListener(v -> openUrl());
 
         ivQr.setOnClickListener(v -> {
             if (ivQr.getDrawable() != null) showQrFullscreen();
@@ -173,6 +177,38 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, StatsActivity.class)));
     }
 
+    private void openUrl() {
+        String url = tvUrl.getText().toString();
+        if (!url.contains("—") && !url.contains("android@—")) {
+            try {
+                // Handle SSH/SFTP differently
+                String proto = state.getProtocol();
+                if ("SSH".equals(proto) || "SFTP".equals(proto)) {
+                    // For SSH/SFTP, show a dialog with connection info
+                    showConnectionDialog(url);
+                } else {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                }
+            } catch (Exception ignored) {
+                Toast.makeText(this, "Cannot open URL", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void showConnectionDialog(String connectionInfo) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Connection Info")
+            .setMessage("Connect using:\n\n" + connectionInfo + 
+                       "\n\nDefault username: android")
+            .setPositiveButton("Copy", (d, w) -> {
+                ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                cm.setPrimaryClip(ClipData.newPlainText("connection", connectionInfo));
+                Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show();
+            })
+            .setNegativeButton("Close", null)
+            .show();
+    }
+
     // ── Server toggle ─────────────────────────────────────────────────────────
 
     private void toggleServer() {
@@ -195,9 +231,10 @@ public class MainActivity extends AppCompatActivity {
         state.setRunning(true);
 
         updateServerUrlAndPort(); 
-        generateQr(getCurrentDisplayUrl()); // URL for QR
+        generateQr(getCurrentDisplayUrl());
         startTicker();
         powerBtn.setState(true);
+        updateServerStatus(true);
     }
 
     private void stopServer() {
@@ -218,6 +255,19 @@ public class MainActivity extends AppCompatActivity {
         tvChartVal.setText("0 KB/s");
         ivQr.setImageBitmap(null);
         powerBtn.setState(false);
+        updateServerStatus(false);
+    }
+
+    // ── Server Status UI ─────────────────────────────────────────────────────
+
+    private void updateServerStatus(boolean running) {
+        if (running) {
+            tvServerStatus.setText("RUNNING");
+            tvServerStatus.setTextColor(getResources().getColor(R.color.col_green));
+        } else {
+            tvServerStatus.setText("STOPPED");
+            tvServerStatus.setTextColor(getResources().getColor(R.color.col_red));
+        }
     }
 
     // ── Restore / Autostart ───────────────────────────────────────────────────
@@ -233,11 +283,11 @@ public class MainActivity extends AppCompatActivity {
             serverRunning = true;
             tvUrl.setText(savedUrl);
             generateQr(savedUrl);
-            // Restore original start time so uptime is accurate across app restarts
             long saved = state.sp_long("server_start_time", 0);
             startTime = (saved > 0) ? saved : System.currentTimeMillis();
             startTicker();
             powerBtn.setState(true);
+            updateServerStatus(true);
 
         } else if (state.isAutostart() && !state.getFolderPath().isEmpty()) {
             handler.postDelayed(this::startServer, 600);
@@ -245,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             updateUrlAndPortForIdle();
             powerBtn.setState(false);
+            updateServerStatus(false);
         }
     }
 
@@ -258,6 +309,8 @@ public class MainActivity extends AppCompatActivity {
         state.setLocalUrl(displayUrl);
         tvUrl.setText(displayUrl);
         tvPort.setText(String.valueOf(port));
+        tvPortBottom.setText(String.valueOf(port));
+        tvProtoBottom.setText(proto);
         generateQr(qrUrl);
     }
     
@@ -268,12 +321,16 @@ public class MainActivity extends AppCompatActivity {
         
         tvUrl.setText(displayUrl);
         tvPort.setText(String.valueOf(port));
+        tvPortBottom.setText(String.valueOf(port));
+        tvProtoBottom.setText(proto);
     }
     
     private void updatePortDisplay() {
         String proto = state.getProtocol();
         int port = state.getPort(proto);
         tvPort.setText(String.valueOf(port));
+        tvPortBottom.setText(String.valueOf(port));
+        tvProtoBottom.setText(proto);
     }
     
     private String getSchemeForProtocol(String proto) {
@@ -449,7 +506,6 @@ public class MainActivity extends AppCompatActivity {
         String proto = state.getProtocol();
         updateProtoUI(proto);
 
-        // Register broadcast receiver for external server stop/restart (notification)
         IntentFilter filter = new IntentFilter();
         filter.addAction(ServerService.ACTION_STOPPED);
         filter.addAction(ServerService.ACTION_RESTARTED);
@@ -459,10 +515,8 @@ public class MainActivity extends AppCompatActivity {
             registerReceiver(stopReceiver, filter);
         }
 
-        // Sync state in case server was stopped while app was in background
         boolean actuallyRunning = state.isRunning();
         if (serverRunning && !actuallyRunning) {
-            // Was running in UI but service already stopped
             serverRunning = false;
             startTime = 0;
             stopTicker();
@@ -472,10 +526,13 @@ public class MainActivity extends AppCompatActivity {
             tvChartVal.setText("0 KB/s");
             ivQr.setImageBitmap(null);
             powerBtn.setState(false);
+            updateServerStatus(false);
         } else if (!serverRunning) {
             updateUrlAndPortForIdle();
+            updateServerStatus(false);
         } else {
             updatePortDisplay();
+            updateServerStatus(true);
         }
     }
 

@@ -175,82 +175,158 @@
             </LinearLayout>
 
             <!-- QR Section -->
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:background="@drawable/bg_card"
-                android:layout_marginStart="18dp" android:layout_marginEnd="18dp"
-                android:layout_marginBottom="14dp" android:padding="18dp">
+			<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:orientation="vertical" android:background="@drawable/bg_card"
+				android:layout_marginStart="18dp" android:layout_marginEnd="18dp"
+				android:layout_marginBottom="14dp" android:padding="18dp">
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:text="QUICK ACCESS"
-                        android:textColor="@color/text_muted" android:textSize="9sp" android:letterSpacing="0.2"/>
-                    <TextView android:id="@+id/qr_badge"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="LAN" android:textColor="@color/accent"
-                        android:textSize="8sp" android:letterSpacing="0.15"
-                        android:paddingStart="9dp" android:paddingEnd="9dp"
-                        android:paddingTop="3dp" android:paddingBottom="3dp"
-                        android:background="@drawable/bg_tag"/>
-                </LinearLayout>
+				<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+					android:orientation="horizontal" android:gravity="center_vertical"
+					android:layout_marginBottom="14dp">
+					<TextView android:layout_width="0dp" android:layout_height="wrap_content"
+						android:layout_weight="1" android:text="QUICK ACCESS"
+						android:textColor="@color/text_muted" android:textSize="9sp" android:letterSpacing="0.2"/>
+					<TextView android:id="@+id/qr_badge"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:text="LAN" android:textColor="@color/accent"
+						android:textSize="8sp" android:letterSpacing="0.15"
+						android:paddingStart="9dp" android:paddingEnd="9dp"
+						android:paddingTop="3dp" android:paddingBottom="3dp"
+						android:background="@drawable/bg_tag"/>
+				</LinearLayout>
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical">
+				<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+					android:orientation="horizontal" android:gravity="center_vertical">
 
-                    <!-- QR image - clickable for fullscreen -->
-                    <ImageView android:id="@+id/iv_qr"
-                        android:layout_width="130dp" android:layout_height="130dp"
-                        android:background="@drawable/bg_qr_wrap" android:padding="8dp"
-                        android:scaleType="fitCenter" android:layout_marginEnd="18dp"
-                        android:clickable="true" android:focusable="true"/>
+					<!-- QR image - clickable for fullscreen -->
+					<ImageView android:id="@+id/iv_qr"
+						android:layout_width="130dp" android:layout_height="130dp"
+						android:background="@drawable/bg_qr_wrap" android:padding="8dp"
+						android:scaleType="fitCenter" android:layout_marginEnd="18dp"
+						android:clickable="true" android:focusable="true"/>
 
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:id="@+id/tv_qr_title"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="SCAN ME" android:textColor="@color/text_primary"
-                            android:textSize="15sp" android:textStyle="bold" android:layout_marginBottom="6dp"/>
-                        <TextView android:id="@+id/tv_qr_desc"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Point your camera to access the server from any device on your local network."
-                            android:textColor="@color/text_muted" android:textSize="12sp"
-                            android:lineSpacingMultiplier="1.5"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
+					<LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+						android:layout_weight="1" android:orientation="vertical">
+						<TextView android:id="@+id/tv_qr_title"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="SCAN ME" android:textColor="@color/text_primary"
+							android:textSize="15sp" android:textStyle="bold" android:layout_marginBottom="6dp"/>
+						<TextView android:id="@+id/tv_qr_desc"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="Point your camera to access the server from any device on your local network."
+							android:textColor="@color/text_muted" android:textSize="12sp"
+							android:lineSpacingMultiplier="1.5"/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
 
-            <!-- URL Box -->
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:gravity="center_vertical"
-                android:background="@drawable/bg_url_box"
-                android:layout_marginStart="18dp" android:layout_marginEnd="18dp"
-                android:layout_marginBottom="20dp" android:padding="13dp">
+			<!-- URL Box -->
+			<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="@drawable/bg_url_box"
+				android:layout_marginStart="18dp" android:layout_marginEnd="18dp"
+				android:layout_marginBottom="20dp" android:padding="14dp">
 
-                <ImageView android:layout_width="32dp" android:layout_height="32dp"
-                    android:src="@drawable/ic_link_2" android:tint="@color/accent"
-                    android:layout_marginEnd="10dp"/>
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="SERVER ADDRESS" android:textColor="@color/text_muted"
-                        android:textSize="8sp" android:letterSpacing="0.2" android:layout_marginBottom="2dp"/>
-                    <TextView android:id="@+id/tv_url"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="http://—.—.—.—:8080" android:textColor="@color/accent"
-                        android:textSize="12sp" android:textStyle="bold"
-                        android:singleLine="true" android:ellipsize="end"/>
-                </LinearLayout>
+				<!-- Header -->
+				<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+					android:orientation="horizontal" android:gravity="center_vertical"
+					android:layout_marginBottom="10dp">
+					<TextView android:layout_width="0dp" android:layout_height="wrap_content"
+						android:layout_weight="1" android:text="SERVER ADDRESS"
+						android:textColor="@color/text_muted" android:textSize="9sp" android:letterSpacing="0.2"/>
+			
+				</LinearLayout>
 
-                <!-- ic_copy icon instead of COPY button -->
-                <LinearLayout android:id="@+id/btn_copy"
-                    android:layout_width="36dp" android:layout_height="36dp"
-                    android:gravity="center" android:clickable="true" android:focusable="true"
-                    android:background="@drawable/bg_icon_btn">
-                    <ImageView android:layout_width="18dp" android:layout_height="18dp"
-                        android:src="@drawable/ic_copy" android:tint="@color/accent"/>
-                </LinearLayout>
-            </LinearLayout>
+				<!-- URL Row -->
+				<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+					android:orientation="horizontal" android:gravity="center_vertical">
+
+					<ImageView android:layout_width="24dp" android:layout_height="24dp"
+						android:src="@drawable/ic_link_2" android:tint="@color/accent"
+						android:layout_marginEnd="10dp"/>
+
+					<TextView android:id="@+id/tv_url"
+						android:layout_width="0dp" android:layout_height="wrap_content"
+						android:layout_weight="1" android:text="http://—.—.—.—:8080"
+						android:textColor="@color/accent" android:textSize="13sp"
+						android:textStyle="bold" android:singleLine="true"
+						android:ellipsize="end" android:paddingEnd="8dp"
+						android:clickable="true" android:focusable="true"/>
+
+					<!-- Open Button -->
+					<LinearLayout android:id="@+id/btn_open_url"
+						android:layout_width="wrap_content" android:layout_height="32dp"
+						android:orientation="horizontal" android:gravity="center"
+						android:background="@drawable/bg_open_btn"
+						android:paddingStart="12dp" android:paddingEnd="12dp"
+						android:clickable="true" android:focusable="true"
+						android:layout_marginEnd="6dp">
+
+						<ImageView android:layout_width="14dp" android:layout_height="14dp"
+							android:src="@drawable/ic_open_in_new"
+							android:tint="@color/accent"
+							android:layout_marginEnd="4dp"/>
+
+						<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="Open" android:textColor="@color/accent"
+							android:textSize="10sp" android:textStyle="bold"
+							android:letterSpacing="0.05"/>
+					</LinearLayout>
+
+					<!-- Copy Button -->
+					<LinearLayout android:id="@+id/btn_copy"
+						android:layout_width="32dp" android:layout_height="32dp"
+						android:gravity="center" android:clickable="true" android:focusable="true"
+						android:background="@drawable/bg_icon_btn">
+						<ImageView android:layout_width="16dp" android:layout_height="16dp"
+							android:src="@drawable/ic_copy" android:tint="@color/accent"/>
+					</LinearLayout>
+				</LinearLayout>
+
+				<!-- Divider -->
+				<View android:layout_width="match_parent" android:layout_height="1dp"
+					android:background="@color/border" android:layout_marginTop="10dp"
+					android:layout_marginBottom="10dp"/>
+
+				<!-- Bottom Row: Port + Status -->
+				<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+					android:orientation="horizontal" android:gravity="center_vertical">
+
+					<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:orientation="horizontal" android:gravity="center_vertical"
+						android:layout_marginEnd="16dp">
+						<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="PORT" android:textColor="@color/text_muted"
+							android:textSize="8sp" android:letterSpacing="0.15"
+							android:layout_marginEnd="4dp"/>
+						<TextView android:id="@+id/tv_port_bottom"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="8080" android:textColor="@color/accent"
+							android:textSize="12sp" android:textStyle="bold"/>
+					</LinearLayout>
+
+					<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:orientation="horizontal" android:gravity="center_vertical">
+						<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="PROTOCOL" android:textColor="@color/text_muted"
+							android:textSize="8sp" android:letterSpacing="0.15"
+							android:layout_marginEnd="4dp"/>
+						<TextView android:id="@+id/tv_proto_bottom"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:text="HTTP" android:textColor="@color/accent"
+							android:textSize="12sp" android:textStyle="bold"/>
+					</LinearLayout>
+
+					<View android:layout_width="0dp" android:layout_height="0dp"
+						android:layout_weight="1"/>
+
+					<TextView android:id="@+id/tv_server_status"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:text="STOPPED" android:textColor="@color/col_red"
+						android:textSize="9sp" android:textStyle="bold"
+						android:letterSpacing="0.1"/>
+				</LinearLayout>
+			</LinearLayout>
 
         </LinearLayout>
     </ScrollView>
