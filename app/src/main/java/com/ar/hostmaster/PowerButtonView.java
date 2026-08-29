@@ -79,7 +79,6 @@ public class PowerButtonView extends View {
 
     // ── Animations ────────────────────────────────────────────────────────────
 
-    /** Click feedback — quick flash */
     private void startClickPulse() {
         if (pulseAnim != null) pulseAnim.cancel();
         pulseAnim = ValueAnimator.ofFloat(1f, 0.2f, 0.8f, 0.2f, 1f);
@@ -96,7 +95,6 @@ public class PowerButtonView extends View {
         pulseAnim.start();
     }
 
-    /** Slow breathing glow when server is ON */
     private void startIdlePulse() {
         if (idleAnim != null && idleAnim.isRunning()) return;
         idleAnim = ValueAnimator.ofFloat(0.4f, 1f, 0.4f);
@@ -125,24 +123,23 @@ public class PowerButtonView extends View {
         int onColor, offColor, bgOnColor, bgOffColor, outerColor;
 
         if (dark) {
-            // Dark mode — original vibrant colors
-            onColor    = Color.parseColor("#00FF9D");   // col_green
-            offColor   = Color.parseColor("#FF4444");   // col_red
+            onColor    = Color.parseColor("#00FF9D");
+            offColor   = Color.parseColor("#FF4444");
             bgOnColor  = Color.parseColor("#061A10");
             bgOffColor = Color.parseColor("#120606");
-            outerColor = Color.parseColor("#1E2D45");   // border
+            outerColor = Color.parseColor("#1E2D45");
         } else {
-            // Light mode — match blue accent scheme
-            onColor    = Color.parseColor("#008855");   // col_green light
-            offColor   = Color.parseColor("#CC2200");   // col_red light
+            // Light mode - same colors but more visible glow
+            onColor    = Color.parseColor("#00BB77");
+            offColor   = Color.parseColor("#DD3322");
             bgOnColor  = Color.parseColor("#EAF7F1");
             bgOffColor = Color.parseColor("#FFF0EE");
-            outerColor = Color.parseColor("#CCDAEB");   // border light
+            outerColor = Color.parseColor("#CCDAEB");
         }
 
         int activeColor = isOn ? onColor : offColor;
 
-        // ── Outer decorative ring (thin, always visible) ──────────────────────
+        // ── Outer decorative ring ──────────────────────────────────────────────
         outerRingPaint.setColor(outerColor);
         canvas.drawCircle(cx, cy, r + 10f, outerRingPaint);
 
@@ -150,9 +147,9 @@ public class PowerButtonView extends View {
         bgPaint.setColor(isOn ? bgOnColor : bgOffColor);
         canvas.drawCircle(cx, cy, r, bgPaint);
 
-        // ── Glow (only when ON in dark, subtle in light) ──────────────────────
+        // ── Glow ──────────────────────────────────────────────────────────────
         glowPaint.setColor(activeColor);
-        float glowIntensity = dark ? (isOn ? 0.55f : 0.2f) : (isOn ? 0.25f : 0.1f);
+        float glowIntensity = isOn ? 0.65f : 0.25f;  // Increased for light mode
         glowPaint.setAlpha((int)(255 * glowAlpha * glowIntensity));
         canvas.drawCircle(cx, cy, r, glowPaint);
 
