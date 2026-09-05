@@ -49,7 +49,7 @@
                 android:textSize="10sp"/>
         </LinearLayout>
 
-        <!-- HTTP badge: icon + label -->
+        <!-- HTTP badge -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,14 +60,12 @@
             android:paddingEnd="10dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
-
             <ImageView
                 android:layout_width="14dp"
                 android:layout_height="14dp"
                 android:src="@drawable/ic_http"
                 android:tint="@color/accent"
                 android:layout_marginEnd="4dp"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,19 +82,20 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:paddingBottom="80dp">
 
             <!-- ══ MODE TOGGLE ════════════════════════════════════════════════ -->
-            <!-- Two pill buttons: HOST SOURCE / HOST WEBSITE -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:orientation="horizontal"
                 android:background="@drawable/bg_card"
                 android:padding="4dp"
@@ -108,15 +107,18 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_tab_active">
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_tab_active"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp">
 
                     <ImageView
                         android:id="@+id/img_tab_source_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/ic_folder" 
-                        android:tint="@color/accent"/>
+                        android:tint="@color/accent"
+                        android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:id="@+id/tab_source_text"
@@ -126,8 +128,7 @@
                         android:textSize="10sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.06"
-                        android:textColor="@color/accent"
-                        android:layout_marginTop="2dp" />
+                        android:textColor="@color/accent" />
 
                 </LinearLayout>
 
@@ -137,15 +138,18 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="@android:color/transparent">
+                    android:orientation="horizontal"
+                    android:background="@android:color/transparent"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp">
 
                     <ImageView
                         android:id="@+id/img_tab_website_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/ic_globe" 
-                        android:tint="@color/text_muted" />
+                        android:tint="@color/text_muted"
+                        android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:id="@+id/tab_website_text"
@@ -155,8 +159,7 @@
                         android:textSize="10sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.06"
-                        android:textColor="@color/text_muted"
-                        android:layout_marginTop="2dp" />
+                        android:textColor="@color/text_muted" />
 
                 </LinearLayout>
         
@@ -178,7 +181,6 @@
                     android:letterSpacing="0.2"
                     android:layout_marginBottom="8dp"/>
 
-                <!-- Folder + Files buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -199,10 +201,11 @@
                         android:background="?attr/selectableItemBackground">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_folder" android:tint="@color/accent"
-                            android:layout_marginEnd="12dp"/>
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_folder" 
+                            android:tint="@color/accent"
+                            android:layout_marginEnd="14dp"/>
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -214,7 +217,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="Select Folder"
                                 android:textColor="@color/text_primary"
-                                android:textSize="14sp"/>
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -222,8 +226,11 @@
                                 android:textColor="@color/text_muted"
                                 android:textSize="11sp"/>
                         </LinearLayout>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:tint="@color/text_muted"/>
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp"
@@ -242,10 +249,11 @@
                         android:background="?attr/selectableItemBackground">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_file" android:tint="@color/accent"
-                            android:layout_marginEnd="12dp"/>
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_file" 
+                            android:tint="@color/accent"
+                            android:layout_marginEnd="14dp"/>
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -257,7 +265,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="Select Files"
                                 android:textColor="@color/text_primary"
-                                android:textSize="14sp"/>
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -265,12 +274,15 @@
                                 android:textColor="@color/text_muted"
                                 android:textSize="11sp"/>
                         </LinearLayout>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:tint="@color/text_muted"/>
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- SOURCE PREVIEW BOX (always visible, min height) -->
+                <!-- SOURCE PREVIEW BOX -->
                 <LinearLayout
                     android:id="@+id/source_preview_box"
                     android:layout_width="match_parent"
@@ -279,9 +291,8 @@
                     android:orientation="vertical"
                     android:background="@drawable/bg_preview_box"
                     android:padding="12dp"
-                    android:layout_marginBottom="4dp">
+                    android:layout_marginBottom="10dp">
 
-                    <!-- Header row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -298,7 +309,6 @@
                             android:textSize="9sp"
                             android:letterSpacing="0.2"/>
 
-                        <!-- Clear all button (hidden when empty) -->
                         <TextView
                             android:id="@+id/btn_clear_all_source"
                             android:layout_width="wrap_content"
@@ -312,7 +322,6 @@
                             android:visibility="gone"/>
                     </LinearLayout>
 
-                    <!-- Empty hint -->
                     <TextView
                         android:id="@+id/tv_source_empty_hint"
                         android:layout_width="match_parent"
@@ -324,7 +333,6 @@
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"/>
 
-                    <!-- Items list (folder chip OR file chips) -->
                     <LinearLayout
                         android:id="@+id/source_items_container"
                         android:layout_width="match_parent"
@@ -353,7 +361,6 @@
                     android:letterSpacing="0.2"
                     android:layout_marginBottom="8dp"/>
 
-                <!-- Open WebHost Manager -->
                 <LinearLayout
                     android:id="@+id/row_open_web_host"
                     android:layout_width="match_parent"
@@ -362,15 +369,16 @@
                     android:gravity="center_vertical"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:background="@drawable/bg_card"
                     android:clickable="true"
-                    android:focusable="true">
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_globe_internet" android:tint="@color/accent"
-                        android:layout_marginEnd="12dp"/>
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_globe_internet" 
+                        android:tint="@color/accent"
+                        android:layout_marginEnd="14dp"/>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -382,7 +390,8 @@
                             android:layout_height="wrap_content"
                             android:text="Manage Website Folders"
                             android:textColor="@color/text_primary"
-                            android:textSize="14sp"/>
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -390,141 +399,142 @@
                             android:textColor="@color/text_muted"
                             android:textSize="11sp"/>
                     </LinearLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="›" android:textColor="@color/text_muted" android:textSize="20sp"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_arrow_forward"
+                        android:tint="@color/text_muted"/>
                 </LinearLayout>
 
                 <!-- WEB PREVIEW BOX -->
-				<LinearLayout
-					android:id="@+id/web_preview_box"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:minHeight="80dp"
-					android:orientation="vertical"
-					android:background="@drawable/bg_preview_box"
-					android:padding="12dp"
-					android:layout_marginTop="10dp"
-					android:layout_marginBottom="4dp">
+                <LinearLayout
+                    android:id="@+id/web_preview_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="80dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_preview_box"
+                    android:padding="12dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="4dp">
 
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:gravity="center_vertical"
-						android:layout_marginBottom="8dp">
-						<TextView
-							android:layout_width="0dp"
-							android:layout_height="wrap_content"
-							android:layout_weight="1"
-							android:text="ACTIVE WEBSITE"
-							android:textColor="@color/accent"
-							android:textSize="9sp"
-							android:letterSpacing="0.2"/>
-						<TextView
-							android:id="@+id/btn_clear_web"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="CLEAR"
-							android:textColor="@color/text_muted"
-							android:textSize="9sp"
-							android:paddingStart="8dp"
-							android:visibility="gone"/>
-					</LinearLayout>
-
-					<TextView
-						android:id="@+id/tv_web_empty_hint"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:text="No website folder selected yet"
-						android:textColor="@color/text_muted"
-						android:textSize="12sp"
-						android:gravity="center"
-						android:paddingTop="8dp"
-						android:paddingBottom="8dp"/>
-
-					<!-- Web folder info -->
-					<LinearLayout
-						android:id="@+id/web_folder_info"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="vertical"
-						android:visibility="gone">
-
-						<!-- Folder name chip with remove -->
-						<LinearLayout
-							android:id="@+id/web_folder_chip"
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:orientation="horizontal"
-							android:gravity="center_vertical"
-							android:background="@drawable/bg_chip_item"
-							android:padding="10dp"
-							android:layout_marginBottom="8dp">
-
-							<ImageView
-								android:layout_width="32dp"
-								android:layout_height="32dp"
-								android:src="@drawable/ic_globe_internet" 
-								android:tint="@color/accent"/>
-
-							<LinearLayout
-								android:layout_width="0dp"
-								android:layout_height="wrap_content"
-								android:layout_weight="1"
-								android:orientation="vertical"
-								android:layout_marginStart="10dp">
-								<TextView
-									android:id="@+id/tv_web_folder_name"
-									android:layout_width="wrap_content"
-									android:layout_height="wrap_content"
-									android:textColor="@color/text_primary"
-									android:textSize="13sp"
-									android:textStyle="bold"
-									android:singleLine="true"
-									android:ellipsize="end"/>
-								<TextView
-									android:id="@+id/tv_web_folder_path"
-									android:layout_width="wrap_content"
-									android:layout_height="wrap_content"
-									android:textColor="@color/text_muted"
-									android:textSize="10sp"
-									android:singleLine="true"
-									android:ellipsize="start"/>
-							</LinearLayout>
-
-							<TextView
-								android:id="@+id/btn_remove_web_folder"
-								android:layout_width="36dp"
-								android:layout_height="36dp"
-								android:gravity="center"
-								android:text="✕"
-								android:textColor="@color/text_muted"
-								android:textSize="14sp"
-								android:clickable="true"
-								android:focusable="true"/>
-						</LinearLayout>
-
-						<!-- Contents title -->
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="CONTENTS"
-							android:textColor="@color/text_muted"
-							android:textSize="8sp"
-							android:letterSpacing="0.15"
-							android:layout_marginBottom="4dp"/>
-
-						<!-- Scrollable file tree -->
-						<LinearLayout
-							android:id="@+id/web_file_tree"
-							android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+                        <TextView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-							android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:text="ACTIVE WEBSITE"
+                            android:textColor="@color/accent"
+                            android:textSize="9sp"
+                            android:letterSpacing="0.2"/>
+                        <TextView
+                            android:id="@+id/btn_clear_web"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CLEAR"
+                            android:textColor="@color/text_muted"
+                            android:textSize="9sp"
+                            android:paddingStart="8dp"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_web_empty_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No website folder selected yet"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/web_folder_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:id="@+id/web_folder_chip"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/bg_chip_item"
+                            android:padding="10dp"
+                            android:layout_marginBottom="8dp">
+
+                            <ImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:src="@drawable/ic_globe_internet" 
+                                android:tint="@color/accent"/>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="10dp">
+                                <TextView
+                                    android:id="@+id/tv_web_folder_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:singleLine="true"
+                                    android:ellipsize="end"/>
+                                <TextView
+                                    android:id="@+id/tv_web_folder_path"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/text_muted"
+                                    android:textSize="10sp"
+                                    android:singleLine="true"
+                                    android:ellipsize="start"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/btn_remove_web_folder"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:gravity="center"
+                                android:text="✕"
+                                android:textColor="@color/text_muted"
+                                android:textSize="14sp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:background="@drawable/bg_icon_btn"
+                                android:padding="4dp"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CONTENTS"
+                            android:textColor="@color/text_muted"
+                            android:textSize="8sp"
+                            android:letterSpacing="0.15"
+                            android:layout_marginBottom="4dp"/>
+
+                        <LinearLayout
+                            android:id="@+id/web_file_tree"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:paddingStart="4dp"/>
 
-					</LinearLayout>
+                    </LinearLayout>
 
-				</LinearLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -555,14 +565,19 @@
                     android:paddingEnd="16dp">
 
                     <ImageView
-                        android:layout_width="28dp" android:layout_height="28dp"
-                        android:src="@drawable/ic_lock" android:tint="@color/accent" android:layout_marginEnd="12dp"/>
+                        android:layout_width="24dp" 
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_lock" 
+                        android:tint="@color/accent" 
+                        android:layout_marginEnd="14dp"/>
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Password Protection" android:textColor="@color/text_primary"
-                            android:textSize="14sp"/>
+                            android:text="Password Protection" 
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Require password to access server"
                             android:textColor="@color/text_muted" android:textSize="11sp"/>
@@ -579,10 +594,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="14dp"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:animateLayoutChanges="true">
 
                     <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:background="@color/border" android:layout_marginBottom="10dp"/>
+                        android:background="@color/border" android:layout_marginBottom="12dp"/>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="USERNAME" android:textColor="@color/text_muted"
@@ -591,7 +607,7 @@
                         android:layout_width="match_parent" android:layout_height="44dp"
                         android:hint="Enter username…" android:inputType="text"
                         android:textSize="13sp" android:textColor="@color/text_primary"
-                        android:background="@drawable/bg_input" android:padding="10dp"
+                        android:background="@drawable/bg_input" android:padding="12dp"
                         android:layout_marginBottom="10dp"/>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -599,24 +615,57 @@
                         android:textSize="8sp" android:letterSpacing="0.2" android:layout_marginBottom="4dp"/>
                     <LinearLayout android:layout_width="match_parent" android:layout_height="44dp"
                         android:orientation="horizontal" android:gravity="center_vertical"
-                        android:background="@drawable/bg_stat_card">
+                        android:background="@drawable/bg_input"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true">
                         <EditText android:id="@+id/et_password"
                             android:layout_width="0dp" android:layout_height="match_parent"
                             android:layout_weight="1" android:hint="Enter password…"
                             android:inputType="textPassword" android:textSize="13sp"
                             android:textColor="@color/text_primary" android:background="@null"
-                            android:paddingStart="10dp"/>
+                            android:paddingStart="12dp"/>
                         <ImageView android:id="@+id/btn_toggle_pass_vis"
-                            android:layout_width="44dp" android:layout_height="44dp" android:padding="12dp"
-                            android:src="@drawable/ic_visibility_on" android:gravity="center" android:tint="@color/accent"
-                            android:clickable="true" android:focusable="true"/>
+                            android:layout_width="44dp" android:layout_height="44dp" 
+                            android:padding="12dp"
+                            android:src="@drawable/ic_visibility_on" 
+                            android:gravity="center" 
+                            android:tint="@color/accent"
+                            android:clickable="true" 
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- ── QUICK TIPS ────────────────────────────────────────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_preview_box"
+                android:padding="12dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_info"
+                    android:tint="@color/text_muted"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tip: Enable password protection to secure your HTTP server"
+                    android:textColor="@color/text_muted"
+                    android:textSize="10sp"
+                    android:lineSpacingMultiplier="1.3"/>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
-     <!-- ── SAVE BUTTON — fixed at bottom ─────────────────────────────────── -->
+    <!-- ── SAVE BUTTON — fixed at bottom ─────────────────────────────────── -->
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@color/border"/>
 
@@ -624,17 +673,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"
-        android:padding="12dp">
+        android:padding="12dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Secure your HTTP server"
+            android:textColor="@color/text_muted"
+            android:textSize="10sp"
+            android:letterSpacing="0.05"/>
 
         <Button android:id="@+id/btn_save"
-            android:layout_width="match_parent" android:layout_height="52dp"
-            android:text="SAVE CONFIGURATION" android:textColor="#FFFFFF"
-            android:letterSpacing="0.1" android:textSize="13sp"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="SAVE"
+            android:textColor="#FFFFFF"
+            android:letterSpacing="0.1"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
             android:background="@drawable/bg_copy_btn"
             android:stateListAnimator="@null"/>
     </LinearLayout>
 
-    <!-- Snackbar anchor at bottom -->
+    <!-- Snackbar anchor -->
     <FrameLayout
         android:id="@+id/snackbar_anchor"
         android:layout_width="match_parent"

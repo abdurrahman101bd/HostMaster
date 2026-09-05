@@ -29,7 +29,12 @@ public class AppState {
     public void    setLocalUrl(String v)    { sp.edit().putString("local_url", v).apply(); }
 
     public int getPort(String proto) {
-        int def = "HTTP".equals(proto) ? 8080 : 2221; // FTP, SFTP, SSH all default to 2221
+        int def;
+        switch (proto) {
+            case "HTTP": def = 8080; break;
+            case "FTP":  def = 2121; break;
+            default:     def = 8080; break;
+        }
         return sp.getInt("port_" + proto, def);
     }
     public void setPort(String proto, int v) { sp.edit().putInt("port_" + proto, v).apply(); }
@@ -72,12 +77,9 @@ public class AppState {
     }
 
     // ── Web hosting ───────────────────────────────────────────────────────────
-    // Active web folder (the one currently being served)
     public String  getWebFolder()           { return sp.getString("web_folder", ""); }
     public void    setWebFolder(String v)   { sp.edit().putString("web_folder", v).apply(); }
 
-    // Saved list of website folders (managed in WebHostActivity)
-    // Stored as pipe-separated paths
     public List<String> getWebFolderList() {
         String raw = sp.getString("web_folder_list", "");
         if (raw.isEmpty()) return new ArrayList<>();
@@ -108,7 +110,7 @@ public class AppState {
                     android.text.TextUtils.join("|", list)).apply();
         }
     }
-
+    
     // ── Security ──────────────────────────────────────────────────────────────
     public boolean isPasswordEnabled()           { return sp.getBoolean("pass_enabled", false); }
     public void    setPasswordEnabled(boolean v) { sp.edit().putBoolean("pass_enabled", v).apply(); }
@@ -148,6 +150,7 @@ public class AppState {
     // ── Clear all ─────────────────────────────────────────────────────────────
     public void clearAll() { sp.edit().clear().apply(); }
 
+    // ── SharedPreferences helpers ────────────────────────────────────────────
     public boolean sp_bool(String key, boolean def)    { return sp.getBoolean(key, def); }
     public void    sp_set(String key, boolean val)     { sp.edit().putBoolean(key, val).apply(); }
     
@@ -159,8 +162,4 @@ public class AppState {
 
     public int     sp_int(String key, int def)         { return sp.getInt(key, def); }
     public void    sp_int_set(String key, int val)     { sp.edit().putInt(key, val).apply(); }
-
-    // ── SFTP port default ─────────────────────────────────────────────────────
-    // Override getPort to add SFTP default (2222)
-    // Already handled in main getPort via generic key; no change needed
 }

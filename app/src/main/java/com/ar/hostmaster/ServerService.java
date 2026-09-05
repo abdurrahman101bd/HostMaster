@@ -1,6 +1,10 @@
 package com.ar.hostmaster;
 
 import android.app.*;
+import android.content.Context;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.util.Log;
 import android.widget.Toast;
 import android.content.Intent;
 import android.os.*;
@@ -14,7 +18,7 @@ public class ServerService extends Service {
     public static final String ACTION_START      = "START";
     public static final String ACTION_STOP       = "STOP";
     public static final String ACTION_RESTART    = "RESTART";
-    private static final String CH_ID            = "hm_ch_v2"; // bumped so new importance/sound takes effect
+    private static final String CH_ID            = "hm_ch_v2";
     private static final int    NID              = 1;
     private static final int    STOP_REQ         = 99;
     private static final int    RESTART_REQ      = 98;
@@ -36,17 +40,23 @@ public class ServerService extends Service {
         if (ACTION_START.equals(intent.getAction())) {
             startForeground(NID, buildNotif());
             startServer();
+            // ── NEW: Server Started Vibration ──
+            vibrateDevice(new long[]{0, 200});
         } else if (ACTION_STOP.equals(intent.getAction())) {
             stopAllServers();
             stopForeground(true);
-            broadcastStopped();   // NEW — tell MainActivity to sync its UI
+            broadcastStopped();
             stopSelf();
+            // ── NEW: Server Stopped Vibration ──
+            vibrateDevice(new long[]{0, 300, 150, 300});
         } else if (ACTION_RESTART.equals(intent.getAction())) {
             stopAllServers();
             startServer();
-            AppState.get(this).sp_long_set("server_start_time", System.currentTimeMillis()); // NEW — keep uptime correct even if app is closed
-            startForeground(NID, buildNotif()); // refresh notif text/URL immediately
-            broadcastRestarted();  // NEW — tell MainActivity server restarted
+            AppState.get(this).sp_long_set("server_start_time", System.currentTimeMillis());
+            startForeground(NID, buildNotif());
+            broadcastRestarted();
+            // ── NEW: Server Restarted Vibration ──
+            vibrateDevice(new long[]{0, 100, 100, 100, 100, 100});
         }
         return START_STICKY;
     }
@@ -54,28 +64,40 @@ public class ServerService extends Service {
     private void startServer() {
         stopAllServers();
         AppState st = AppState.get(this);
-        switch (st.getProtocol()) {
-            case "FTP":  startFtpServer(st);       break;
-            case "SFTP": startSftpPlaceholder(st);   break;
-            case "SSH":  startSshPlaceholder(st);       break;
-            default:    startHttpServer(st); break;
+        String proto = st.getProtocol();
+        
+        if ("FTP".equals(proto)) {
+            startFtpServer(st);
+        } else {
+            startHttpServer(st);
         }
     }
 
-    // ── HTTP ──────────────────────────────────────────────────────────────────
-
     private void startHttpServer(AppState st) {
         String path = st.getFolderPath();
-        if (path.isEmpty()) return;
+        if (path.isEmpty()) {
+            notifyError("HTTP: No source selected. Go to Configure.");
+            stopForeground(true); stopSelf();
+            return;
+        }
         int port = st.getPort("HTTP");
         try {
             String mode = st.getSourceMode();
             if ("web".equals(mode)) {
                 File webDir = new File(path);
-                if (!webDir.exists() || !webDir.isDirectory()) return;
+                if (!webDir.exists() || !webDir.isDirectory()) {
+                    notifyError("HTTP: Web folder does not exist.");
+                    stopForeground(true); stopSelf();
+                    return;
+                }
                 server = new FileServer(port, webDir, st, true);
             } else if ("files".equals(mode)) {
                 List<String> filePaths = st.getSelectedFiles();
+                if (filePaths.isEmpty()) {
+                    notifyError("HTTP: No files selected.");
+                    stopForeground(true); stopSelf();
+                    return;
+                }
                 Map<String, File> vMap = new LinkedHashMap<>();
                 for (String p : filePaths) {
                     File f = new File(p);
@@ -94,75 +116,60 @@ public class ServerService extends Service {
                 server = new FileServer(port, anyParent, st, vMap);
             } else {
                 File dir = new File(path);
-                if (!dir.exists() || !dir.isDirectory()) return;
+                if (!dir.exists() || !dir.isDirectory()) {
+                    notifyError("HTTP: Selected folder does not exist.");
+                    stopForeground(true); stopSelf();
+                    return;
+                }
                 server = new FileServer(port, dir, st);
             }
             server.start();
             LogManager.reset();
             st.setRunning(true);
+            Log.i("ServerService", "HTTP server started on port " + port);
         } catch (IOException e) {
             st.setRunning(false);
             notifyError("HTTP server failed: " + e.getMessage());
-        }
-    }
-
-    // ── FTP ───────────────────────────────────────────────────────────────────
-
-    private void startFtpServer(AppState st) {
-        String path = st.getFolderPath();
-        if (path.isEmpty()) {
-            notifyError("FTP: No root folder selected. Go to Configure.");
-            stopForeground(true); stopSelf(); return;
-        }
-        File dir = new File(path);
-        if (!dir.exists() || !dir.isDirectory()) {
-            notifyError("FTP: Selected folder does not exist.");
-            stopForeground(true); stopSelf(); return;
-        }
-        int port = st.getPort("FTP");
-        try {
-            ftpServer = new FtpServer(port, dir, st, getApplicationContext());
-            ftpServer.setIdleTimeoutSeconds(st.sp_int("timeout_sec", 300));
-            ftpServer.setOnIdleTimeout(() -> {
-                stopAllServers();
-                broadcastStopped();
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    stopForeground(true);
-                    stopSelf();
-                });
-            });
-            ftpServer.start();
-            LogManager.reset();
-            st.setRunning(true);
-        } catch (IOException e) {
-            st.setRunning(false);
-            notifyError("FTP server failed: " + e.getMessage());
             stopForeground(true); stopSelf();
         }
     }
 
-    // ── SSH (placeholder) ─────────────────────────────────────────────────────
-
-    private void startSftpPlaceholder(AppState st) {
-        st.setRunning(false);
-        new Handler(Looper.getMainLooper()).post(() ->
-            Toast.makeText(getApplicationContext(),
-                    "SFTP — Coming Soon", Toast.LENGTH_LONG).show());
-        stopForeground(true);
-        stopSelf();
-    }
-
-    private void startSshPlaceholder(AppState st) {
-        st.setRunning(false);
-        new Handler(Looper.getMainLooper()).post(() ->
-            Toast.makeText(getApplicationContext(),
-                    "SSH/SFTP is not yet implemented.",
-                    Toast.LENGTH_LONG).show());
-        stopForeground(true);
-        stopSelf();
-    }
-
-    // ── Stop ──────────────────────────────────────────────────────────────────
+    private void startFtpServer(AppState st) {
+        String path = st.getFolderPath(); 
+    
+        if (path.isEmpty()) {
+            notifyError("FTP: No root folder selected. Go to Configure.");
+            stopForeground(true); stopSelf(); 
+            return;
+        }
+		File dir = new File(path);
+		if (!dir.exists() || !dir.isDirectory()) {
+			notifyError("FTP: Selected folder does not exist.");
+			stopForeground(true); stopSelf(); 
+			return;
+		}
+		int port = st.getPort("FTP");
+		try {
+			ftpServer = new FtpServer(port, dir, st, getApplicationContext());
+			ftpServer.setIdleTimeoutSeconds(st.sp_int("timeout_sec", 300));
+			ftpServer.setOnIdleTimeout(() -> {
+				stopAllServers();
+				broadcastStopped();
+				new Handler(Looper.getMainLooper()).post(() -> {
+					stopForeground(true);
+					stopSelf();
+				});
+			});
+			ftpServer.start();
+			LogManager.reset();
+			st.setRunning(true);
+			Log.i("ServerService", "FTP server started on port " + port + " with root: " + path);
+		} catch (IOException e) {
+			st.setRunning(false);
+			notifyError("FTP server failed: " + e.getMessage());
+			stopForeground(true); stopSelf();
+		}
+	}
 
     private void stopAllServers() {
         if (server    != null) { server.stop();    server    = null; }
@@ -188,12 +195,34 @@ public class ServerService extends Service {
 
     @Override public void onDestroy() { stopAllServers(); super.onDestroy(); }
 
+    // ── Vibration Helper ──────────────────────────────────────────────────────
+
+    private void vibrateDevice(long[] pattern) {
+        try {
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null && vibrator.hasVibrator()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1));
+                } else {
+                    vibrator.vibrate(pattern, -1);
+                }
+            }
+        } catch (Exception ignored) {}
+    }
+
+    // ── Notification Channel ──────────────────────────────────────────────────
+
     private void createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel ch = new NotificationChannel(
                     CH_ID, "Host Master Server", NotificationManager.IMPORTANCE_DEFAULT);
-            ch.setDescription("HTTP file server status");
+            ch.setDescription("HTTP/FTP file server status");
             ch.setShowBadge(true);
+            
+            // ── NEW: Enable vibration for notifications ──
+            ch.enableVibration(true);
+            ch.setVibrationPattern(new long[]{0, 200});
+            
             ch.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI,
                     new android.media.AudioAttributes.Builder()
                             .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
@@ -218,10 +247,11 @@ public class ServerService extends Service {
 
         AppState st  = AppState.get(this);
         String   url = st.getLocalUrl();
-        String  text = url.isEmpty() ? "Server is running…" : "Running · " + url;
+        String proto = st.getProtocol();
+        String  text = url.isEmpty() ? proto + " server is running…" : "Running · " + url;
 
         return new NotificationCompat.Builder(this, CH_ID)
-                .setContentTitle("Host Master")
+                .setContentTitle("Host Master - " + proto)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.hostmaster_notification_icon)
                 .setContentIntent(openPi)

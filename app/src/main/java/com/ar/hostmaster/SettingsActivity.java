@@ -15,6 +15,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String GITHUB_URL = "https://github.com/abdurrahman101bd/host_master/issues";
 
     private AppState state;
+    private Switch swNotif, swKeepLogs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,20 +29,31 @@ public class SettingsActivity extends AppCompatActivity {
         updatePortSub();
         updateTimeoutSub();
 
-        // ── Switches — always ON (logic coming later) ─────────────────────────
-        Switch swNotif     = findViewById(R.id.sw_notifications);
+        // ── Switches ─────────────────────────────────────────────────────────
+        swNotif = findViewById(R.id.sw_notifications);
+        swKeepLogs = findViewById(R.id.sw_keep_logs);
         Switch swLocalOnly = findViewById(R.id.sw_local_only);
-        Switch swKeepLogs  = findViewById(R.id.sw_keep_logs);
-        swNotif.setChecked(true);
-        swLocalOnly.setChecked(true);
-        swKeepLogs.setChecked(true);
-        swNotif.setEnabled(false);
-        swLocalOnly.setEnabled(false);
-        swKeepLogs.setEnabled(false);
-
-        // Autostart
         Switch swAutostart = findViewById(R.id.sw_autostart_settings);
+        
+        // Restore states
+        swNotif.setChecked(state.sp_bool("notifications_enabled", true));
+        swKeepLogs.setChecked(state.sp_bool("keep_logs_enabled", true));
+        swLocalOnly.setChecked(state.sp_bool("local_only", true));
         swAutostart.setChecked(state.isAutostart());
+        
+        // Local Only - disabled (always on)
+        swLocalOnly.setEnabled(false);
+
+        // ── Listeners ────────────────────────────────────────────────────────
+        swNotif.setOnCheckedChangeListener((b, on) -> {
+            state.sp_set("notifications_enabled", on);
+        });
+        
+        swKeepLogs.setOnCheckedChangeListener((b, on) -> {
+            state.sp_set("keep_logs_enabled", on);
+            LogManager.setSavingEnabled(on);
+        });
+        
         swAutostart.setOnCheckedChangeListener((b, on) -> state.setAutostart(on));
 
         // ── Row clicks ────────────────────────────────────────────────────────
@@ -77,10 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void updatePortSub() {
         TextView sub = findViewById(R.id.tv_port_sub);
         if (sub == null) return;
-        sub.setText("HTTP:" + state.getPort("HTTP")
-                + "  FTP:" + state.getPort("FTP")
-                + "  SFTP:" + state.getPort("SFTP")
-                + "  SSH:" + state.getPort("SSH"));
+        sub.setText("HTTP:" + state.getPort("HTTP") + "  ·  FTP:" + state.getPort("FTP"));
     }
 
     private void updateTimeoutSub() {
@@ -90,14 +99,6 @@ public class SettingsActivity extends AppCompatActivity {
         sub.setText(t + " seconds");
     }
 
-    private void applyLanguage(String langKey) {
-        android.content.res.Configuration config =
-                new android.content.res.Configuration(getResources().getConfiguration());
-        config.setLocale(new Locale("en".equals(langKey) ? "en" : "bn"));
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-        recreate();
-    }
-    
     // ── Theme Dialog ──────────────────────────────────────────────────────────
 
     private void showThemeDialog() {
@@ -167,10 +168,10 @@ public class SettingsActivity extends AppCompatActivity {
         showPickerDialog("SELECT THEME", container);
     }
 
-    // ── Port Dialog ───────────────────────────────────────────────────────────
+    // ── Port Dialog (HTTP + FTP only) ──────────────────────────────────────
 
     private void showPortDialog() {
-        String[] protos = {"HTTP", "FTP", "SFTP", "SSH"};
+        String[] protos = {"HTTP", "FTP"};
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -251,7 +252,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     // ── Timeout Dialog ────────────────────────────────────────────────────────
-    // Simple preset picker: 60s / 5min / 15min / 30min / Never
 
     private void showTimeoutDialog() {
         String[] labels = {"1 minute", "5 minutes", "15 minutes", "30 minutes", "Never"};

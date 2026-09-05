@@ -56,20 +56,14 @@ public class StatsActivity extends AppCompatActivity {
     }
     
     private void performReset() {
-        // Reset stats in AppState
         appState.resetStats();
-        
-        // Update UI
         updateStats();
-        
-        // Show success message
         Toast.makeText(this, "Statistics reset successfully", Toast.LENGTH_SHORT).show();
     }
     
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh stats when returning to activity
         updateStats();
     }
 }

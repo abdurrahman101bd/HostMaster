@@ -71,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQ_CONFIG      = 101;
     private static final int REQ_FTP_CONFIG  = 102;
-    private static final int REQ_SSH_CONFIG  = 103;
-    private static final int REQ_SFTP_CONFIG = 104;
     private static final int REQ_MANAGE_STOR = 202;
 
     @Override
@@ -150,23 +148,13 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             String proto = state.getProtocol();
-            switch (proto) {
-                case "FTP":
-                    startActivityForResult(
-                            new Intent(this, FtpConfigureActivity.class), REQ_FTP_CONFIG);
-                    break;
-                case "SSH":
-                    startActivityForResult(
-                            new Intent(this, SshConfigureActivity.class), REQ_SSH_CONFIG);
-                    break;
-                case "SFTP":
-                    startActivityForResult(
-                            new Intent(this, SftpConfigureActivity.class), REQ_SFTP_CONFIG);
-                    break;
-                default: // HTTP
-                    startActivityForResult(
-                            new Intent(this, ConfigureActivity.class), REQ_CONFIG);
-                    break;
+            if ("FTP".equals(proto)) {
+                startActivityForResult(
+                        new Intent(this, FtpConfigureActivity.class), REQ_FTP_CONFIG);
+            } else {
+                // Default: HTTP
+                startActivityForResult(
+                        new Intent(this, ConfigureActivity.class), REQ_CONFIG);
             }
         });
 
@@ -179,34 +167,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void openUrl() {
         String url = tvUrl.getText().toString();
-        if (!url.contains("—") && !url.contains("android@—")) {
+        if (!url.contains("—")) {
             try {
-                // Handle SSH/SFTP differently
-                String proto = state.getProtocol();
-                if ("SSH".equals(proto) || "SFTP".equals(proto)) {
-                    // For SSH/SFTP, show a dialog with connection info
-                    showConnectionDialog(url);
-                } else {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                }
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             } catch (Exception ignored) {
                 Toast.makeText(this, "Cannot open URL", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void showConnectionDialog(String connectionInfo) {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Connection Info")
-            .setMessage("Connect using:\n\n" + connectionInfo + 
-                       "\n\nDefault username: android")
-            .setPositiveButton("Copy", (d, w) -> {
-                ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                cm.setPrimaryClip(ClipData.newPlainText("connection", connectionInfo));
-                Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show();
-            })
-            .setNegativeButton("Close", null)
-            .show();
     }
 
     // ── Server toggle ─────────────────────────────────────────────────────────
@@ -334,51 +301,29 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private String getSchemeForProtocol(String proto) {
-        switch (proto) {
-            case "FTP": return "ftp";
-            case "SSH": return "ssh";
-            case "SFTP": return "sftp";
-            default: return "http";
-        }
+        if ("FTP".equals(proto)) return "ftp";
+        return "http";
     }
     
     private String getDisplayUrl(String proto, String ip, int port) {
-        switch (proto) {
-            case "SSH":
-                return "ssh android@" + ip + " -p " + port;
-            case "SFTP":
-                return "sftp android@" + ip + " -p " + port;
-            case "FTP":
-                return "ftp://" + ip + ":" + port;
-            default:
-                return "http://" + ip + ":" + port;
+        if ("FTP".equals(proto)) {
+            return "ftp://" + ip + ":" + port;
         }
+        return "http://" + ip + ":" + port;
     }
     
     private String getQrUrl(String proto, String ip, int port) {
-        switch (proto) {
-            case "SSH":
-                return "ssh android@" + ip + " -p " + port;
-            case "SFTP":
-                return "sftp android@" + ip + " -p " + port;
-            case "FTP":
-                return "ftp://" + ip + ":" + port;
-            default:
-                return "http://" + ip + ":" + port;
+        if ("FTP".equals(proto)) {
+            return "ftp://" + ip + ":" + port;
         }
+        return "http://" + ip + ":" + port;
     }
     
     private String getIdleDisplayUrl(String proto, int port) {
-        switch (proto) {
-            case "SSH":
-                return "ssh android@—.—.—.— -p " + port;
-            case "SFTP":
-                return "sftp android@—.—.—.— -p " + port;
-            case "FTP":
-                return "ftp://—.—.—.—:" + port;
-            default:
-                return "http://—.—.—.—:" + port;
+        if ("FTP".equals(proto)) {
+            return "ftp://—.—.—.—:" + port;
         }
+        return "http://—.—.—.—:" + port;
     }
     
     private String getCurrentDisplayUrl() {
@@ -399,31 +344,16 @@ public class MainActivity extends AppCompatActivity {
         String label;
         int iconRes;
 
-        switch (proto) {
-            case "FTP":
-                label = "FTP";
-                iconRes = R.drawable.ic_ftp;
-                if (tvQrTitle != null) tvQrTitle.setText("FTP ACCESS");
-                if (tvQrDesc != null) tvQrDesc.setText("Connect using any FTP client (e.g., Solid Explorer)");
-                break;
-            case "SSH":
-                label = "SSH";
-                iconRes = R.drawable.ic_ssh;
-                if (tvQrTitle != null) tvQrTitle.setText("SSH TERMINAL");
-                if (tvQrDesc != null) tvQrDesc.setText("Connect via terminal: ssh android@ip -p port (Default user: android)");
-                break;
-            case "SFTP":
-                label = "SFTP";
-                iconRes = R.drawable.ic_ftps;
-                if (tvQrTitle != null) tvQrTitle.setText("SFTP ACCESS");
-                if (tvQrDesc != null) tvQrDesc.setText("Connect via terminal: sftp android@ip -p port (Default user: android)");
-                break;
-            default:
-                label = "HTTP";
-                iconRes = R.drawable.ic_http;
-                if (tvQrTitle != null) tvQrTitle.setText("SCAN ME");
-                if (tvQrDesc != null) tvQrDesc.setText("Scan QR to access from any device on your network");
-                break;
+        if ("FTP".equals(proto)) {
+            label = "FTP";
+            iconRes = R.drawable.ic_ftp;
+            if (tvQrTitle != null) tvQrTitle.setText("FTP ACCESS");
+            if (tvQrDesc != null) tvQrDesc.setText("Connect using any FTP client (e.g., Solid Explorer)");
+        } else {
+            label = "HTTP";
+            iconRes = R.drawable.ic_http;
+            if (tvQrTitle != null) tvQrTitle.setText("SCAN ME");
+            if (tvQrDesc != null) tvQrDesc.setText("Scan QR to access from any device on your network");
         }
 
         if (protocolsIcon != null) {
@@ -548,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int req, int res, Intent data) {
         super.onActivityResult(req, res, data);
 
-        if ((req == REQ_FTP_CONFIG || req == REQ_SSH_CONFIG || req == REQ_SFTP_CONFIG) && res == RESULT_OK && serverRunning) {
+        if (req == REQ_FTP_CONFIG && res == RESULT_OK && serverRunning) {
             stopServer(); startServer();
         }
 
@@ -570,5 +500,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }

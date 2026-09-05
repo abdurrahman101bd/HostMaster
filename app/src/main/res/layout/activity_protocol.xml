@@ -45,26 +45,21 @@
         android:layout_height="1dp"
         android:background="@color/border"/>
 
-    <RadioGroup
-        android:id="@+id/rg_protocol"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"/>
-
-    <!-- ScrollView with layout_weight to push button to bottom -->
+    <!-- ScrollView -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            android:gravity="center_horizontal">
 
             <!-- HTTP Card -->
             <LinearLayout
@@ -73,55 +68,50 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_proto_card_selected"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"
+                android:padding="20dp"
+                android:layout_marginBottom="12dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:gravity="center_horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <!-- Big Icon -->
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_http"
+                    android:tint="@color/accent"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Protocol Name -->
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
+                    android:text="HTTP"
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp"/>
 
-                    <!-- Icon -->
-                    <ImageView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:src="@drawable/ic_http"
-                        android:tint="@color/accent"
-                        android:layout_marginEnd="12dp"/>
+                <!-- Port -->
+                <TextView
+                    android:id="@+id/tv_http_port"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PORT 8080"
+                    android:textColor="@color/accent"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="12dp"/>
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="HTTP"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:id="@+id/tv_http_port"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="PORT 8080"
-                            android:textColor="@color/accent"
-                            android:textSize="11sp"
-                            android:letterSpacing="0.05"/>
-                    </LinearLayout>
+                <!-- Status Dot -->
+                <View
+                    android:id="@+id/dot_http"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/bg_proto_dot_on"
+                    android:layout_marginBottom="12dp"/>
 
-                    <View
-                        android:id="@+id/dot_http"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:background="@drawable/bg_proto_dot_on"/>
-                </LinearLayout>
-
+                <!-- Description -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -129,12 +119,15 @@
                     android:textColor="@color/text_muted"
                     android:textSize="12sp"
                     android:lineSpacingMultiplier="1.5"
-                    android:layout_marginBottom="10dp"/>
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
 
+                <!-- Tags -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -144,8 +137,8 @@
                         android:letterSpacing="0.1"
                         android:background="@drawable/bg_tag"
                         android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"/>
                     <TextView
@@ -157,8 +150,8 @@
                         android:letterSpacing="0.1"
                         android:background="@drawable/bg_tag"
                         android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"/>
                     <TextView
@@ -169,8 +162,8 @@
                         android:textSize="9sp"
                         android:letterSpacing="0.1"
                         android:background="@drawable/bg_tag_muted"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"/>
                 </LinearLayout>
@@ -183,55 +176,50 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"
+                android:padding="20dp"
+                android:layout_marginBottom="12dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:gravity="center_horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <!-- Big Icon -->
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_ftp"
+                    android:tint="@color/accent"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Protocol Name -->
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
+                    android:text="FTP"
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp"/>
 
-                    <!-- Icon -->
-                    <ImageView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:src="@drawable/ic_ftp"
-                        android:tint="@color/accent"
-                        android:layout_marginEnd="12dp"/>
+                <!-- Port -->
+                <TextView
+                    android:id="@+id/tv_ftp_port"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PORT 2121"
+                    android:textColor="@color/accent"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="12dp"/>
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="FTP"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:id="@+id/tv_ftp_port"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="PORT 21"
-                            android:textColor="@color/accent"
-                            android:textSize="11sp"
-                            android:letterSpacing="0.05"/>
-                    </LinearLayout>
+                <!-- Status Dot -->
+                <View
+                    android:id="@+id/dot_ftp"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/bg_proto_dot_off"
+                    android:layout_marginBottom="12dp"/>
 
-                    <View
-                        android:id="@+id/dot_ftp"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:background="@drawable/bg_proto_dot_off"/>
-                </LinearLayout>
-
+                <!-- Description -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -239,12 +227,15 @@
                     android:textColor="@color/text_muted"
                     android:textSize="12sp"
                     android:lineSpacingMultiplier="1.5"
-                    android:layout_marginBottom="10dp"/>
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
 
+                <!-- Tags -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -254,8 +245,8 @@
                         android:letterSpacing="0.1"
                         android:background="@drawable/bg_tag"
                         android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"/>
                     <TextView
@@ -267,8 +258,8 @@
                         android:letterSpacing="0.1"
                         android:background="@drawable/bg_tag"
                         android:layout_marginEnd="6dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"/>
                     <TextView
@@ -279,178 +270,8 @@
                         android:textSize="9sp"
                         android:letterSpacing="0.1"
                         android:background="@drawable/bg_tag"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingTop="3dp"
-                        android:paddingBottom="3dp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-             <!-- SFTP Card - Disabled (Coming Soon) -->
-            <LinearLayout
-                android:id="@+id/card_sftp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card_disabled"
-                android:padding="16dp"
-                android:layout_marginBottom="10dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:alpha="0.6">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
-
-                    <ImageView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:src="@drawable/ic_ftps"
-                        android:tint="@color/text_muted"
-                        android:layout_marginEnd="12dp"/>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="SFTP"
-                            android:textColor="@color/text_muted"
-                            android:textSize="16sp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:id="@+id/tv_sftp_port"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="PORT 22"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp"
-                            android:letterSpacing="0.05"/>
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/dot_sftp"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:background="@drawable/bg_proto_dot_off"/>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="SSH File Transfer Protocol — secure file transfer over SSH. Provides encrypted file access with full security. Coming in future update."
-                    android:textColor="@color/text_muted"
-                    android:textSize="12sp"
-                    android:lineSpacingMultiplier="1.5"
-                    android:layout_marginBottom="10dp"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="COMING SOON"
-                        android:textColor="@color/text_muted"
-                        android:textSize="9sp"
-                        android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag_muted"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:paddingTop="3dp"
-                        android:paddingBottom="3dp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- SSH Card - Disabled (Coming Soon) -->
-            <LinearLayout
-                android:id="@+id/card_ssh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card_disabled"
-                android:padding="16dp"
-                android:layout_marginBottom="0dp"
-                android:clickable="false"
-                android:focusable="false"
-                android:alpha="0.6">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
-
-                    <!-- Icon with muted color -->
-                    <ImageView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:src="@drawable/ic_ssh"
-                        android:tint="@color/text_muted"
-                        android:layout_marginEnd="12dp"/>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="SSH"
-                            android:textColor="@color/text_muted"
-                            android:textSize="16sp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:id="@+id/tv_ssh_port"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="PORT 22"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp"
-                            android:letterSpacing="0.05"/>
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/dot_ssh"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:background="@drawable/bg_proto_dot_off"/>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Secure Shell with encrypted file transfer. Full encrypted connection for maximum security. Access files with SSH clients. Ideal for sharing sensitive data."
-                    android:textColor="@color/text_muted"
-                    android:textSize="12sp"
-                    android:lineSpacingMultiplier="1.5"
-                    android:layout_marginBottom="10dp"/>
-
-                <!-- Disabled badge -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="DISABLED"
-                        android:textColor="@color/text_muted"
-                        android:textSize="9sp"
-                        android:letterSpacing="0.1"
-                        android:background="@drawable/bg_tag_muted"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"/>
                 </LinearLayout>

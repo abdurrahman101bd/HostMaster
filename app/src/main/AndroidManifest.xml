@@ -27,6 +27,9 @@
     <!-- Battery optimization & Notifications -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    
+    <!-- Vibration permission -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".HostMasterApplication" 
@@ -93,14 +96,6 @@
             android:screenOrientation="portrait" />
            
         <activity android:name=".FtpConfigureActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".SftpConfigureActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".SshConfigureActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

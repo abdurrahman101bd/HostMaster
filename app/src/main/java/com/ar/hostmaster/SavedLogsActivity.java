@@ -52,10 +52,8 @@ public class SavedLogsActivity extends AppCompatActivity {
         
         btnSelectAll.setOnClickListener(v -> {
             if (selectedPositions.size() == adapter.getItemCount()) {
-                // All selected, deselect all
                 selectedPositions.clear();
             } else {
-                // Select all
                 selectedPositions.clear();
                 for (int i = 0; i < adapter.getItemCount(); i++) {
                     selectedPositions.add(i);
@@ -72,7 +70,6 @@ public class SavedLogsActivity extends AppCompatActivity {
                 Snackbar.make(rv, "No items selected to export", Snackbar.LENGTH_SHORT).show();
                 return;
             }
-            // Open folder picker for export
             Intent i = new Intent(this, FilePickerActivity.class);
             i.putExtra(FilePickerActivity.MODE_KEY, FilePickerActivity.MODE_FOLDER);
             startActivityForResult(i, REQUEST_EXPORT_FOLDER);
@@ -82,11 +79,61 @@ public class SavedLogsActivity extends AppCompatActivity {
     }
 
     private void loadSavedLogs() {
+        boolean isSavingEnabled = state.sp_bool("keep_logs_enabled", true);
+        
+        if (!isSavingEnabled) {
+            viewEmpty.setVisibility(View.VISIBLE);
+            rv.setVisibility(View.GONE);
+            selectionBar.setVisibility(View.GONE);
+            
+            TextView emptyTitle = viewEmpty.findViewById(R.id.tv_empty_title);
+            TextView emptySub = viewEmpty.findViewById(R.id.tv_empty_sub);
+            ImageView emptyIcon = viewEmpty.findViewById(R.id.iv_empty_icon);
+            Button btnGoSettings = viewEmpty.findViewById(R.id.btn_go_settings);
+            
+            if (emptyTitle != null) {
+                emptyTitle.setText("LOG SAVING DISABLED");
+            }
+            if (emptySub != null) {
+                emptySub.setText("Enable log saving in Settings to view saved logs");
+            }
+            if (emptyIcon != null) {
+                emptyIcon.setImageResource(R.drawable.ic_logs);
+                emptyIcon.setVisibility(View.VISIBLE);
+            }
+            if (btnGoSettings != null) {
+                btnGoSettings.setVisibility(View.VISIBLE);
+                btnGoSettings.setOnClickListener(v -> {
+                    startActivity(new Intent(this, SettingsActivity.class));
+                });
+            }
+            return;
+        }
+        
         List<String> dates = LogManager.getAvailableLogDates();
         if (dates.isEmpty()) {
             viewEmpty.setVisibility(View.VISIBLE);
             rv.setVisibility(View.GONE);
             selectionBar.setVisibility(View.GONE);
+            
+            TextView emptyTitle = viewEmpty.findViewById(R.id.tv_empty_title);
+            TextView emptySub = viewEmpty.findViewById(R.id.tv_empty_sub);
+            ImageView emptyIcon = viewEmpty.findViewById(R.id.iv_empty_icon);
+            Button btnGoSettings = viewEmpty.findViewById(R.id.btn_go_settings);
+            
+            if (emptyTitle != null) {
+                emptyTitle.setText("NO SAVED LOGS");
+            }
+            if (emptySub != null) {
+                emptySub.setText("Logs are saved automatically each day");
+            }
+            if (emptyIcon != null) {
+                emptyIcon.setImageResource(R.drawable.ic_logs);
+                emptyIcon.setVisibility(View.VISIBLE);
+            }
+            if (btnGoSettings != null) {
+                btnGoSettings.setVisibility(View.GONE);
+            }
         } else {
             viewEmpty.setVisibility(View.GONE);
             rv.setVisibility(View.VISIBLE);
@@ -115,19 +162,14 @@ public class SavedLogsActivity extends AppCompatActivity {
         int total = adapter.getItemCount();
         tvSelectionCount.setText(count + " selected");
         
-        // Dynamic checkbox state based on selection
         if (count == 0) {
-            // No item selected
             btnSelectAll.setImageResource(R.drawable.ic_checkbox_unchecked);
         } else if (count == total) {
-            // All items selected
             btnSelectAll.setImageResource(R.drawable.ic_checkbox_checked);
         } else {
-            // Some items selected (partial)
             btnSelectAll.setImageResource(R.drawable.ic_checkbox_indeterminate);
         }
     }
-    // ──────────────────────────────────────────────────────────────────────
 
     private void deleteSelectedItems() {
         if (selectedPositions.isEmpty()) return;

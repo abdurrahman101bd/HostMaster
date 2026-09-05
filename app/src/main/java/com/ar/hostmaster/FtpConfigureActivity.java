@@ -12,7 +12,7 @@ import android.view.*;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
-import java.util.ArrayList;
+import java.io.File;
 
 public class FtpConfigureActivity extends AppCompatActivity {
 
@@ -51,7 +51,7 @@ public class FtpConfigureActivity extends AppCompatActivity {
         etPort           = findViewById(R.id.et_port);
         btnTogglePassVis = findViewById(R.id.btn_toggle_pass_vis);
 
-        // Restore saved values - check if username/password empty
+        // Restore saved values
         int port = state.getPort("FTP");
         etPort.setText(String.valueOf(port));
         
@@ -162,9 +162,8 @@ public class FtpConfigureActivity extends AppCompatActivity {
     private void setInfoText(int port) {
         String ip = NetworkUtil.getLocalIp(this);
         String connectUrl = "ftp://" + ip + ":" + port;
-        String full = "FTP allows browsing and transferring files using any FTP client "
-                + "(e.g. FileZilla, Solid Explorer).\nConnect via " + connectUrl;
-
+        String full = "Connect using any FTP client\n" + connectUrl;
+    
         SpannableString ss = new SpannableString(full);
         int start = full.indexOf(connectUrl);
         if (start >= 0) {

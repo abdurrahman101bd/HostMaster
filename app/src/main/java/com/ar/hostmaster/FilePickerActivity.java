@@ -10,20 +10,6 @@ import androidx.recyclerview.widget.*;
 import java.io.*;
 import java.util.*;
 
-/**
- * FilePickerActivity
- *
- * MODE_FOLDER:
- *   - Tap row          → select this folder (confirm button activates)
- *   - Tap › arrow      → enter subfolder to navigate deeper
- *   - Back / btn_back  → go up one level (or finish at root)
- *
- * MODE_FILES:
- *   - Tap folder row   → enter folder
- *   - Tap file row     → toggle in basket
- *   - Basket chips     → persistent across folder navigation, ✕ to remove
- */
-
 public class FilePickerActivity extends AppCompatActivity {
 
     public static final String MODE_KEY     = "mode";

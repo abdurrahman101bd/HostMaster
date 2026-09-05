@@ -34,37 +34,63 @@
             android:textSize="13sp"
             android:textStyle="bold"
             android:letterSpacing="0.1"/>
+
+        <View android:layout_width="0dp" android:layout_height="0dp"
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@color/border"/>
 
     <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:scrollbars="none">
+        android:scrollbars="none" android:fillViewport="true">
 
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="16dp">
+            android:orientation="vertical" android:padding="16dp"
+            android:paddingBottom="24dp">
 
-            <!-- Quick intro -->
+            <!-- Quick intro with icon -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_preview_box"
-                android:padding="14dp"
-                android:layout_marginBottom="16dp">
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_info"
+                    android:tint="@color/accent"
+                    android:layout_marginBottom="8dp"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Host Master turns your Android device into a local network server. Share files over HTTP or FTP with any device on the same WiFi."
                     android:textColor="@color/text_muted"
                     android:textSize="12sp"
-                    android:lineSpacingMultiplier="1.5"/>
+                    android:lineSpacingMultiplier="1.5"
+                    android:gravity="center"/>
             </LinearLayout>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="FREQUENTLY ASKED" android:textColor="@color/text_muted"
-                android:textSize="9sp" android:letterSpacing="0.2" android:layout_marginBottom="8dp"/>
+            <!-- Section Title -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="FREQUENTLY ASKED"
+                    android:textColor="@color/text_muted"
+                    android:textSize="9sp" android:letterSpacing="0.2"/>
+                <View android:layout_width="0dp" android:layout_height="1dp"
+                    android:layout_weight="1" android:layout_marginStart="12dp"
+                    android:background="@color/border"/>
+            </LinearLayout>
 
             <!-- FAQ list -->
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -81,18 +107,25 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="How do I share files?"
-                        android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        android:textColor="@color/text_primary" android:textSize="14sp"
+                        android:textStyle="bold"/>
                     <TextView android:tag="arrow"
-                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_width="28dp" android:layout_height="28dp"
                         android:gravity="center" android:text="›"
-                        android:textColor="@color/text_muted" android:textSize="18sp"/>
+                        android:textColor="@color/accent" android:textSize="20sp"
+                        android:rotation="90"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/faq_1_body"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="16dp" android:paddingEnd="16dp"
-                    android:paddingBottom="14dp" android:background="@color/surface">
+                    android:paddingBottom="16dp"
+                    android:background="@color/surface">
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/border" android:layout_marginBottom="12dp"/>
+
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:text="1. Tap CONFIG on the main screen\n2. Select a folder or files to share\n3. Tap the power button to start the server\n4. Open the URL shown on any device on the same WiFi"
                         android:textColor="@color/text_muted" android:textSize="12sp"
@@ -113,18 +146,25 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="What is HTTP vs FTP?"
-                        android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        android:textColor="@color/text_primary" android:textSize="14sp"
+                        android:textStyle="bold"/>
                     <TextView android:tag="arrow"
-                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_width="28dp" android:layout_height="28dp"
                         android:gravity="center" android:text="›"
-                        android:textColor="@color/text_muted" android:textSize="18sp"/>
+                        android:textColor="@color/accent" android:textSize="20sp"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/faq_2_body"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="16dp" android:paddingEnd="16dp"
-                    android:paddingBottom="14dp" android:background="@color/surface">
+                    android:paddingBottom="16dp"
+                    android:background="@color/surface"
+                    android:visibility="gone">
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/border" android:layout_marginBottom="12dp"/>
+
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:text="HTTP: Open in any browser. Great for quick file sharing and previewing media.\n\nFTP: Use an FTP client (FileZilla, MT Manager). Better for uploading, downloading, and managing files."
                         android:textColor="@color/text_muted" android:textSize="12sp"
@@ -145,20 +185,27 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Why can't other devices connect?"
-                        android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        android:textColor="@color/text_primary" android:textSize="14sp"
+                        android:textStyle="bold"/>
                     <TextView android:tag="arrow"
-                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_width="28dp" android:layout_height="28dp"
                         android:gravity="center" android:text="›"
-                        android:textColor="@color/text_muted" android:textSize="18sp"/>
+                        android:textColor="@color/accent" android:textSize="20sp"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/faq_3_body"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="16dp" android:paddingEnd="16dp"
-                    android:paddingBottom="14dp" android:background="@color/surface">
+                    android:paddingBottom="16dp"
+                    android:background="@color/surface"
+                    android:visibility="gone">
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/border" android:layout_marginBottom="12dp"/>
+
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="• Make sure both devices are on the same WiFi network\n• Check that the server is running (power button is green)\n• Disable VPN if active\n• Try typing the IP address manually from the server address shown on the main screen"
+                        android:text="• Make sure both devices are on the same WiFi network\n• Check that the server is running (power button is green)\n• Disable VPN if active\n• Try typing the IP address manually"
                         android:textColor="@color/text_muted" android:textSize="12sp"
                         android:lineSpacingMultiplier="1.6"/>
                 </LinearLayout>
@@ -177,20 +224,27 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="How to add a password?"
-                        android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        android:textColor="@color/text_primary" android:textSize="14sp"
+                        android:textStyle="bold"/>
                     <TextView android:tag="arrow"
-                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_width="28dp" android:layout_height="28dp"
                         android:gravity="center" android:text="›"
-                        android:textColor="@color/text_muted" android:textSize="18sp"/>
+                        android:textColor="@color/accent" android:textSize="20sp"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/faq_4_body"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="16dp" android:paddingEnd="16dp"
-                    android:paddingBottom="14dp" android:background="@color/surface">
+                    android:paddingBottom="16dp"
+                    android:background="@color/surface"
+                    android:visibility="gone">
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/border" android:layout_marginBottom="12dp"/>
+
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="Go to CONFIG → Security section → enter username and password. When connecting, the browser or FTP client will ask for credentials."
+                        android:text="Go to CONFIG → Security section → enable password protection and enter username and password. When connecting, the browser or FTP client will ask for credentials."
                         android:textColor="@color/text_muted" android:textSize="12sp"
                         android:lineSpacingMultiplier="1.6"/>
                 </LinearLayout>
@@ -209,18 +263,25 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Some files don't show up — why?"
-                        android:textColor="@color/text_primary" android:textSize="14sp"/>
+                        android:textColor="@color/text_primary" android:textSize="14sp"
+                        android:textStyle="bold"/>
                     <TextView android:tag="arrow"
-                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:layout_width="28dp" android:layout_height="28dp"
                         android:gravity="center" android:text="›"
-                        android:textColor="@color/text_muted" android:textSize="18sp"/>
+                        android:textColor="@color/accent" android:textSize="20sp"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/faq_5_body"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="16dp" android:paddingEnd="16dp"
-                    android:paddingBottom="14dp" android:background="@color/surface">
+                    android:paddingBottom="16dp"
+                    android:background="@color/surface"
+                    android:visibility="gone">
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/border" android:layout_marginBottom="12dp"/>
+
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:text="On Android 11+, apps need 'All Files Access' permission to see all file types (zip, apk, db, etc.).\n\nGo to: Android Settings → Apps → Host Master → Permissions → Files and Media → Allow access to manage all files."
                         android:textColor="@color/text_muted" android:textSize="12sp"
@@ -229,6 +290,48 @@
 
             </LinearLayout>
 
+            <!-- Contact / Support Section -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="@drawable/bg_preview_box"
+				android:padding="16dp"
+				android:layout_marginTop="16dp"
+				android:gravity="center">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Need more help?"
+					android:textColor="@color/text_primary"
+					android:textSize="13sp"
+					android:textStyle="bold"
+					android:layout_marginBottom="2dp"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Check the GitHub repository for detailed documentation"
+					android:textColor="@color/text_muted"
+					android:textSize="11sp"
+					android:gravity="center"
+					android:layout_marginBottom="8dp"/>
+
+				<TextView
+					android:id="@+id/btn_github"
+					android:layout_width="wrap_content"
+					android:layout_height="32dp"
+					android:text="GitHub"
+					android:textColor="@color/accent"
+					android:textSize="11sp"
+					android:textStyle="bold"
+					android:paddingStart="20dp"
+					android:paddingEnd="20dp"
+					android:clickable="true"
+					android:focusable="true"
+					android:background="?attr/selectableItemBackground"/>
+			</LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

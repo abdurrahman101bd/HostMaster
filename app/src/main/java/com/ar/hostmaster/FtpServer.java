@@ -8,12 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
-/**
- * Lightweight FTP Server for Android.
- *
- * Key fix: PASV data connection uses a pre-accept thread so the command
- * loop never blocks waiting for the client to connect on the data port.
- */
 public class FtpServer {
     private static final String TAG = "FtpServer";
 
@@ -25,21 +19,12 @@ public class FtpServer {
     private ServerSocket      serverSocket;
     private Thread            acceptThread;
     private volatile boolean  running = false;
-    private int idleTimeoutMs = 300_000; // default 5 min, configurable
+    private int idleTimeoutMs = 300_000;
 
-    /** Called when all clients disconnect AND idle timeout elapses with no new connection. */
     public interface OnIdleTimeout { void onTimeout(); }
     private OnIdleTimeout timeoutCallback = null;
     private volatile long  lastActivityMs  = 0;
     private Thread         idleWatchdog    = null;
-
-    public void setIdleTimeoutSeconds(int seconds) {
-        this.idleTimeoutMs = (seconds <= 0) ? Integer.MAX_VALUE : seconds * 1000;
-    }
-
-    public void setOnIdleTimeout(OnIdleTimeout cb) {
-        this.timeoutCallback = cb;
-    }
 
     private static final int PASV_PORT_START = 50000;
     private static final int PASV_PORT_END   = 50100;
@@ -52,8 +37,6 @@ public class FtpServer {
         this.context = ctx;
     }
 
-    // ── Start / Stop ──────────────────────────────────────────────────────────
-
     public void start() throws IOException {
         serverSocket = new ServerSocket();
         serverSocket.setReuseAddress(true);
@@ -63,7 +46,6 @@ public class FtpServer {
         acceptThread.setDaemon(true);
         acceptThread.start();
 
-        // Idle watchdog — fires callback if no activity for idleTimeoutMs
         lastActivityMs = System.currentTimeMillis();
         if (idleTimeoutMs != Integer.MAX_VALUE) {
             idleWatchdog = new Thread(() -> {
@@ -93,6 +75,14 @@ public class FtpServer {
 
     public boolean isRunning() { return running; }
 
+    public void setIdleTimeoutSeconds(int seconds) {
+        this.idleTimeoutMs = (seconds <= 0) ? Integer.MAX_VALUE : seconds * 1000;
+    }
+
+    public void setOnIdleTimeout(OnIdleTimeout cb) {
+        this.timeoutCallback = cb;
+    }
+
     private void acceptLoop() {
         while (running) {
             try {
@@ -118,18 +108,22 @@ public class FtpServer {
         @Override
         public void run() {
             String ip = ctrl.getInetAddress().getHostAddress();
+
+            if (state.sp_bool("notifications_enabled", true)) {
+                NotificationHelper.showNotification(context, "FTP Client Connected", 
+                    "Client connected from " + ip);
+            }
+
             LogManager.clientConnected();
             lastActivityMs = System.currentTimeMillis();
             Session session = new Session();
+
             try {
                 OutputStream rawOut = ctrl.getOutputStream();
                 InputStream  rawIn  = ctrl.getInputStream();
 
-                // FTP control channel: plain text, line by line
-                PrintWriter out = new PrintWriter(
-                        new BufferedOutputStream(rawOut), false);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(rawIn));
+                PrintWriter out = new PrintWriter(new BufferedOutputStream(rawOut), false);
+                BufferedReader in = new BufferedReader(new InputStreamReader(rawIn));
 
                 writeLine(out, "220 Host Master FTP Server Ready");
 
@@ -149,7 +143,12 @@ public class FtpServer {
             } catch (Exception e) {
                 Log.d(TAG, "Client " + ip + " ended: " + e.getMessage());
             } finally {
-                closePasv(session);          // clean up any leftover PASV listener
+                if (state.sp_bool("notifications_enabled", true)) {
+                    NotificationHelper.showNotification(context, "FTP Client Disconnected", 
+                        "Client disconnected from " + ip);
+                }
+
+                closePasv(session);
                 LogManager.clientDisconnected();
                 try { ctrl.close(); } catch (Exception ignored) {}
             }
@@ -162,7 +161,6 @@ public class FtpServer {
                              PrintWriter out, Session s, String ip) {
 
         switch (cmd) {
-            // ── Auth ──────────────────────────────────────────────────────────
             case "USER":
                 s.username = arg;
                 writeLineLogged(out, "331 Password required for " + arg, cmd, arg, ip);
@@ -178,7 +176,6 @@ public class FtpServer {
                 }
                 return false;
 
-            // ── Info ──────────────────────────────────────────────────────────
             case "SYST": writeLineLogged(out, "215 UNIX Type: L8", cmd, arg, ip); return false;
 
             case "FEAT":
@@ -194,7 +191,6 @@ public class FtpServer {
             case "NOOP": writeLineLogged(out, "200 OK", cmd, arg, ip); return false;
             case "TYPE": writeLineLogged(out, "200 Type set", cmd, arg, ip); return false;
 
-            // ── Directory ─────────────────────────────────────────────────────
             case "PWD": {
                 if (!s.loggedIn) { writeLineLogged(out, "530 Not logged in", cmd, arg, ip); return false; }
                 writeLineLogged(out, "257 \"" + vpath(s.currentDir) + "\" is current directory", cmd, arg, ip);
@@ -225,13 +221,10 @@ public class FtpServer {
                 return false;
             }
 
-            // ── Passive / Active mode ─────────────────────────────────────────
             case "PASV": {
                 if (!s.loggedIn) { writeLineLogged(out, "530 Not logged in", cmd, arg, ip); return false; }
-                closePasv(s); // close any previous PASV socket
-
+                closePasv(s);
                 try {
-                    // Bind PASV socket to same address as control connection
                     int dataPort = findFreePort();
                     if (dataPort < 0) {
                         writeLineLogged(out, "425 No free port available", cmd, arg, ip);
@@ -243,14 +236,9 @@ public class FtpServer {
                     pasvSock.setSoTimeout(DATA_TIMEOUT_MS);
                     s.pasvServerSocket = pasvSock;
 
-                    // Pre-accept in background so command loop doesn't block
                     s.pendingData = new FutureTask<>(() -> {
-                        try {
-                            Socket ds = pasvSock.accept();
-                            return ds;
-                        } catch (Exception e) {
-                            return null;
-                        }
+                        try { return pasvSock.accept(); }
+                        catch (Exception e) { return null; }
                     });
                     Thread t = new Thread(s.pendingData, "FTP-PASV-Accept");
                     t.setDaemon(true);
@@ -260,7 +248,6 @@ public class FtpServer {
                     int    p1   = dataPort >> 8;
                     int    p2   = dataPort & 0xFF;
                     writeLineLogged(out, "227 Entering Passive Mode (" + ip2 + "," + p1 + "," + p2 + ")", cmd, arg, ip);
-
                 } catch (Exception e) {
                     Log.e(TAG, "PASV error: " + e.getMessage());
                     writeLineLogged(out, "425 Cannot open passive connection", cmd, arg, ip);
@@ -269,7 +256,6 @@ public class FtpServer {
             }
 
             case "EPSV": {
-                // Extended Passive Mode — used by GVfs/Nautilus/XFCE file managers
                 if (!s.loggedIn) { writeLineLogged(out, "530 Not logged in", cmd, arg, ip); return false; }
                 closePasv(s);
                 try {
@@ -292,7 +278,6 @@ public class FtpServer {
                     t.setDaemon(true);
                     t.start();
 
-                    // EPSV reply format: 229 Entering Extended Passive Mode (|||PORT|)
                     writeLineLogged(out, "229 Entering Extended Passive Mode (|||" + dataPort + "|)", cmd, arg, ip);
                 } catch (Exception e) {
                     Log.e(TAG, "EPSV error: " + e.getMessage());
@@ -316,12 +301,10 @@ public class FtpServer {
             }
 
             case "EPRT": {
-                // Extended PORT: |protocol|addr|port|
                 if (!s.loggedIn) { writeLineLogged(out, "530 Not logged in", cmd, arg, ip); return false; }
                 closePasv(s);
                 try {
                     String[] parts = arg.split("\\|");
-                    // parts: ["", protocol, addr, port, ""]
                     s.activeAddr = parts[2];
                     s.activePort = Integer.parseInt(parts[3]);
                     writeLineLogged(out, "200 EPRT OK", cmd, arg, ip);
@@ -331,11 +314,9 @@ public class FtpServer {
                 return false;
             }
 
-            // ── Transfers ─────────────────────────────────────────────────────
             case "LIST":
             case "NLST": {
                 if (!s.loggedIn) { writeLineLogged(out, "530 Not logged in", cmd, arg, ip); return false; }
-                // Strip ls-style flags (e.g. "-a", "-la", "-al") sent by some GUI clients
                 String listArg = arg;
                 for (String token : arg.split("\\s+")) {
                     if (token.startsWith("-")) {
@@ -399,7 +380,8 @@ public class FtpServer {
                     if (data == null) { writeLineLogged(out, "425 Cannot open data connection", cmd, arg, ip); return false; }
                     byte[] buf = new byte[65536];
                     int n;
-                    while ((n = data.getInputStream().read(buf)) != -1) fos.write(buf, 0, n);
+                    InputStream dis = data.getInputStream();
+                    while ((n = dis.read(buf)) != -1) fos.write(buf, 0, n);
                     fos.flush();
                     writeLineLogged(out, "226 Transfer complete", cmd, arg, ip);
                 } catch (Exception e) {
@@ -446,7 +428,7 @@ public class FtpServer {
                 } else if (f.delete()) {
                     writeLineLogged(out, "250 File deleted", cmd, arg, ip);
                 } else {
-                    writeLineLogged(out, "550 Delete failed (unknown reason): " + f.getAbsolutePath(), cmd, arg, ip);
+                    writeLineLogged(out, "550 Delete failed", cmd, arg, ip);
                 }
                 return false;
             }
@@ -505,7 +487,6 @@ public class FtpServer {
     // ── Data connection ───────────────────────────────────────────────────────
 
     private Socket getDataSocket(Session s) {
-        // PASV mode
         if (s.pendingData != null) {
             try {
                 Socket ds = s.pendingData.get(DATA_TIMEOUT_MS, TimeUnit.MILLISECONDS);
@@ -519,7 +500,6 @@ public class FtpServer {
                 return null;
             }
         }
-        // Active mode
         if (s.activeAddr != null && s.activePort > 0) {
             try {
                 Socket ds = new Socket();
@@ -553,7 +533,7 @@ public class FtpServer {
 
     private boolean authenticate(String user, String pass) {
         if (state.sp_bool("ftp_anonymous", false)) return true;
-        if (!state.isPasswordEnabled()) return true; // no password set — open
+        if (!state.isPasswordEnabled()) return true;
         String u = state.getUsername();
         String p = state.getPassword();
         if (u.isEmpty()) return p.equals(pass);
@@ -614,27 +594,22 @@ public class FtpServer {
         out.flush();
     }
 
-    /** Writes the response AND logs the command+response code. */
     private void writeLineLogged(PrintWriter out, String msg, String cmd, String arg, String ip) {
         writeLine(out, msg);
-        // Extract 3-digit status code from start of response
         String code = msg.length() >= 3 ? msg.substring(0, 3) : "000";
         LogManager.add(cmd, arg.isEmpty() ? "/" : arg, code, ip);
     }
 
-    // ── Session state (per client) ────────────────────────────────────────────
+    // ── Session state ─────────────────────────────────────────────────────────
 
     private static class Session {
         String      username        = "anonymous";
         boolean     loggedIn        = false;
         File        currentDir      = null;
-        // PASV
         ServerSocket pasvServerSocket = null;
         FutureTask<Socket> pendingData = null;
-        // Active
         String      activeAddr      = null;
         int         activePort      = -1;
-        // Rename
         File        renameFrom      = null;
     }
 }
