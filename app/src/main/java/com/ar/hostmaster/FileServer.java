@@ -11,8 +11,6 @@ public class FileServer extends NanoHTTPD {
     private final Map<String, File> virtualMap; // null = folder/web mode
     private final boolean           webMode;    // true = auto-serve index.html
 
-    // ── Constructors ──────────────────────────────────────────────────────────
-
     /** Folder mode */
     public FileServer(int port, File root, AppState st) {
         super(port);
@@ -39,9 +37,7 @@ public class FileServer extends NanoHTTPD {
         this.virtualMap = null;
         this.webMode    = webMode;
     }
-
-    // ── Main entry ────────────────────────────────────────────────────────────
-
+    
     @Override
     public Response serve(IHTTPSession session) {
         String ip  = session.getRemoteIpAddress();
@@ -55,7 +51,6 @@ public class FileServer extends NanoHTTPD {
 
         LogManager.clientConnected();
         try {
-            // ── Auth ──────────────────────────────────────────────────────────
             if (state.isPasswordEnabled() && !state.getPassword().isEmpty()) {
                 String auth = session.getHeaders().get("authorization");
                 if (auth == null || !checkAuth(auth)) {
@@ -67,7 +62,6 @@ public class FileServer extends NanoHTTPD {
                 }
             }
 
-            // ── Theme from query param ────────────────────────────────────────
             String query = session.getQueryParameterString();
             String forcedTheme = null;
             if (query != null) {
@@ -75,7 +69,6 @@ public class FileServer extends NanoHTTPD {
                 if (query.contains("theme=light")) forcedTheme = "light";
             }
 
-            // ── Virtual map mode ──────────────────────────────────────────────
             if (virtualMap != null) {
                 if (uri.equals("/")) {
                     LogManager.add("GET", "/", "200", ip);
@@ -93,8 +86,7 @@ public class FileServer extends NanoHTTPD {
                 state.addRequest();
                 return serveFileSmart(target, session);
             }
-
-            // ── Normal folder mode ────────────────────────────────────────────
+           
             File target = uri.equals("/") ? rootDir : new File(rootDir, uri);
 
             if (!safeCanonical(target)) {
@@ -145,8 +137,6 @@ public class FileServer extends NanoHTTPD {
             LogManager.clientDisconnected();
         }
     }
-
-    // ── Smart serve ───────────────────────────────────────────────────────────
 
     private Response serveFileSmart(File f, IHTTPSession session) {
         String nl   = f.getName().toLowerCase(Locale.US);
@@ -215,8 +205,6 @@ public class FileServer extends NanoHTTPD {
         }
     }
 
-    // ── Virtual listing ───────────────────────────────────────────────────────
-
     private Response buildVirtualListing(String forcedTheme) {
         boolean dark = isDark(forcedTheme);
         StringBuilder sb = new StringBuilder();
@@ -248,8 +236,6 @@ public class FileServer extends NanoHTTPD {
         sb.append("</div></body></html>");
         return newFixedLengthResponse(Response.Status.OK, "text/html; charset=utf-8", sb.toString());
     }
-
-    // ── Folder listing ────────────────────────────────────────────────────────
 
     private Response buildDirListing(File dir, String uri, String forcedTheme) {
         if (!state.isDirListing()) {
@@ -322,8 +308,6 @@ public class FileServer extends NanoHTTPD {
         return newFixedLengthResponse(Response.Status.OK, "text/html; charset=utf-8", sb.toString());
     }
 
-    // ── Indicator pill ────────────────────────────────────────────────────────
-
     private String indicator(String nl) {
         if (isVideo(nl))    return "<span class='ind play'>▶ Play</span>";
         if (isAudio(nl))    return "<span class='ind play'>♫ Play</span>";
@@ -336,8 +320,6 @@ public class FileServer extends NanoHTTPD {
         if (nl.endsWith(".json")) return "<span class='ind json'>JSON</span>";
         return              "<span class='ind dl'>↓ DL</span>";
     }
-
-    // ── HTML helpers ──────────────────────────────────────────────────────────
 
     private String htmlHead(String title, boolean dark) {
         return "<!DOCTYPE html><html lang='en'><head>"
@@ -427,8 +409,6 @@ public class FileServer extends NanoHTTPD {
             + "</style>";
     }
 
-    // ── MIME types ────────────────────────────────────────────────────────────
-
     private String betterMime(String name) {
         String nl = name.toLowerCase(Locale.US);
         if (nl.endsWith(".mp3"))  return "audio/mpeg";
@@ -472,8 +452,6 @@ public class FileServer extends NanoHTTPD {
         if (nl.endsWith(".eot"))   return "application/vnd.ms-fontobject";
         return getMimeTypeForFile(name);
     }
-
-    // ── Type checks ───────────────────────────────────────────────────────────
 
     private boolean isVideo(String nl) {
         return nl.endsWith(".mp4") || nl.endsWith(".mkv") || nl.endsWith(".avi")
@@ -527,8 +505,6 @@ public class FileServer extends NanoHTTPD {
         if (l.endsWith(".xlsx")||l.endsWith(".xls"))  return "📗";
         return "📎";
     }
-
-    // ── Security & utils ──────────────────────────────────────────────────────
 
     private boolean safeCanonical(File f) {
         try { return f.getCanonicalPath().startsWith(rootDir.getCanonicalPath()); }

@@ -21,7 +21,7 @@ public class AppState {
         sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
-    // ── Server state ──────────────────────────────────────────────────────────
+    // ── Server state ───
     public boolean isRunning()              { return sp.getBoolean("running", false); }
     public void    setRunning(boolean v)    { sp.edit().putBoolean("running", v).apply(); }
 
@@ -42,7 +42,7 @@ public class AppState {
     public String  getProtocol()            { return sp.getString("protocol", "HTTP"); }
     public void    setProtocol(String v)    { sp.edit().putString("protocol", v).apply(); }
 
-    // ── Source selection ──────────────────────────────────────────────────────
+    // ── Source selection ──    
     // Modes: "folder" | "files" | "web"
     public String  getSourceMode()          { return sp.getString("source_mode", "folder"); }
     public void    setSourceMode(String v)  { sp.edit().putString("source_mode", v).apply(); }
@@ -56,7 +56,7 @@ public class AppState {
     // Legacy compat shim
     public void setFileMode(boolean v) { setSourceMode(v ? "files" : "folder"); }
 
-    // ── Multi-file list ───────────────────────────────────────────────────────
+    // ── Multi-file list ───
     public void setSelectedFiles(List<String> paths) {
         if (paths == null || paths.isEmpty()) {
             sp.edit().remove("selected_files").apply();
@@ -76,7 +76,7 @@ public class AppState {
         return isFileMode() && getSelectedFiles().size() > 1;
     }
 
-    // ── Web hosting ───────────────────────────────────────────────────────────
+    // ── Web hosting ────
     public String  getWebFolder()           { return sp.getString("web_folder", ""); }
     public void    setWebFolder(String v)   { sp.edit().putString("web_folder", v).apply(); }
 
@@ -86,7 +86,7 @@ public class AppState {
         return new ArrayList<>(Arrays.asList(raw.split("\\|")));
     }
 
-    // ── Pinned web folders ───────────────────────────────────────────────────
+    // ── Pinned web folders ────
     public List<String> getWebPinnedFolders() {
         String raw = sp.getString("web_pinned", "");
         if (raw.isEmpty()) return new ArrayList<>();
@@ -111,7 +111,7 @@ public class AppState {
         }
     }
     
-    // ── Security ──────────────────────────────────────────────────────────────
+    // ── Security ────
     public boolean isPasswordEnabled()           { return sp.getBoolean("pass_enabled", false); }
     public void    setPasswordEnabled(boolean v) { sp.edit().putBoolean("pass_enabled", v).apply(); }
 
@@ -121,7 +121,7 @@ public class AppState {
     public String  getPassword()            { return sp.getString("password", ""); }
     public void    setPassword(String v)    { sp.edit().putString("password", v).apply(); }
 
-    // ── Server options (baked-in, no toggles needed) ──────────────────────────
+    // ── Server options ──
     public boolean isDirListing()           { return true; }
     public boolean isStreamMedia()          { return true; }
     public boolean isHostWeb()              { return isWebMode(); }
@@ -130,11 +130,11 @@ public class AppState {
     public boolean isAutostart()            { return sp.getBoolean("autostart", false); }
     public void    setAutostart(boolean v)  { sp.edit().putBoolean("autostart", v).apply(); }
 
-    // ── Theme ─────────────────────────────────────────────────────────────────
+    // ── Theme ───
     public String  getTheme()               { return sp.getString("theme", THEME_SYSTEM); }
     public void    setTheme(String v)       { sp.edit().putString("theme", v).apply(); }
 
-    // ── Stats ─────────────────────────────────────────────────────────────────
+    // ── Stats ───
     public long    getTotalRequests()       { return sp.getLong("total_req", 0); }
     public void    addRequest()             { sp.edit().putLong("total_req", getTotalRequests()+1).apply(); }
 
@@ -147,10 +147,10 @@ public class AppState {
             .apply();
     }
 
-    // ── Clear all ─────────────────────────────────────────────────────────────
+    // ── Clear all ────
     public void clearAll() { sp.edit().clear().apply(); }
 
-    // ── SharedPreferences helpers ────────────────────────────────────────────
+    // ── SharedPreferences helpers ──
     public boolean sp_bool(String key, boolean def)    { return sp.getBoolean(key, def); }
     public void    sp_set(String key, boolean val)     { sp.edit().putBoolean(key, val).apply(); }
     

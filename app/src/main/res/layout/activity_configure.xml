@@ -165,7 +165,7 @@
         
             </LinearLayout>
 
-            <!-- ══ HOST SOURCE SECTION ════════════════════════════════════════ -->
+            <!-- ══ HOST SOURCE SECTION ══ -->
             <LinearLayout
                 android:id="@+id/section_source"
                 android:layout_width="match_parent"
@@ -344,7 +344,7 @@
 
             </LinearLayout>
 
-            <!-- ══ HOST WEBSITE SECTION ═══════════════════════════════════════ -->
+            <!-- ══ HOST WEBSITE SECTION ══ -->
             <LinearLayout
                 android:id="@+id/section_website"
                 android:layout_width="match_parent"
@@ -538,7 +538,7 @@
 
             </LinearLayout>
 
-            <!-- ══ SECURITY ══════════════════════════════════════════════════ -->
+            <!-- ══ SECURITY ══ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -637,7 +637,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- ── QUICK TIPS ────────────────────────────────────────────── -->
+            <!-- ── QUICK TIPS ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -665,7 +665,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- ── SAVE BUTTON — fixed at bottom ─────────────────────────────────── -->
+    <!-- ── SAVE BUTTON ─── -->
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@color/border"/>
 

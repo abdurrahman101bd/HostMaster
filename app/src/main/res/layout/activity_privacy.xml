@@ -45,7 +45,7 @@
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:padding="16dp">
 
-            <!-- ── DATA SECTION ────────────────────────────────────────────── -->
+            <!-- ── DATA SECTION ─── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- ── DANGER ZONE ────────────────────────────────────────────── -->
+            <!-- ── DANGER ZONE ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- ── INFO NOTE ───────────────────────────────────────────────── -->
+            <!-- ── INFO NOTE ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

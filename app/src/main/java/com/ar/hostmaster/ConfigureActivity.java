@@ -116,7 +116,6 @@ public class ConfigureActivity extends AppCompatActivity {
         refreshSourcePreview();
         refreshWebPreview();
 
-        // ── Clicks ────────────────────────────────────────────────────────────
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         tabSource.setOnClickListener(v -> {
@@ -206,8 +205,6 @@ public class ConfigureActivity extends AppCompatActivity {
         });
     }
 
-    // ── Helper Methods ─────────────────────────────────────────────────────────
-
     private void applyPasswordState(boolean passwordEnabled) {
         if (passwordEnabled) {
             // Password ON - fields visible and active
@@ -234,8 +231,6 @@ public class ConfigureActivity extends AppCompatActivity {
         }
         btnTogglePassVis.setColorFilter(getResources().getColor(R.color.accent));
     }
-
-    // ── Tab switching ─────────────────────────────────────────────────────────
 
     private void applyTabSelection(boolean web) {
         if (web) {
@@ -266,8 +261,6 @@ public class ConfigureActivity extends AppCompatActivity {
             sectionWebsite.setVisibility(View.GONE);
         }
     }
-
-    // ── Source preview ────────────────────────────────────────────────────────
 
     private void refreshSourcePreview() {
         sourceItemsContainer.removeAllViews();
@@ -379,8 +372,6 @@ public class ConfigureActivity extends AppCompatActivity {
         });
     }
 
-    // ── Web preview ───────────────────────────────────────────────────────────
-
     private void refreshWebPreview() {
         String webPath = state.getWebFolder();
         if (webPath.isEmpty()) {
@@ -456,8 +447,6 @@ public class ConfigureActivity extends AppCompatActivity {
         });
     }
 
-    // ── Snackbar undo ─────────────────────────────────────────────────────────
-
     private void showUndoSnackbar(String msg, Runnable undoAction) {
         View anchor = findViewById(R.id.snackbar_anchor);
         Snackbar.make(anchor, msg, Snackbar.LENGTH_LONG)
@@ -470,8 +459,6 @@ public class ConfigureActivity extends AppCompatActivity {
         super.onResume();
         refreshWebPreview();
     }
-
-    // ── Activity results ──────────────────────────────────────────────────────
 
     @Override
     protected void onActivityResult(int req, int res, Intent data) {

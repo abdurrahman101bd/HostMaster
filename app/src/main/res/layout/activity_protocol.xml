@@ -73,16 +73,12 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_horizontal">
-
-                <!-- Big Icon -->
                 <ImageView
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:src="@drawable/ic_http"
                     android:tint="@color/accent"
                     android:layout_marginBottom="8dp"/>
-
-                <!-- Protocol Name -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -91,8 +87,6 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="4dp"/>
-
-                <!-- Port -->
                 <TextView
                     android:id="@+id/tv_http_port"
                     android:layout_width="wrap_content"
@@ -102,16 +96,12 @@
                     android:textSize="12sp"
                     android:letterSpacing="0.1"
                     android:layout_marginBottom="12dp"/>
-
-                <!-- Status Dot -->
                 <View
                     android:id="@+id/dot_http"
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:background="@drawable/bg_proto_dot_on"
                     android:layout_marginBottom="12dp"/>
-
-                <!-- Description -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -121,8 +111,6 @@
                     android:lineSpacingMultiplier="1.5"
                     android:gravity="center"
                     android:layout_marginBottom="12dp"/>
-
-                <!-- Tags -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -181,16 +169,12 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_horizontal">
-
-                <!-- Big Icon -->
                 <ImageView
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:src="@drawable/ic_ftp"
                     android:tint="@color/accent"
                     android:layout_marginBottom="8dp"/>
-
-                <!-- Protocol Name -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -199,8 +183,6 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="4dp"/>
-
-                <!-- Port -->
                 <TextView
                     android:id="@+id/tv_ftp_port"
                     android:layout_width="wrap_content"
@@ -210,16 +192,12 @@
                     android:textSize="12sp"
                     android:letterSpacing="0.1"
                     android:layout_marginBottom="12dp"/>
-
-                <!-- Status Dot -->
                 <View
                     android:id="@+id/dot_ftp"
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:background="@drawable/bg_proto_dot_off"
                     android:layout_marginBottom="12dp"/>
-
-                <!-- Description -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -229,8 +207,6 @@
                     android:lineSpacingMultiplier="1.5"
                     android:gravity="center"
                     android:layout_marginBottom="12dp"/>
-
-                <!-- Tags -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -279,8 +255,6 @@
 
         </LinearLayout>
     </ScrollView>
-
-    <!-- Bottom Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

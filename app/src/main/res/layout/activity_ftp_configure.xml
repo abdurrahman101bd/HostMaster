@@ -92,7 +92,7 @@
             android:padding="16dp"
             android:paddingBottom="80dp">
 
-            <!-- ── INFO CARD ─────────────────────────────────────────────── -->
+            <!-- ── INFO CARD ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,8 +119,7 @@
                     android:lineSpacingMultiplier="1.5"/>
             </LinearLayout>
 
-            <!-- ── ROOT FOLDER ───────────────────────────────────────────── -->
-            <!-- ── ROOT FOLDER ───────────────────────────────────────────── -->
+            <!-- ── ROOT FOLDER ── -->
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -187,39 +186,49 @@
 				android:visibility="gone"
 				android:animateLayoutChanges="true">
 
-				<ImageView
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:src="@drawable/ic_folder"
-					android:tint="@color/accent"/>
+                <LinearLayout
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:orientation="horizontal"
+				    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:background="@drawable/bg_chip_item">
 
-				<TextView
-					android:id="@+id/tv_selected_path"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:layout_marginStart="10dp"
-					android:layout_marginEnd="8dp"
-					android:textColor="@color/text_primary"
-					android:textSize="12sp"
-					android:singleLine="true"
-					android:ellipsize="start"/>
+				    <ImageView
+					    android:layout_width="20dp"
+					    android:layout_height="20dp"
+					    android:src="@drawable/ic_folder"
+					    android:tint="@color/accent"/>
 
-				<TextView
-					android:id="@+id/btn_clear_selection"
-					android:layout_width="32dp"
-					android:layout_height="32dp"
-					android:gravity="center"
-					android:text="✕"
-					android:textColor="@color/text_muted"
-					android:textSize="14sp"
-					android:clickable="true"
-					android:focusable="true"
-					android:background="@drawable/bg_icon_btn"
-					android:padding="4dp"/>
+				    <TextView
+					    android:id="@+id/tv_selected_path"
+					    android:layout_width="0dp"
+					    android:layout_height="wrap_content"
+					    android:layout_weight="1"
+					    android:layout_marginStart="10dp"
+					    android:layout_marginEnd="8dp"
+					    android:textColor="@color/text_primary"
+					    android:textSize="12sp"
+					    android:singleLine="true"
+					    android:ellipsize="start"/>
+
+				    <TextView
+					    android:id="@+id/btn_clear_selection"
+					    android:layout_width="32dp"
+					    android:layout_height="32dp"
+					    android:gravity="center"
+					    android:text="✕"
+					    android:textColor="@color/text_muted"
+					    android:textSize="14sp"
+					    android:clickable="true"
+					    android:focusable="true"
+					    android:background="@drawable/bg_icon_btn"
+					    android:padding="4dp"/>
+                </LinearLayout>
+                    
 			</LinearLayout>
 
-            <!-- ── SERVER SETTINGS ───────────────────────────────────────── -->
+            <!-- ── SERVER SETTINGS ── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -340,7 +349,7 @@
 
             </LinearLayout>
 
-            <!-- ── ACCESS CONTROL ────────────────────────────────────────── -->
+            <!-- ── ACCESS CONTROL ── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -387,9 +396,6 @@
                         android:thumbTint="@color/switch_thumb" android:trackTint="@color/switch_track"/>
                 </LinearLayout>
 
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/border"/>
-
                 <!-- Auth fields -->
                 <LinearLayout
                     android:id="@+id/auth_fields"
@@ -398,6 +404,9 @@
                     android:orientation="vertical"
                     android:padding="14dp"
                     android:visibility="visible">
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/border" android:layout_marginBottom="12dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -447,7 +456,7 @@
 
             </LinearLayout>
 
-            <!-- ── QUICK TIPS ────────────────────────────────────────────── -->
+            <!-- ── QUICK TIPS ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -475,7 +484,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- ── SAVE BUTTON — fixed at bottom ─────────────────────────────────── -->
+    <!-- ── SAVE BUTTON ── -->
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@color/border"/>
 

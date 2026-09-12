@@ -98,8 +98,6 @@ public class FtpServer {
         }
     }
 
-    // ── Client handler ────────────────────────────────────────────────────────
-
     private class ClientHandler implements Runnable {
         private final Socket ctrl;
 

@@ -81,8 +81,6 @@ public class FtpConfigureActivity extends AppCompatActivity {
 
         String path = state.getFolderPath();
         if (!path.isEmpty()) showPath(path);
-
-        // Back
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         // Select folder
@@ -148,16 +146,12 @@ public class FtpConfigureActivity extends AppCompatActivity {
             state.sp_set("ftp_anonymous", anonymous);
             state.sp_set("ftp_passive",   swPassiveMode.isChecked());
             state.sp_set("ftp_read_only", swReadOnly.isChecked());
-            
-            // passwordEnabled mirrors "not anonymous" for FTP auth check
             state.setPasswordEnabled(!anonymous);
 
             setResult(RESULT_OK);
             finish();
         });
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private void setInfoText(int port) {
         String ip = NetworkUtil.getLocalIp(this);
@@ -201,9 +195,6 @@ public class FtpConfigureActivity extends AppCompatActivity {
         pathDisplay.setVisibility(View.GONE);
     }
     
-    /**
-     * Clear folder selection with Snackbar undo support
-     */
     private void clearFolderSelection(boolean withUndo) {
         String currentPath = state.getFolderPath();
         if (currentPath.isEmpty()) return;
@@ -222,13 +213,9 @@ public class FtpConfigureActivity extends AppCompatActivity {
         }
     }
     
-    /**
-     * Show Snackbar with UNDO action
-     */
     private void showUndoSnackbar(String message, Runnable undoAction) {
         View anchor = findViewById(R.id.snackbar_anchor);
         if (anchor == null) {
-            // Fallback if snackbar_anchor not found - use root view
             anchor = findViewById(android.R.id.content);
         }
         Snackbar.make(anchor, message, Snackbar.LENGTH_LONG)

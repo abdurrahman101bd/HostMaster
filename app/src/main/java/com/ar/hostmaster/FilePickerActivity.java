@@ -332,7 +332,6 @@ public class FilePickerActivity extends AppCompatActivity {
 			if (n.endsWith(".wmv")) return R.drawable.ic_wmv;
 			if (n.endsWith(".vob")) return R.drawable.ic_vob; 
 			
-		
 			// Audio files
 			if (n.endsWith(".mp3")) return R.drawable.ic_mp3;
 			if (n.endsWith(".ogg")) return R.drawable.ic_ogg;
@@ -354,8 +353,7 @@ public class FilePickerActivity extends AppCompatActivity {
 			if (n.endsWith(".cr2")) return R.drawable.ic_cr2; 
             if (n.endsWith(".nef")) return R.drawable.ic_nef;
 			if (n.endsWith(".ico")) return R.drawable.ic_ico;
-			
-			
+						
 			// SVG & PDF
 			if (n.endsWith(".svg")) return R.drawable.ic_svg;
 			if (n.endsWith(".pdf")) return R.drawable.ic_pdf;
@@ -402,8 +400,7 @@ public class FilePickerActivity extends AppCompatActivity {
 			if (n.endsWith(".yaml")) return R.drawable.ic_yaml;
             if (n.endsWith(".yml")) return R.drawable.ic_yml;
 			if (n.endsWith(".toml")) return R.drawable.ic_toml;
-			if (n.endsWith(".env")) return R.drawable.ic_env;
-			
+			if (n.endsWith(".env")) return R.drawable.ic_env;			
 				
 			// Programming Languages (Specific Icons)
 			if (n.endsWith(".java")) return R.drawable.ic_java;
@@ -415,7 +412,6 @@ public class FilePickerActivity extends AppCompatActivity {
 			if (n.endsWith(".swift")) return R.drawable.ic_swift;
 			if (n.endsWith(".vue")) return R.drawable.ic_vue;
 			
-
 			// Generic Code Files
 			if (n.endsWith(".xml")) return R.drawable.ic_xml;
 			if (n.endsWith(".sh")) return R.drawable.ic_gnubash;
@@ -443,8 +439,7 @@ public class FilePickerActivity extends AppCompatActivity {
 			if (n.endsWith(".ppt")) return R.drawable.ic_ppt;
 			if (n.endsWith(".ppsx")) return R.drawable.ic_presentation;
 			if (n.endsWith(".odp")) return R.drawable.ic_odp;
-			
-			
+					
 			// Spreadsheets (Excel, Numbers)
 			if (n.endsWith(".xls")) return R.drawable.ic_xls;
 			if (n.endsWith(".xlsx")) return R.drawable.ic_xlsx;
@@ -464,8 +459,7 @@ public class FilePickerActivity extends AppCompatActivity {
 			if (n.endsWith(".djvu")) return R.drawable.ic_djvu;
 			if (n.endsWith(".chm")) return R.drawable.ic_chm;
 			if (n.endsWith(".wps")) return R.drawable.ic_wps; 
-			
-			
+						
 			// Database files
 			if (n.endsWith(".db")) return R.drawable.ic_database;
 			if (n.endsWith(".mdb")) return R.drawable.ic_mdb;
@@ -628,7 +622,6 @@ public class FilePickerActivity extends AppCompatActivity {
             return String.format("%.2f GB", bytes/(1024.0*1024*1024));
         }
 		
-
         @Override 
         public int getItemCount() { return data.size(); }
 
