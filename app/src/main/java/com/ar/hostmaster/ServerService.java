@@ -18,7 +18,7 @@ public class ServerService extends Service {
     public static final String ACTION_START      = "START";
     public static final String ACTION_STOP       = "STOP";
     public static final String ACTION_RESTART    = "RESTART";
-    private static final String CH_ID            = "hm_ch_v2";
+    private static final String CH_ID            = "hm_ch_v3"; // bumped again — vibration setting changed below, and channel properties don't update retroactively on-device
     private static final int    NID              = 1;
     private static final int    STOP_REQ         = 99;
     private static final int    RESTART_REQ      = 98;
@@ -219,9 +219,12 @@ public class ServerService extends Service {
             ch.setDescription("HTTP/FTP file server status");
             ch.setShowBadge(true);
             
-            // ── NEW: Enable vibration for notifications ──
-            ch.enableVibration(true);
-            ch.setVibrationPattern(new long[]{0, 200});
+            // Vibration is handled manually per-action (see vibrateDevice() calls in
+            // onStartCommand) so each action gets its own distinct pattern — leaving
+            // the channel's own vibration ALSO enabled would double-vibrate on
+            // every START/RESTART, since posting/reposting this notification
+            // re-triggers the channel's vibration too.
+            ch.enableVibration(false);
             
             ch.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI,
                     new android.media.AudioAttributes.Builder()

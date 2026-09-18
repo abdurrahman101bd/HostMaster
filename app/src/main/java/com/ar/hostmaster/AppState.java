@@ -32,8 +32,8 @@ public class AppState {
         int def;
         switch (proto) {
             case "HTTP": def = 8080; break;
-            case "FTP":  def = 2121; break;
-            default:     def = 8080; break;
+            case "FTP":  def = 2221; break;
+            default:     def = 2221; break; // SFTP/SSH, if ever re-enabled, share this default too
         }
         return sp.getInt("port_" + proto, def);
     }
@@ -111,15 +111,27 @@ public class AppState {
         }
     }
     
-    // ── Security ────
-    public boolean isPasswordEnabled()           { return sp.getBoolean("pass_enabled", false); }
-    public void    setPasswordEnabled(boolean v) { sp.edit().putBoolean("pass_enabled", v).apply(); }
+    // ── Security (per-protocol — HTTP and FTP no longer share one credential) ──
+    // HTTP falls back to the old shared key so existing users don't lose their
+    // saved HTTP credential; FTP starts fresh since it was never meant to be
+    // the same login as HTTP.
+    public boolean isPasswordEnabled(String proto) {
+        boolean legacyDefault = "HTTP".equals(proto) && sp.getBoolean("pass_enabled", false);
+        return sp.getBoolean("pass_enabled_" + proto, legacyDefault);
+    }
+    public void setPasswordEnabled(String proto, boolean v) { sp.edit().putBoolean("pass_enabled_" + proto, v).apply(); }
 
-    public String  getUsername()            { return sp.getString("username", ""); }
-    public void    setUsername(String v)    { sp.edit().putString("username", v).apply(); }
+    public String getUsername(String proto) {
+        String legacyDefault = "HTTP".equals(proto) ? sp.getString("username", "") : "";
+        return sp.getString("username_" + proto, legacyDefault);
+    }
+    public void setUsername(String proto, String v) { sp.edit().putString("username_" + proto, v).apply(); }
 
-    public String  getPassword()            { return sp.getString("password", ""); }
-    public void    setPassword(String v)    { sp.edit().putString("password", v).apply(); }
+    public String getPassword(String proto) {
+        String legacyDefault = "HTTP".equals(proto) ? sp.getString("password", "") : "";
+        return sp.getString("password_" + proto, legacyDefault);
+    }
+    public void setPassword(String proto, String v) { sp.edit().putString("password_" + proto, v).apply(); }
 
     // ── Server options ──
     public boolean isDirListing()           { return true; }

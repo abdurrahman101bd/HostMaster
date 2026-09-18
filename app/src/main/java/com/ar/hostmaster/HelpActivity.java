@@ -25,7 +25,7 @@ public class HelpActivity extends AppCompatActivity {
         // GitHub button click
         findViewById(R.id.btn_github).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://github.com/abdurrahman101bd/host_master"));
+            intent.setData(Uri.parse("https://github.com/abdurrahman101bd/HostMaster"));
             startActivity(intent);
         });
 

@@ -45,6 +45,12 @@ public class FolderPickerActivity extends AppCompatActivity {
         currentDir = dir;
         tvPath.setText(dir.getAbsolutePath());
 
+        // Clear any previous selection — it belonged to the folder we're leaving,
+        // not this one, so keeping it would let "Select" apply to a folder
+        // that's no longer even visible on screen.
+        selectedFolder = null;
+        btnSelect.setText("Select this folder");
+
         List<File> list = new ArrayList<>();
         File[] files = dir.listFiles();
         if (files != null) {

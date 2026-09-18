@@ -322,7 +322,7 @@ public class FtpServer {
                     }
                 }
                 File dir = listArg.isEmpty() ? s.currentDir : resolve(s.currentDir, listArg);
-                if (dir == null || !dir.exists()) { writeLineLogged(out, "550 Not found", cmd, arg, ip); return false; }
+                if (dir == null || !dir.exists() || !safe(dir)) { writeLineLogged(out, "550 Not found", cmd, arg, ip); return false; }
                 writeLineLogged(out, "150 Opening data connection", cmd, arg, ip);
                 try (Socket data = getDataSocket(s)) {
                     if (data == null) { writeLineLogged(out, "425 Cannot open data connection", cmd, arg, ip); return false; }
@@ -372,6 +372,7 @@ public class FtpServer {
                 if (state.sp_bool("ftp_read_only", false)) { writeLineLogged(out, "550 Read-only", cmd, arg, ip); return false; }
                 File f = resolve(s.currentDir, arg);
                 if (f == null) { writeLineLogged(out, "550 Invalid path", cmd, arg, ip); return false; }
+                if (!safe(f)) { writeLineLogged(out, "550 Access denied (outside root)", cmd, arg, ip); return false; }
                 writeLineLogged(out, "150 Ready to receive", cmd, arg, ip);
                 try (Socket data = getDataSocket(s);
                      FileOutputStream fos = new FileOutputStream(f)) {
@@ -391,7 +392,7 @@ public class FtpServer {
             case "SIZE": {
                 if (!s.loggedIn) { writeLineLogged(out, "530 Not logged in", cmd, arg, ip); return false; }
                 File f = resolve(s.currentDir, arg);
-                if (f != null && f.isFile()) writeLineLogged(out, "213 " + f.length(), cmd, arg, ip);
+                if (f != null && f.isFile() && safe(f)) writeLineLogged(out, "213 " + f.length(), cmd, arg, ip);
                 else writeLineLogged(out, "550 File not found", cmd, arg, ip);
                 return false;
             }
@@ -399,7 +400,7 @@ public class FtpServer {
             case "MDTM": {
                 if (!s.loggedIn) { writeLineLogged(out, "530 Not logged in", cmd, arg, ip); return false; }
                 File f = resolve(s.currentDir, arg);
-                if (f != null && f.exists()) {
+                if (f != null && f.exists() && safe(f)) {
                     String ts = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US)
                             .format(new Date(f.lastModified()));
                     writeLineLogged(out, "213 " + ts, cmd, arg, ip);
@@ -435,7 +436,7 @@ public class FtpServer {
                 if (!s.loggedIn) { writeLineLogged(out, "530 Not logged in", cmd, arg, ip); return false; }
                 if (state.sp_bool("ftp_read_only", false)) { writeLineLogged(out, "550 Read-only", cmd, arg, ip); return false; }
                 File d = resolve(s.currentDir, arg);
-                if (d != null && d.mkdirs()) writeLineLogged(out, "257 \"" + arg + "\" created", cmd, arg, ip);
+                if (d != null && safe(d) && d.mkdirs()) writeLineLogged(out, "257 \"" + arg + "\" created", cmd, arg, ip);
                 else writeLineLogged(out, "550 Cannot create", cmd, arg, ip);
                 return false;
             }
@@ -466,7 +467,7 @@ public class FtpServer {
                 if (state.sp_bool("ftp_read_only", false)) { writeLineLogged(out, "550 Read-only", cmd, arg, ip); return false; }
                 if (s.renameFrom == null) { writeLineLogged(out, "503 No RNFR", cmd, arg, ip); return false; }
                 File dest = resolve(s.currentDir, arg);
-                if (dest != null && s.renameFrom.renameTo(dest)) writeLineLogged(out, "250 Renamed", cmd, arg, ip);
+                if (dest != null && safe(dest) && s.renameFrom.renameTo(dest)) writeLineLogged(out, "250 Renamed", cmd, arg, ip);
                 else writeLineLogged(out, "550 Rename failed", cmd, arg, ip);
                 s.renameFrom = null;
                 return false;
@@ -531,9 +532,9 @@ public class FtpServer {
 
     private boolean authenticate(String user, String pass) {
         if (state.sp_bool("ftp_anonymous", false)) return true;
-        if (!state.isPasswordEnabled()) return true;
-        String u = state.getUsername();
-        String p = state.getPassword();
+        if (!state.isPasswordEnabled("FTP")) return true;
+        String u = state.getUsername("FTP");
+        String p = state.getPassword("FTP");
         if (u.isEmpty()) return p.equals(pass);
         return u.equals(user) && p.equals(pass);
     }
@@ -550,7 +551,12 @@ public class FtpServer {
 
     private boolean safe(File f) {
         try {
-            return f.getCanonicalPath().startsWith(rootDir.getCanonicalPath());
+            String root = rootDir.getCanonicalPath();
+            String target = f.getCanonicalPath();
+            // Must be the root itself OR inside it — startsWith(root) alone would
+            // wrongly allow a sibling folder like "root2" that merely shares the
+            // same string prefix as "root".
+            return target.equals(root) || target.startsWith(root + File.separator);
         } catch (Exception e) { return false; }
     }
 

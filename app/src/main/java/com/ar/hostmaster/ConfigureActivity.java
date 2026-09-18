@@ -94,9 +94,9 @@ public class ConfigureActivity extends AppCompatActivity {
         btnTogglePassVis = findViewById(R.id.btn_toggle_pass_vis);
 
         // Restore saved state - check if username/password empty
-        String savedUsername = state.getUsername();
-        String savedPassword = state.getPassword();
-        boolean savedPasswordEnabled = state.isPasswordEnabled();
+        String savedUsername = state.getUsername("HTTP");
+        String savedPassword = state.getPassword("HTTP");
+        boolean savedPasswordEnabled = state.isPasswordEnabled("HTTP");
         
         // If username or password is empty, force password toggle OFF
         if (savedUsername.isEmpty() || savedPassword.isEmpty()) {
@@ -139,6 +139,10 @@ public class ConfigureActivity extends AppCompatActivity {
         findViewById(R.id.row_select_file).setOnClickListener(v -> {
             Intent i = new Intent(this, FilePickerActivity.class);
             i.putExtra(FilePickerActivity.MODE_KEY, FilePickerActivity.MODE_FILES);
+            if ("files".equals(state.getSourceMode())) {
+                i.putStringArrayListExtra(FilePickerActivity.RESULT_PATHS,
+                        new ArrayList<>(state.getSelectedFiles()));
+            }
             startActivityForResult(i, REQ_FILE);
         });
 
@@ -184,20 +188,33 @@ public class ConfigureActivity extends AppCompatActivity {
                 passwordEnabled = false;
                 swPassword.setChecked(false);
                 applyPasswordState(false);
-                state.setUsername("");
-                state.setPassword("");
+                state.setUsername("HTTP", "");
+                state.setPassword("HTTP", "");
             } else {
-                state.setUsername(username);
-                state.setPassword(password);
+                state.setUsername("HTTP", username);
+                state.setPassword("HTTP", password);
             }
             
-            state.setPasswordEnabled(passwordEnabled);
+            state.setPasswordEnabled("HTTP", passwordEnabled);
             
             // Persist active mode
             if (isWebMode && !state.getWebFolder().isEmpty()) {
                 state.setSourceMode("web");
             } else if (!isWebMode) {
-                // keep whatever source mode was set
+                // Don't leave a stale "web" source mode active just because the
+                // user switched to the Source tab without picking anything new
+                // this visit — activate whatever's actually configured here.
+                String mode = state.getSourceMode();
+                if ("web".equals(mode)) {
+                    if (!state.getFolderPath().isEmpty()) {
+                        state.setSourceMode("folder");
+                    } else if (!state.getSelectedFiles().isEmpty()) {
+                        state.setSourceMode("files");
+                    } else {
+                        Toast.makeText(this, "Please select a folder or files first", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
             }
             
             setResult(RESULT_OK);
@@ -393,6 +410,8 @@ public class ConfigureActivity extends AppCompatActivity {
         buildFileTree(webDir, webFileTree, 0, 0);
     }
     
+    private static final int MAX_TREE_ITEMS = 20;
+
     private int buildFileTree(File dir, LinearLayout container, int depth, int count) {
         container.removeAllViews();
         File[] all = dir.listFiles();
@@ -403,8 +422,13 @@ public class ConfigureActivity extends AppCompatActivity {
                 return a.isDirectory() ? -1 : 1;
             return a.getName().compareToIgnoreCase(b.getName());
         });
-        
+
+        int shown = 0;
         for (File f : all) {
+            if (shown >= MAX_TREE_ITEMS) {
+                addTreeMoreHint(container, "+ " + (all.length - shown) + " more");
+                break;
+            }
             View row = getLayoutInflater().inflate(R.layout.item_tree_entry, container, false);
 
             ImageView ivTreeIcon = row.findViewById(R.id.iv_tree_icon); 
@@ -423,6 +447,7 @@ public class ConfigureActivity extends AppCompatActivity {
             tvTreeName.setText(f.getName());
             container.addView(row);
             count++;
+            shown++;
         }
         return count;
     }

@@ -51,7 +51,7 @@ public class FileServer extends NanoHTTPD {
 
         LogManager.clientConnected();
         try {
-            if (state.isPasswordEnabled() && !state.getPassword().isEmpty()) {
+            if (state.isPasswordEnabled("HTTP") && !state.getPassword("HTTP").isEmpty()) {
                 String auth = session.getHeaders().get("authorization");
                 if (auth == null || !checkAuth(auth)) {
                     Response r = newFixedLengthResponse(Response.Status.UNAUTHORIZED,
@@ -507,7 +507,14 @@ public class FileServer extends NanoHTTPD {
     }
 
     private boolean safeCanonical(File f) {
-        try { return f.getCanonicalPath().startsWith(rootDir.getCanonicalPath()); }
+        try {
+            String root = rootDir.getCanonicalPath();
+            String target = f.getCanonicalPath();
+            // Must be the root itself OR inside it — startsWith(root) alone would
+            // wrongly allow a sibling folder like "root2" that merely shares the
+            // same string prefix as "root".
+            return target.equals(root) || target.startsWith(root + File.separator);
+        }
         catch (IOException e) { return false; }
     }
 
@@ -515,8 +522,8 @@ public class FileServer extends NanoHTTPD {
         if (!header.startsWith("Basic ")) return false;
         String decoded = new String(android.util.Base64.decode(
                 header.substring(6), android.util.Base64.DEFAULT));
-        String user = state.getUsername();
-        String pass = state.getPassword();
+        String user = state.getUsername("HTTP");
+        String pass = state.getPassword("HTTP");
         if (user.isEmpty()) return decoded.endsWith(":" + pass);
         return decoded.equals(user + ":" + pass);
     }

@@ -12,7 +12,7 @@ import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private static final String GITHUB_URL = "https://github.com/abdurrahman101bd/host_master/issues";
+    private static final String GITHUB_URL = "https://github.com/abdurrahman101bd/HostMaster/issues";
 
     private AppState state;
     private Switch swNotif, swKeepLogs;

@@ -17,6 +17,9 @@ import java.io.File;
 public class FtpConfigureActivity extends AppCompatActivity {
 
     private static final int REQ_FOLDER = 1;
+    // When true, jump straight into the folder picker after opening — used when
+    // MainActivity sends the user here because no source was selected yet.
+    public static final String EXTRA_AUTO_PICK_FOLDER = "auto_pick_folder";
 
     private AppState state;
 
@@ -55,8 +58,8 @@ public class FtpConfigureActivity extends AppCompatActivity {
         int port = state.getPort("FTP");
         etPort.setText(String.valueOf(port));
         
-        String savedUsername = state.getUsername();
-        String savedPassword = state.getPassword();
+        String savedUsername = state.getUsername("FTP");
+        String savedPassword = state.getPassword("FTP");
         boolean savedAnonymous = state.sp_bool("ftp_anonymous", false);
         
         // If username or password is empty, force anonymous ON
@@ -84,14 +87,14 @@ public class FtpConfigureActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         // Select folder
-        findViewById(R.id.row_select_folder).setOnClickListener(v -> {
-            Intent i = new Intent(this, FilePickerActivity.class);
-            i.putExtra(FilePickerActivity.MODE_KEY, FilePickerActivity.MODE_FOLDER);
-            startActivityForResult(i, REQ_FOLDER);
-        });
+        findViewById(R.id.row_select_folder).setOnClickListener(v -> openFolderPicker());
 
         // Clear selection - with Snackbar undo support
         findViewById(R.id.btn_clear_selection).setOnClickListener(v -> clearFolderSelection(true));
+
+        if (getIntent().getBooleanExtra(EXTRA_AUTO_PICK_FOLDER, false)) {
+            openFolderPicker();
+        }
 
         // Anonymous toggle
         swAnonymous.setOnCheckedChangeListener((b, on) -> applyAnonymousState(on));
@@ -131,11 +134,11 @@ public class FtpConfigureActivity extends AppCompatActivity {
                 anonymous = true;
                 swAnonymous.setChecked(true);
                 applyAnonymousState(true);
-                state.setUsername("");
-                state.setPassword("");
+                state.setUsername("FTP", "");
+                state.setPassword("FTP", "");
             } else {
-                state.setUsername(username);
-                state.setPassword(password);
+                state.setUsername("FTP", username);
+                state.setPassword("FTP", password);
             }
             
             try {
@@ -146,7 +149,7 @@ public class FtpConfigureActivity extends AppCompatActivity {
             state.sp_set("ftp_anonymous", anonymous);
             state.sp_set("ftp_passive",   swPassiveMode.isChecked());
             state.sp_set("ftp_read_only", swReadOnly.isChecked());
-            state.setPasswordEnabled(!anonymous);
+            state.setPasswordEnabled("FTP", !anonymous);
 
             setResult(RESULT_OK);
             finish();
@@ -195,6 +198,12 @@ public class FtpConfigureActivity extends AppCompatActivity {
         pathDisplay.setVisibility(View.GONE);
     }
     
+    private void openFolderPicker() {
+        Intent i = new Intent(this, FilePickerActivity.class);
+        i.putExtra(FilePickerActivity.MODE_KEY, FilePickerActivity.MODE_FOLDER);
+        startActivityForResult(i, REQ_FOLDER);
+    }
+
     private void clearFolderSelection(boolean withUndo) {
         String currentPath = state.getFolderPath();
         if (currentPath.isEmpty()) return;

@@ -14,7 +14,6 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.*;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.*;

@@ -9,6 +9,7 @@ public class ProtocolActivity extends AppCompatActivity {
     private AppState state;
     private View cardHttp, cardFtp;
     private View dotHttp, dotFtp;
+    private String pendingProto; // not saved to AppState until "Save" is tapped
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,21 +29,19 @@ public class ProtocolActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.tv_http_port)).setText("PORT " + state.getPort("HTTP"));
         ((TextView) findViewById(R.id.tv_ftp_port)).setText("PORT " + state.getPort("FTP"));
 
-        // Select current protocol
-        String currentProto = state.getProtocol();
-        selectProto(currentProto);
+        // Select current protocol — visual only, nothing is saved yet
+        pendingProto = state.getProtocol();
+        highlightProtocol(pendingProto);
 
-        // Click listeners
-        cardHttp.setOnClickListener(v -> selectProto("HTTP"));
-        cardFtp.setOnClickListener(v  -> selectProto("FTP"));
+        // Click listeners — just update the local pending choice + highlight
+        cardHttp.setOnClickListener(v -> { pendingProto = "HTTP"; highlightProtocol(pendingProto); });
+        cardFtp.setOnClickListener(v  -> { pendingProto = "FTP";  highlightProtocol(pendingProto); });
 
-        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
-        findViewById(R.id.btn_save).setOnClickListener(v -> finish());
-    }
-
-    private void selectProto(String proto) {
-        state.setProtocol(proto);
-        highlightProtocol(proto);
+        findViewById(R.id.btn_back).setOnClickListener(v -> finish()); // discard, no save
+        findViewById(R.id.btn_save).setOnClickListener(v -> {
+            state.setProtocol(pendingProto); // commit only here
+            finish();
+        });
     }
 
     private void highlightProtocol(String proto) {

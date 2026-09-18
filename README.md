@@ -54,28 +54,19 @@
 - Expandable file tree view with fullscreen mode
 
 ### 🔒 Security
-- Optional password protection (Basic Auth)
+- Optional password protection (Basic Auth) — separate credentials for HTTP and FTP
+- Sandboxed to your selected folder only — no path traversal outside it
 - Local network only
 
 ### ⚙️ More
+- Permission gate on first launch — grants storage, notifications, and battery exemption before you ever reach the app
 - Auto-start server on app launch
 - QR code for quick access
-- Request logs with search and filter
+- Request logs with search and filter, saved per day
 - Network traffic chart
-- Dark / Light / Follow System theme
+- Dark / Light / Follow System theme (follows your phone by default)
 - Custom fonts support
-- Notification control with quick stop
-
----
-
-
-
-## 📸 Screenshots
-
-<!-- Add screenshots here -->
-| Main Screen (Dark) | Main Screen (Light) | FTP Configure | Web Hosting |
-|---|---|---|---|
-| *(coming soon)* | *(coming soon)* | *(coming soon)* | *(coming soon)* |
+- Notification control with Restart and Stop actions, plus sound/vibration on start, stop, and client connect/disconnect
 
 ---
 
@@ -87,7 +78,7 @@
 
 ### Setup
 1. Install the APK on your Android device
-2. Grant required permissions (storage, notifications)
+2. On first launch, grant the requested permissions (storage, notifications, battery) on the permission screen — the app won't let you in until they're all set
 3. Tap **CONFIG** to select a folder or files to share
 4. Tap the **power button** to start the server
 5. Open the URL shown on any device on the same network
@@ -140,12 +131,12 @@ Encryption: None / Plain FTP
 
 - [x] HTTP file server
 - [x] FTP server
-- [x] Web hosting mode
-- [x] Dark/Light theme
+- [x] Web hosting mode (including nested sub-folder sites with working CSS/JS)
+- [x] Dark/Light/Follow System theme
 - [x] File picker with multi-select
 - [x] FTP PASV/EPSV (Linux GUI client support)
-- [ ] SFTP server
-- [ ] SSH terminal (via Termux integration)
+- [x] First-launch permission gate
+- [x] Notification Start/Stop/Restart controls
 - [ ] Upload UI from browser
 - [ ] Custom domain / mDNS
 

@@ -68,17 +68,20 @@ public class NotificationHelper {
         }
 
         manager.notify((int) System.currentTimeMillis(), builder.build());
-        
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+        // Manual vibration only needed pre-Android 8 — on O+ the notification
+        // channel's own vibration pattern already fires when notify() is called,
+        // so calling vibrator.vibrate() here too would double-vibrate the device.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             try {
                 Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 if (vibrator != null && vibrator.hasVibrator()) {
                     if (title.contains("Connected")) {
-                        vibrator.vibrate(VibrationEffect.createWaveform(
-                            new long[]{0, 100, 200, 100}, -1));
+                        vibrator.vibrate(new long[]{0, 100, 200, 100}, -1);
                     } else if (title.contains("Disconnected")) {
-                        vibrator.vibrate(VibrationEffect.createWaveform(
-                            new long[]{0, 300, 200, 100}, -1));
+                        vibrator.vibrate(new long[]{0, 300, 200, 100}, -1);
+                    } else {
+                        vibrator.vibrate(new long[]{0, 200, 100, 200}, -1);
                     }
                 }
             } catch (Exception ignored) {}

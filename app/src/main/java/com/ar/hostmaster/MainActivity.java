@@ -187,6 +187,18 @@ public class MainActivity extends AppCompatActivity {
         if (state.getFolderPath().isEmpty()) {
             Toast.makeText(this, getString(R.string.no_source), Toast.LENGTH_SHORT).show();
             powerBtn.setState(false);
+
+            String proto = state.getProtocol();
+            if ("FTP".equals(proto)) {
+                // FTP only ever uses a single root folder, so skip straight
+                // to picking one instead of leaving the user on the config
+                // screen wondering what to tap next.
+                Intent i = new Intent(this, FtpConfigureActivity.class);
+                i.putExtra(FtpConfigureActivity.EXTRA_AUTO_PICK_FOLDER, true);
+                startActivityForResult(i, REQ_FTP_CONFIG);
+            } else {
+                startActivityForResult(new Intent(this, ConfigureActivity.class), REQ_CONFIG);
+            }
             return;
         }
         Intent i = new Intent(this, ServerService.class);

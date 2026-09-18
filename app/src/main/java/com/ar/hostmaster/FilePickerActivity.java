@@ -60,6 +60,14 @@ public class FilePickerActivity extends AppCompatActivity {
         if (MODE_FILES.equals(mode)) {
             basketPanel.setVisibility(View.VISIBLE);
             folderConfirmPanel.setVisibility(View.GONE);
+            // Preload previously selected files so opening the picker again to
+            // "add more" doesn't silently drop everything picked earlier.
+            ArrayList<String> existing = getIntent().getStringArrayListExtra(RESULT_PATHS);
+            if (existing != null) {
+                for (String p : existing) {
+                    if (!basket.contains(p)) basket.add(p);
+                }
+            }
         } else {
             basketPanel.setVisibility(View.GONE);
             folderConfirmPanel.setVisibility(View.VISIBLE);
@@ -72,6 +80,7 @@ public class FilePickerActivity extends AppCompatActivity {
 
         buildFileAdapter();
         buildBasketAdapter();
+        refreshBasketCount(); // reflect any preloaded selection immediately
 
         currentDir = Environment.getExternalStorageDirectory();
         navigate(currentDir);
@@ -101,6 +110,11 @@ public class FilePickerActivity extends AppCompatActivity {
         if (dir == null || !dir.exists()) return;
         currentDir = dir;
         tvPath.setText(dir.getAbsolutePath());
+
+        // Clear any previous selection — it belonged to the folder we're leaving,
+        // not this one, so keeping it would let "USE" apply to a folder that's
+        // no longer even visible on screen.
+        selectedFolder = null;
 
         List<FileEntry> entries = buildEntries(dir);
         boolean empty = entries.isEmpty();

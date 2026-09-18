@@ -180,20 +180,31 @@ public class SavedLogsActivity extends AppCompatActivity {
             toDelete.add(allDates.get(pos));
         }
 
+        // Back up each file's actual bytes BEFORE deleting, so UNDO can restore
+        // real content instead of just recreating an empty file with the same name.
+        Map<String, byte[]> backupContent = new HashMap<>();
         for (String date : toDelete) {
             File file = new File(getFilesDir(), "logs_" + date + ".txt");
-            if (file.exists()) file.delete();
+            if (file.exists()) {
+                try {
+                    backupContent.put(date, readFileBytes(file));
+                } catch (IOException e) {
+                    e.printStackTrace(); // undo won't be able to restore this one date
+                }
+                file.delete();
+            }
         }
 
         String message = toDelete.size() + " log" + (toDelete.size() > 1 ? "s" : "") + " deleted";
-        final List<String> backupDates = new ArrayList<>(toDelete);
-        
+
         Snackbar.make(rv, message, Snackbar.LENGTH_LONG)
             .setAction("UNDO", v -> {
-                for (String date : backupDates) {
+                for (Map.Entry<String, byte[]> entry : backupContent.entrySet()) {
                     try {
-                        File file = new File(getFilesDir(), "logs_" + date + ".txt");
-                        file.createNewFile();
+                        File file = new File(getFilesDir(), "logs_" + entry.getKey() + ".txt");
+                        try (FileOutputStream fos = new FileOutputStream(file)) {
+                            fos.write(entry.getValue());
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -204,6 +215,16 @@ public class SavedLogsActivity extends AppCompatActivity {
 
         exitSelectionMode();
         loadSavedLogs();
+    }
+
+    private byte[] readFileBytes(File file) throws IOException {
+        try (FileInputStream fis = new FileInputStream(file);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            byte[] buf = new byte[8192];
+            int n;
+            while ((n = fis.read(buf)) != -1) bos.write(buf, 0, n);
+            return bos.toByteArray();
+        }
     }
 
     private void exportSelectedItems(String exportPath) {

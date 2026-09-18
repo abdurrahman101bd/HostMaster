@@ -73,11 +73,14 @@ public class LogManager {
 
     public static void clear() {
         synchronized (logs) { logs.clear(); }
-        // Also clear today's log file
+        // Delete every day's log file, not just today's — the Privacy screen
+        // promises "Delete all saved logs?" so it must actually clear history.
         if (appContext != null) {
-            String today = DATE_FORMAT.format(new Date());
-            File file = new File(appContext.getFilesDir(), "logs_" + today + ".txt");
-            if (file.exists()) file.delete();
+            File[] files = appContext.getFilesDir().listFiles((dir, name) ->
+                name.startsWith("logs_") && name.endsWith(".txt"));
+            if (files != null) {
+                for (File f : files) f.delete();
+            }
         }
     }
 
@@ -106,7 +109,10 @@ public class LogManager {
     public static long getTotalBytes() { return totalBytes; }
 
     public static void reset() {
-        synchronized (logs) { logs.clear(); }
+        // NOTE: deliberately NOT clearing `logs` here — this is called on every
+        // server stop/start/restart, and clearing would wipe today's visible
+        // log history from the UI even though the on-disk file still has it.
+        // Only the per-session counters should reset.
         activeClients.set(0);
         totalBytes      = 0;
         bytesLastSample = 0;
